@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role               String   @default("USER") // ADMIN or PERAN_LAIN
+  status             String   @default("ACTIVE") // ACTIVE or INACTIVE
+  birthDate          String?
+  isTwoFactorEnabled Boolean  @default(false)
+  orders             Order[]
+  addresses          UserAddress[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model UserAddress {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  name          String   // Recipient Name
+  phone         String
+  province      String
+  city          String
+  district      String
+  postalCode    String
+  streetAddress String   @db.Text // Street Name, Building, etc.
+  detailAddress String?  @db.Text // Other details (kedai kayu 2 tingkat, etc.)
+  latitude      Float?
+  longitude     Float?
+  isMain        Boolean  @default(false)
+  label         String   @default("RUMAH") // RUMAH or KANTOR
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String   @db.Text
+  price       Int
+  imageUrl    String
+  stock       Int
+  status      String   @default("ACTIVE")
+  rating      Float    @default(0.0)
+  orderItems  OrderItem[]
+  reviews     Review[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    Int
+  userName  String
+  rating    Int      @default(5)
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  images    ReviewImage[]
+}
+
+model ReviewImage {
+  id        Int      @id @default(autoincrement())
+  reviewId  Int
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  imageUrl  String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  totalPrice      Int
+  dpAmount        Int?     @default(0)
+  status          String   @default("PENDING") // PENDING, DP_PAID, VERIFIED, PAID, CANCELLED, SHIPPED
+  paymentProofUrl String?  @db.Text
+  
+  // Midtrans Integration
+  midtransOrderId String?  @unique
+  snapToken       String?
+  snapUrl         String?
+  
+  // Tracking Fields
+  latitude        Float?
+  longitude       Float?
+  trackingStatus  String?  @db.Text
+  courierName     String?
+  awbNumber       String?
+  
+  items           OrderItem[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Int // Price of product at the time of order
+  size      String?
+  notes     String?
+}
+
+model StoreSettings {
+  id           Int     @id @default(1)
+  bankName     String  @default("BCA")
+  bankAccount  String  @default("1234567890")
+  accountName  String  @default("TENUN GEZA OFFICIAL")
+  qrisImageUrl String? @db.Text
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

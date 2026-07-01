@@ -869,22 +869,51 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   const SizedBox(height: 16),
                   const Text('BUKTI PEMBAYARAN:', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
                   const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      ApiService.getFormattedImageUrl(order['paymentProofUrl']),
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                  GestureDetector(
+                    onTap: () {
+                      final url = ApiService.getFormattedImageUrl(order['paymentProofUrl']);
+                      _showImagePreviewDialog(url, 'BUKTI TRANSFER');
+                    },
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Tooltip(
+                        message: 'Klik untuk memperbesar bukti pembayaran',
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
                             children: [
-                              Icon(Icons.error_outline, color: Colors.white24, size: 16),
-                              SizedBox(width: 8),
-                              Text('Gagal memuat bukti transfer', style: TextStyle(color: Colors.white24, fontSize: 11)),
+                              Image.network(
+                                ApiService.getFormattedImageUrl(order['paymentProofUrl']),
+                                height: 180,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.error_outline, color: Colors.white24, size: 16),
+                                        SizedBox(width: 8),
+                                        Text('Gagal memuat bukti transfer', style: TextStyle(color: Colors.white24, fontSize: 11)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                color: Colors.black.withOpacity(0.6),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.zoom_in, color: Colors.white, size: 14),
+                                    SizedBox(width: 4),
+                                    Text('PERBESAR BUKTI', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -1578,6 +1607,102 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
+  void _showImagePreviewDialog(String imageUrl, String title) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF130B22),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          style: GoogleFonts.montserrat(
+                            color: const Color(0xFFD4AF37),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Cubit/Pinch untuk memperbesar gambar',
+                          style: TextStyle(color: Colors.white54, fontSize: 11),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            color: const Color(0xFF0F0B1E),
+                            padding: const EdgeInsets.all(12),
+                            constraints: BoxConstraints(
+                              maxHeight: MediaQuery.of(context).size.height * 0.6,
+                            ),
+                            child: InteractiveViewer(
+                              panEnabled: true,
+                              minScale: 1.0,
+                              maxScale: 4.0,
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.contain,
+                                errorBuilder: (ctx, e, st) => const Padding(
+                                  padding: EdgeInsets.all(40.0),
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.error_outline, color: Colors.redAccent, size: 40),
+                                      SizedBox(height: 12),
+                                      Text('Gagal memuat gambar', style: TextStyle(color: Colors.white38, fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _showQrisPreview(String imageUrl) {
     showDialog(
       context: context,
@@ -1697,7 +1822,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   void _showPaymentDialog(dynamic order, Color gold, {bool isPelunasan = false}) {
     final firstItem = (order['items'] as List)[0];
-    const tealMint = Color(0xFF1ABC9C);
     final dpAmount = order['dpAmount'] ?? 0;
     final remainingAmount = order['totalPrice'] - dpAmount;
     final paymentAmount = isPelunasan ? remainingAmount : dpAmount;

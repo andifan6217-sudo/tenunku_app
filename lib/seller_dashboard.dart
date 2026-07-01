@@ -1,21 +1,15 @@
-import 'dart:io';
-import 'package:geolocator/geolocator.dart';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'language_provider.dart';
 import 'api_service.dart';
 import 'orders_screen.dart';
-import 'login_screen.dart';
 import 'seller_products_screen.dart';
 import 'buyer_profile_screen.dart';
 import 'tracking_screen.dart';
 import 'globals.dart';
+import 'seller_payments_view.dart';
+
 
 class SellerDashboard extends StatefulWidget {
   const SellerDashboard({super.key});
@@ -31,7 +25,7 @@ class _SellerDashboardState extends State<SellerDashboard> {
     const SellerStudioTab(),
     const SellerProductsScreen(showAppBar: true),
     const OrdersScreen(showBackButton: false),
-    const SellerMonitorTab(),
+    const SellerPaymentsView(),
     const ProfileScreen(),
   ];
 
@@ -62,7 +56,7 @@ class _SellerDashboardState extends State<SellerDashboard> {
             BottomNavigationBarItem(icon: Icon(Icons.storefront_outlined), activeIcon: Icon(Icons.storefront), label: 'STUDIO'),
             BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), activeIcon: Icon(Icons.inventory_2), label: 'ITEM'),
             BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), activeIcon: Icon(Icons.shopping_bag), label: 'ORDER'),
-            BottomNavigationBarItem(icon: Icon(Icons.verified_user_outlined), activeIcon: Icon(Icons.verified_user), label: 'MONITOR'),
+            BottomNavigationBarItem(icon: Icon(Icons.payments_outlined), activeIcon: Icon(Icons.payments), label: 'PEMBAYARAN'),
             BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'PROFIL'),
           ],
         ),
@@ -452,6 +446,102 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
     _fetch();
   }
 
+  void _showImagePreviewDialog(BuildContext context, String imageUrl, String title) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF130B22),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          style: GoogleFonts.montserrat(
+                            color: const Color(0xFFD4AF37),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Cubit/Pinch untuk memperbesar gambar',
+                          style: TextStyle(color: Colors.white54, fontSize: 11),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            color: const Color(0xFF0F0B1E),
+                            padding: const EdgeInsets.all(12),
+                            constraints: BoxConstraints(
+                              maxHeight: MediaQuery.of(context).size.height * 0.6,
+                            ),
+                            child: InteractiveViewer(
+                              panEnabled: true,
+                              minScale: 1.0,
+                              maxScale: 4.0,
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.contain,
+                                errorBuilder: (ctx, e, st) => const Padding(
+                                  padding: EdgeInsets.all(40.0),
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.error_outline, color: Colors.redAccent, size: 40),
+                                      SizedBox(height: 12),
+                                      Text('Gagal memuat gambar', style: TextStyle(color: Colors.white38, fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _fetch() async {
     setState(() => _isLoading = true);
     try {
@@ -498,6 +588,62 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
               const SizedBox(height: 12),
               Text(order['user']['name'].toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
               _buildBuyerAddress(order),
+              if (order['paymentProofUrl'] != null && order['paymentProofUrl'].toString().isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const Text('BUKTI PEMBAYARAN:', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () {
+                    final url = ApiService.getFormattedImageUrl(order['paymentProofUrl']);
+                    _showImagePreviewDialog(context, url, 'BUKTI TRANSFER');
+                  },
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Tooltip(
+                      message: 'Klik untuk memperbesar bukti pembayaran',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            Image.network(
+                              ApiService.getFormattedImageUrl(order['paymentProofUrl']),
+                              height: 140,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.error_outline, color: Colors.white24, size: 14),
+                                      SizedBox(width: 8),
+                                      Text('Gagal memuat bukti transfer', style: TextStyle(color: Colors.white24, fontSize: 10)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Colors.black.withOpacity(0.6),
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.zoom_in, color: Colors.white, size: 12),
+                                  SizedBox(width: 4),
+                                  Text('PERBESAR BUKTI', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
               const Divider(height: 32, color: Colors.white10),
               Row(
                 children: [

@@ -8,6 +8,8 @@ import 'admin_users_screen.dart';
 import 'admin_products_screen.dart';
 import 'buyer_profile_screen.dart';
 import 'globals.dart';
+import 'admin_finance_screen.dart';
+
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -142,7 +144,17 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                     
                     const SizedBox(height: 16),
                     _buildStatCard('MENUNGGU DP (BELUM VERIFIKASI)', _stats!['totals']['unverified'].toString(), Icons.payment_outlined, Colors.orangeAccent, fullWidth: true),
-                    
+                    const SizedBox(height: 16),
+                    InkWell(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminFinanceScreen())),
+                      child: _buildStatCard(
+                        'KEUANGAN & ARUS DP (KLIK UNTUK DETAIL)',
+                        'Buka Pembayaran & Keuangan',
+                        Icons.account_balance_wallet_outlined,
+                        gold,
+                        fullWidth: true,
+                      ),
+                    ),
                     const SizedBox(height: 40),
                     Text('PESANAN TERBARU', style: GoogleFonts.montserrat(color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 4)),
                     const SizedBox(height: 16),

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:io' show File;
 import 'api_service.dart';
 import 'globals.dart';
 
@@ -320,7 +318,7 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
                             ),
                             child: pickedFileBytes != null
                                 ? Image.memory(pickedFileBytes!, fit: BoxFit.cover)
-                                : currentImageUrl != null && currentImageUrl!.isNotEmpty
+                                : currentImageUrl != null && currentImageUrl.isNotEmpty
                                     ? Image.network(ApiService.getFormattedImageUrl(currentImageUrl), fit: BoxFit.cover)
                                     : Column(
                                         mainAxisAlignment: MainAxisAlignment.center,

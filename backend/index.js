@@ -1091,8 +1091,35 @@ app.get('/api/seller/stats', authenticate, async (req, res) => {
       }
     });
 
-    // Growth (Mock)
-    const growth = "+12.5%"; 
+    // Growth (Real calculation: comparing last 30 days vs 30 days before that)
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+    const currentPeriodOrders = await prisma.order.findMany({
+      where: {
+        createdAt: { gte: thirtyDaysAgo },
+        status: { in: ['PAID', 'VERIFIED', 'COMPLETED', 'DELIVERED'] }
+      }
+    });
+    const currentRevenue = currentPeriodOrders.reduce((sum, o) => sum + o.totalPrice, 0);
+
+    const previousPeriodOrders = await prisma.order.findMany({
+      where: {
+        createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+        status: { in: ['PAID', 'VERIFIED', 'COMPLETED', 'DELIVERED'] }
+      }
+    });
+    const previousRevenue = previousPeriodOrders.reduce((sum, o) => sum + o.totalPrice, 0);
+
+    let growth = "0%";
+    if (previousRevenue === 0) {
+      growth = currentRevenue > 0 ? "+100%" : "0%";
+    } else {
+      const growthPercent = ((currentRevenue - previousRevenue) / previousRevenue) * 100;
+      const sign = growthPercent >= 0 ? "+" : "";
+      growth = `${sign}${growthPercent.toFixed(1)}%`;
+    } 
 
     res.json({
       totals: {

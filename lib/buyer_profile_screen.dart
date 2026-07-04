@@ -386,7 +386,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Image.network(
                                     ApiService.getFormattedImageUrl(qrisImageUrl),
                                     height: 160, fit: BoxFit.contain,
-                                    errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, color: Colors.white24, size: 40),
+                                    errorBuilder: (_, _, _) => const Icon(Icons.broken_image, color: Colors.white24, size: 40),
                                   ),
                                 ),
                                 const SizedBox(height: 8),

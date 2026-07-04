@@ -917,7 +917,7 @@ class ApiService {
         },
         body: jsonEncode({
           'amountType': amountType,
-          if (method != null) 'method': method,
+          'method': ?method,
         }),
       ).timeout(requestTimeout);
 

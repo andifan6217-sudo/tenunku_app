@@ -364,7 +364,7 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
                         Switch(
                           value: _isMain,
                           onChanged: (v) => setState(() => _isMain = v),
-                          activeColor: orangeShopee,
+                          activeThumbColor: orangeShopee,
                           inactiveTrackColor: Colors.white10,
                         ),
                       ],

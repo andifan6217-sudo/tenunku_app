@@ -74,7 +74,7 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                           width: double.infinity,
                           color: Colors.white.withOpacity(0.05),
                           child: product['imageUrl'] != null && product['imageUrl'].isNotEmpty
-                              ? Image.network(ApiService.getFormattedImageUrl(product['imageUrl']), fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.image_outlined, color: Colors.white24))
+                              ? Image.network(ApiService.getFormattedImageUrl(product['imageUrl']), fit: BoxFit.cover, errorBuilder: (_, _, _) => const Icon(Icons.image_outlined, color: Colors.white24))
                               : const Icon(Icons.image_outlined, color: Colors.white24),
                         ),
                       ),

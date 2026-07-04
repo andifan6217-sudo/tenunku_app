@@ -228,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? Image.network(
                             ApiService.getFormattedImageUrl(product['imageUrl']),
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Icon(
+                            errorBuilder: (_, _, _) => const Icon(
                                 Icons.image_outlined,
                                 color: Colors.white24))
                         : const Icon(Icons.image_outlined, color: Colors.white24),
@@ -710,10 +710,12 @@ class _ProductInfoSheetState extends State<ProductInfoSheet> {
   void _loadDetail() async {
     try {
       final detail = await ApiService.getProductDetail(widget.product['id']);
-      if (mounted) setState(() {
+      if (mounted) {
+        setState(() {
         _fullProduct = detail;
         _loading = false;
       });
+      }
     } catch (e) {
       if (mounted) setState(() => _loading = false);
     }

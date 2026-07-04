@@ -183,8 +183,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
               onPrimary: Colors.black,
               surface: Color(0xFF130B22),
               onSurface: Colors.white,
-            ),
-            dialogBackgroundColor: const Color(0xFF130B22),
+            ), dialogTheme: DialogThemeData(backgroundColor: const Color(0xFF130B22)),
           ),
           child: child!,
         );
@@ -485,7 +484,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _pendingOrders.length,
-            separatorBuilder: (_, __) => const Divider(color: Colors.white10, height: 12),
+            separatorBuilder: (_, _) => const Divider(color: Colors.white10, height: 12),
             itemBuilder: (context, idx) {
               final o = _pendingOrders[idx];
               return Row(

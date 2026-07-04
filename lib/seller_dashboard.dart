@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 import 'api_service.dart';
 import 'orders_screen.dart';
 import 'seller_products_screen.dart';
@@ -65,6 +66,9 @@ class _SellerDashboardState extends State<SellerDashboard> {
   }
 }
 
+// ─────────────────────────────────────────────────────────────
+// SELLER STUDIO TAB — Halaman utama dashboard seller
+// ─────────────────────────────────────────────────────────────
 class SellerStudioTab extends StatefulWidget {
   const SellerStudioTab({super.key});
 
@@ -77,6 +81,9 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
   List<dynamic> _dpOrders = [];
   bool _isLoading = true;
 
+  static const gold = Color(0xFFD4AF37);
+  static const darkStudio = Color(0xFF0F0B1E);
+
   @override
   void initState() {
     super.initState();
@@ -84,6 +91,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
   }
 
   Future<void> _fetchStats() async {
+    setState(() => _isLoading = true);
     try {
       final stats = await ApiService.getSellerStats();
       List<dynamic> dpOrders = [];
@@ -172,9 +180,6 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkStudio = Color(0xFF0F0B1E);
-
     return Scaffold(
       backgroundColor: darkStudio,
       appBar: AppBar(
@@ -191,18 +196,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         child: _isLoading
             ? const Center(child: CircularProgressIndicator(color: gold))
             : _stats == null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.cloud_off, color: Colors.redAccent, size: 50),
-                        const SizedBox(height: 16),
-                        const Text('Koneksi Server Terputus', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 24),
-                        TextButton(onPressed: _fetchStats, child: const Text('COBA LAGI', style: TextStyle(color: gold))),
-                      ],
-                    ),
-                  )
+                ? _buildErrorState()
                 : RefreshIndicator(
                     onRefresh: _fetchStats,
                     color: gold,
@@ -212,52 +206,161 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('RINGKASAN BISNIS', style: GoogleFonts.montserrat(color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 4)),
-                          const SizedBox(height: 20),
-                          
+                          // ─── BAGIAN 1: AKSI DIPERLUKAN ───
+                          _buildSectionHeader('⚠  AKSI DIPERLUKAN', Colors.amberAccent),
+                          const SizedBox(height: 12),
+
+                          // Verifikasi DP
+                          _buildUrgentCard(
+                            label: 'PEMBAYARAN DP MENUNGGU VERIFIKASI',
+                            value: ((_stats!['totals']['dpPendingVerification'] ?? 0) +
+                                    (_stats!['totals']['fullPayPendingVerification'] ?? 0))
+                                .toString(),
+                            icon: Icons.verified_user_outlined,
+                            color: Colors.amberAccent,
+                            subtitle: 'Tap untuk ke halaman verifikasi',
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const SellerPaymentsView()),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Stok Menipis
+                          if ((_stats!['totals']['lowStock'] ?? 0) > 0) ...[
+                            _buildUrgentCard(
+                              label: 'PRODUK STOK MENIPIS (≤ 5 pcs)',
+                              value: _stats!['totals']['lowStock'].toString(),
+                              icon: Icons.inventory_2_outlined,
+                              color: Colors.redAccent,
+                              subtitle: 'Segera tambah stok sebelum kehabisan',
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const SellerProductsScreen(showAppBar: true)),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+
+                          // Pesanan diproduksi menunggu pelunasan
+                          if ((_stats!['totals']['processedUnpaid'] ?? 0) > 0) ...[
+                            _buildUrgentCard(
+                              label: 'DALAM PRODUKSI — BELUM LUNAS',
+                              value: _stats!['totals']['processedUnpaid'].toString(),
+                              icon: Icons.engineering_outlined,
+                              color: Colors.lightBlueAccent,
+                              subtitle: 'Pesanan selesai diproduksi, menunggu pembayaran pelunasan customer',
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const OrdersScreen(showBackButton: true)),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+
+                          const SizedBox(height: 24),
+
+                          // ─── BAGIAN 2: RINGKASAN BISNIS ───
+                          _buildSectionHeader('RINGKASAN BISNIS', gold),
+                          const SizedBox(height: 16),
+
+                          // Pendapatan & Pertumbuhan
                           Row(
                             children: [
-                              Expanded(child: _buildMainStat('PENDAPATAN', Globals.formatRupiah(_stats!['totals']['revenue']), gold, Icons.account_balance_wallet_outlined)),
+                              Expanded(
+                                child: _buildRevenueCard(
+                                  'PENDAPATAN TOTAL',
+                                  Globals.formatRupiah(_stats!['totals']['revenue']),
+                                  gold,
+                                  Icons.account_balance_wallet_outlined,
+                                ),
+                              ),
                               const SizedBox(width: 16),
-                              Expanded(child: _buildMainStat('PERTUMBUHAN', _stats!['totals']['growth'], Colors.greenAccent, Icons.trending_up)),
+                              Expanded(
+                                child: _buildRevenueCard(
+                                  'PERTUMBUHAN 30 HARI',
+                                  _stats!['totals']['growth'],
+                                  _isGrowthPositive(_stats!['totals']['growth'])
+                                      ? Colors.greenAccent
+                                      : Colors.redAccent,
+                                  _isGrowthPositive(_stats!['totals']['growth'])
+                                      ? Icons.trending_up
+                                      : Icons.trending_down,
+                                ),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 32),
-                          
-                          Text('MONITORING AKTIF', style: GoogleFonts.montserrat(color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 4)),
                           const SizedBox(height: 16),
-                          _buildAlertStat('PESANAN PERLU VERIFIKASI', ((_stats!['totals']['dpPendingVerification'] ?? 0) + (_stats!['totals']['fullPayPendingVerification'] ?? 0)).toString(), Icons.verified_user_outlined, Colors.amber),
-                          const SizedBox(height: 12),
-                          _buildAlertStat('PESANAN DALAM PRODUKSI', (_stats!['totals']['verified'] ?? 0).toString(), Icons.engineering_outlined, Colors.lightBlueAccent),
-                          
+
+                          // Statistik pesanan
+                          GridView.count(
+                            crossAxisCount: 3,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.9,
+                            children: [
+                              _buildSmallStat(
+                                'TOTAL PESANAN',
+                                _stats!['totals']['orders'].toString(),
+                                Icons.shopping_bag_outlined,
+                                gold,
+                              ),
+                              _buildSmallStat(
+                                'PRODUK AKTIF',
+                                _stats!['totals']['activeProducts'].toString(),
+                                Icons.store_outlined,
+                                Colors.greenAccent,
+                              ),
+                              _buildSmallStat(
+                                'MENUNGGU DP',
+                                _stats!['totals']['unpaidDP'].toString(),
+                                Icons.pending_actions,
+                                Colors.orangeAccent,
+                              ),
+                            ],
+                          ),
+
                           const SizedBox(height: 32),
 
+                          // ─── BAGIAN 3: VERIFIKASI DP CEPAT ───
                           if (_dpOrders.isNotEmpty) ...[
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('VERIFIKASI DP (CEPAT)', style: GoogleFonts.montserrat(color: Colors.amber, fontSize: 10, letterSpacing: 3, fontWeight: FontWeight.bold)),
-                                Text('${_dpOrders.length}', style: const TextStyle(color: Colors.amber, fontSize: 11, fontWeight: FontWeight.bold)),
+                                _buildSectionHeader('VERIFIKASI DP CEPAT', Colors.amber),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '${_dpOrders.length} menunggu',
+                                    style: const TextStyle(color: Colors.amber, fontSize: 9, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 16),
-                            ..._dpOrders.map((order) => _buildDPVerificationCard(order, gold)),
-                            const SizedBox(height: 16),
+                            ..._dpOrders.map((order) => _buildDPVerificationCard(order)),
                           ],
-                          
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('PESANAN TERBARU', style: GoogleFonts.montserrat(color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 4)),
-                            ],
-                          ),
+
+                          // ─── BAGIAN 4: PESANAN TERBARU ───
+                          _buildSectionHeader('PESANAN TERBARU', gold),
                           const SizedBox(height: 12),
-                          
+
                           if (_stats!['recentOrders'].isEmpty)
-                            const Center(child: Padding(padding: EdgeInsets.all(40), child: Text('Belum ada pesanan', style: TextStyle(color: Colors.white24, fontSize: 12))))
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(40),
+                                child: Text('Belum ada pesanan', style: TextStyle(color: Colors.white24, fontSize: 12)),
+                              ),
+                            )
                           else
-                            ...(_stats!['recentOrders'] as List).map((order) => _buildOrderRow(order, gold)),
-                            
+                            ...(_stats!['recentOrders'] as List).map((order) => _buildOrderRow(order)),
+
                           const SizedBox(height: 40),
                         ],
                       ),
@@ -267,67 +370,126 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
     );
   }
 
-  Widget _buildMainStat(String label, String value, Color color, IconData icon) {
+  // ─── HELPER METHODS ───
+
+  bool _isGrowthPositive(String growth) {
+    return !growth.startsWith('-');
+  }
+
+  Widget _buildSectionHeader(String title, Color color) {
+    return Row(
+      children: [
+        Container(width: 3, height: 14, color: color),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: GoogleFonts.montserrat(
+            color: color.withOpacity(0.85),
+            fontSize: 10,
+            letterSpacing: 3,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUrgentCard({
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color color,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.06),
+          border: Border.all(color: color.withOpacity(0.35), width: 1),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: color.withOpacity(0.12), shape: BoxShape.circle),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: GoogleFonts.montserrat(color: color, fontSize: 8, letterSpacing: 1.5, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 2),
+                  Text(
+                    value,
+                    style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
+                  ),
+                  Text(subtitle, style: const TextStyle(color: Colors.white38, fontSize: 9)),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios, color: color.withOpacity(0.5), size: 13),
+          ],
+        ),
+      ),
+    ).animate().fadeIn().slideY(begin: 0.1);
+  }
+
+  Widget _buildRevenueCard(String label, String value, Color color, IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: color.withOpacity(0.05),
-        border: Border.all(color: color.withOpacity(0.1)),
+        border: Border.all(color: color.withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(height: 16),
-          Text(label, style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 9, letterSpacing: 2)),
-          const SizedBox(height: 4),
-          Text(value, style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+          Icon(icon, color: color, size: 18),
+          const SizedBox(height: 12),
+          Text(label, style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 8, letterSpacing: 1.5)),
+          const SizedBox(height: 6),
+          Text(value, style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
         ],
       ),
     ).animate().fadeIn();
   }
 
-  Widget _buildAlertStat(String label, String value, IconData icon, Color color) {
+  Widget _buildSmallStat(String label, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
-        border: Border.all(color: color.withOpacity(0.1)),
+        color: Colors.white.withOpacity(0.03),
+        border: Border.all(color: Colors.white.withOpacity(0.07)),
       ),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: 18),
-          const SizedBox(width: 16),
-          Expanded(child: Text(label, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10))),
-          Text(value, style: GoogleFonts.montserrat(color: color, fontSize: 16, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOrderRow(dynamic order, Color gold) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.05))),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Icon(icon, color: color.withOpacity(0.6), size: 14),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('ORD-${order['id']}', style: GoogleFonts.montserrat(color: gold, fontSize: 10, fontWeight: FontWeight.bold)),
-              Text(order['pelanggan'].toString().toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+              Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 2),
+              Text(label, style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 7, letterSpacing: 0.5), maxLines: 2),
             ],
           ),
-          Text(Globals.formatRupiah(order['total']), style: const TextStyle(color: Colors.white54, fontSize: 11)),
         ],
       ),
     );
   }
 
-  Widget _buildDPVerificationCard(dynamic order, Color gold) {
+  Widget _buildDPVerificationCard(dynamic order) {
     final userName = order['user']?['name'] ?? 'Pelanggan';
+    final productName = order['items'] != null && (order['items'] as List).isNotEmpty
+        ? (order['items'] as List).map((i) => i['product']?['name'] ?? '').join(', ')
+        : '-';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -336,13 +498,27 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         border: Border.all(color: Colors.amber.withOpacity(0.2)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(userName.toString().toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
-              Text(Globals.formatRupiah(order['dpAmount']), style: const TextStyle(color: Colors.amber, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text(
+                userName.toString().toUpperCase(),
+                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                Globals.formatRupiah(order['dpAmount']),
+                style: const TextStyle(color: Colors.amber, fontSize: 12, fontWeight: FontWeight.bold),
+              ),
             ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            productName,
+            style: const TextStyle(color: Colors.white54, fontSize: 10),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 12),
           Row(
@@ -353,7 +529,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD4AF37),
                     foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                     padding: EdgeInsets.zero,
                   ),
                   child: Text('VERIFIKASI', style: GoogleFonts.montserrat(fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
@@ -363,18 +539,137 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => _rejectOrder(order['id']),
-                  style: OutlinedButton.styleFrom(foregroundColor: Colors.redAccent, side: const BorderSide(color: Colors.redAccent)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.redAccent,
+                    side: const BorderSide(color: Colors.redAccent),
+                  ),
                   child: const Text('TOLAK', style: TextStyle(fontSize: 10)),
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
+
+  Widget _buildOrderRow(dynamic order) {
+    String formattedDate = '';
+    try {
+      final date = DateTime.parse(order['tanggal'].toString());
+      formattedDate = DateFormat('dd MMM yy').format(date);
+    } catch (_) {}
+
+    final statusColor = _statusColor(order['status']);
+    final statusLabel = _statusLabel(order['status']);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.02),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text('ORD-${order['id']}', style: GoogleFonts.montserrat(color: gold, fontSize: 9, fontWeight: FontWeight.bold)),
+                    const SizedBox(width: 8),
+                    Text(formattedDate, style: const TextStyle(color: Colors.white24, fontSize: 9)),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  order['pelanggan'].toString().toUpperCase(),
+                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  order['produk'] ?? '-',
+                  style: const TextStyle(color: Colors.white54, fontSize: 10),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(Globals.formatRupiah(order['total']), style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(0.1),
+                  border: Border.all(color: statusColor.withOpacity(0.3), width: 0.5),
+                ),
+                child: Text(statusLabel, style: TextStyle(color: statusColor, fontSize: 7, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.cloud_off, color: Colors.redAccent, size: 50),
+          const SizedBox(height: 16),
+          const Text('Koneksi Server Terputus', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 24),
+          TextButton(onPressed: _fetchStats, child: const Text('COBA LAGI', style: TextStyle(color: gold))),
+        ],
+      ),
+    );
+  }
+
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'PENDING': return Colors.orange;
+      case 'DP_PAID': return Colors.amber;
+      case 'VERIFIED': return Colors.lightBlueAccent;
+      case 'PROCESSED': return Colors.blueAccent;
+      case 'FULL_PAY_PAID': return Colors.purpleAccent;
+      case 'PAID': return Colors.blue;
+      case 'SHIPPED': return Colors.tealAccent;
+      case 'DELIVERED': return Colors.greenAccent;
+      case 'COMPLETED': return Colors.green;
+      case 'CANCELLED': return Colors.redAccent;
+      default: return Colors.white38;
+    }
+  }
+
+  String _statusLabel(String status) {
+    switch (status) {
+      case 'PENDING': return 'MENUNGGU DP';
+      case 'DP_PAID': return 'DP DIBAYAR';
+      case 'VERIFIED': return 'DP VERIFIED';
+      case 'PROCESSED': return 'DIPRODUKSI';
+      case 'FULL_PAY_PAID': return 'LUNAS DIBAYAR';
+      case 'PAID': return 'LUNAS';
+      case 'SHIPPED': return 'DIKIRIM';
+      case 'DELIVERED': return 'SAMPAI';
+      case 'COMPLETED': return 'SELESAI';
+      case 'CANCELLED': return 'DIBATALKAN';
+      default: return status;
+    }
+  }
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// SELLER MONITOR TAB — Tab monitoring detail (Verifikasi, Produksi, Pengiriman)
+// ─────────────────────────────────────────────────────────────
 class SellerMonitorTab extends StatefulWidget {
   const SellerMonitorTab({super.key});
 
@@ -611,7 +906,7 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
                               height: 140,
                               width: double.infinity,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Center(
+                              errorBuilder: (_, _, _) => const Center(
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(vertical: 20),
                                   child: Row(
@@ -647,23 +942,28 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
               const Divider(height: 32, color: Colors.white10),
               Row(
                 children: [
-                  Expanded(child: ElevatedButton(onPressed: () async {
-                    try {
-                       if (isFull) await ApiService.verifyFinalPayment(order['id']);
-                       else await ApiService.verifyOrder(order['id']);
-                       _fetch();
-                    } catch (e) {
-                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal: $e')));
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4AF37),
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          if (isFull) {
+                            await ApiService.verifyFinalPayment(order['id']);
+                          } else {
+                            await ApiService.verifyOrder(order['id']);
+                          }
+                          _fetch();
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal: $e')));
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFD4AF37),
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                      ),
+                      child: Text('VERIFIKASI', style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                    ),
                   ),
-                  child: Text('VERIFIKASI', style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 2)),
-                ),
-                ),
                 ],
               )
             ],
@@ -680,9 +980,9 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
         padding: const EdgeInsets.only(top: 6),
         child: Row(
           children: [
-            Icon(Icons.location_off, color: Colors.white24, size: 12),
+            const Icon(Icons.location_off, color: Colors.white24, size: 12),
             const SizedBox(width: 4),
-            Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.white24, fontSize: 10, fontStyle: FontStyle.italic)),
+            const Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.white24, fontSize: 10, fontStyle: FontStyle.italic)),
           ],
         ),
       );
@@ -705,7 +1005,7 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${addr['name']} \u2022 ${addr['phone']}', style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
+                Text('${addr['name']} • ${addr['phone']}', style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 2),
                 Text(
                   '${addr['streetAddress']}, ${addr['district']}, ${addr['city']}, ${addr['province']} ${addr['postalCode']}',
@@ -805,10 +1105,10 @@ class _InternalProductionManagementViewState extends State<InternalProductionMan
     if (addresses == null || addresses.isEmpty) {
       return Padding(
         padding: const EdgeInsets.only(top: 6),
-        child: Row(
+        child: const Row(
           children: [
             Icon(Icons.location_off, color: Colors.white24, size: 12),
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
             Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.white24, fontSize: 10, fontStyle: FontStyle.italic)),
           ],
         ),
@@ -832,7 +1132,7 @@ class _InternalProductionManagementViewState extends State<InternalProductionMan
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${addr['name']} \u2022 ${addr['phone']}', style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
+                Text('${addr['name']} • ${addr['phone']}', style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 2),
                 Text(
                   '${addr['streetAddress']}, ${addr['district']}, ${addr['city']}, ${addr['province']} ${addr['postalCode']}',
@@ -884,7 +1184,7 @@ class _InternalShippingManagementViewState extends State<InternalShippingManagem
       final courierCtrl = TextEditingController();
       final awbCtrl = TextEditingController();
       final statusCtrl = TextEditingController(text: "Pesanan dalam perjalanan");
-      
+
       await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -933,20 +1233,20 @@ class _InternalShippingManagementViewState extends State<InternalShippingManagem
               onPressed: () async {
                 try {
                   await ApiService.updateTracking(
-                    orderId, 
-                    courierName: courierCtrl.text, 
-                    awbNumber: awbCtrl.text, 
-                    trackingStatus: statusCtrl.text
+                    orderId,
+                    courierName: courierCtrl.text,
+                    awbNumber: awbCtrl.text,
+                    trackingStatus: statusCtrl.text,
                   );
                   await ApiService.updateOrderStatus(orderId, 'SHIPPED');
                   Navigator.pop(ctx);
                   _fetch();
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Info pengiriman berhasil diupdate!')));
                 } catch (e) {
-                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal: $e')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal: $e')));
                 }
-              }, 
-              child: const Text('UPDATE', style: TextStyle(color: Color(0xFFD4AF37)))
+              },
+              child: const Text('UPDATE', style: TextStyle(color: Color(0xFFD4AF37))),
             ),
           ],
         ),
@@ -1023,7 +1323,6 @@ class _InternalShippingManagementViewState extends State<InternalShippingManagem
               ),
               _buildBuyerAddress(order),
               const Divider(height: 32, color: Colors.white10),
-              // Production/Shipping Actions
               Column(
                 children: [
                   SizedBox(
@@ -1091,12 +1390,12 @@ class _InternalShippingManagementViewState extends State<InternalShippingManagem
   Widget _buildBuyerAddress(dynamic order) {
     final addresses = order['user']?['addresses'] as List?;
     if (addresses == null || addresses.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 6),
+      return const Padding(
+        padding: EdgeInsets.only(top: 6),
         child: Row(
           children: [
             Icon(Icons.location_off, color: Colors.white24, size: 12),
-            const SizedBox(width: 4),
+            SizedBox(width: 4),
             Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.white24, fontSize: 10, fontStyle: FontStyle.italic)),
           ],
         ),

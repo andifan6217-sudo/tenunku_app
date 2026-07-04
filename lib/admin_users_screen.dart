@@ -226,7 +226,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 if (!isEdit) _dialogInput(passCtrl, 'INITIAL PASSWORD', isPass: true),
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
-                  value: role,
+                  initialValue: role,
                   dropdownColor: const Color(0xFF1A1A2E),
                   style: const TextStyle(color: Colors.white, fontSize: 13),
                   decoration: const InputDecoration(labelText: 'ASSIGN ROLE', labelStyle: TextStyle(color: Colors.white24, fontSize: 10)),

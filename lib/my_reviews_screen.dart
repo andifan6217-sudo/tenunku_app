@@ -54,7 +54,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                 child: Image.network(
                   url,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(
+                  errorBuilder: (_, _, _) => const Icon(
                     Icons.broken_image,
                     color: Colors.white24,
                     size: 80,
@@ -247,7 +247,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                                                   ),
                                                 );
                                               },
-                                              errorBuilder: (_, __, ___) => Container(
+                                              errorBuilder: (_, _, _) => Container(
                                                 width: 90,
                                                 height: 90,
                                                 color: Colors.white.withOpacity(0.04),

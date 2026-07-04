@@ -581,7 +581,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     selectedImages[i].$2,
                                     width: 80, height: 80,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
+                                    errorBuilder: (_, _, _) => Container(
                                       width: 80, height: 80,
                                       color: Colors.white10,
                                       child: const Icon(Icons.image, color: Colors.white24),
@@ -888,7 +888,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 height: 180,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => const Center(
+                                errorBuilder: (_, _, _) => const Center(
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(vertical: 20),
                                     child: Row(
@@ -1465,7 +1465,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               title: Text(item['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white70, fontSize: 11)),
               trailing: Text('x${item['quantity']}', style: TextStyle(color: gold, fontSize: 11)),
             );
-          }).toList(),
+          }),
           if (['COMPLETED', 'DELIVERED'].contains(order['status']) && _userRole != 'PENJUAL' && _userRole != 'ADMIN')
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -1996,7 +1996,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                       ),
                                       const SizedBox(height: 16),
                                     ],
-                                  )).toList(),
+                                  )),
                                 ],
                               );
                             },

@@ -68,14 +68,13 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
               onSurface: Colors.white,
               surfaceContainerHigh: Color(0xFF130B22),
             ),
-            dialogBackgroundColor: const Color(0xFF130B22),
             datePickerTheme: const DatePickerThemeData(
               backgroundColor: Color(0xFF130B22),
               headerBackgroundColor: Color(0xFF0F0918),
               headerForegroundColor: Colors.white,
               rangePickerHeaderBackgroundColor: Color(0xFF0F0918),
               rangePickerHeaderForegroundColor: Colors.white,
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: const Color(0xFF130B22)),
           ),
           child: child!,
         );

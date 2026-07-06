@@ -101,22 +101,394 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     }
   }
 
+  void _changeTab(int index) {
+    final parentState = context.findAncestorStateOfType<_AdminDashboardState>();
+    if (parentState != null) {
+      parentState.setState(() {
+        parentState._selectedIndex = index;
+      });
+    }
+  }
+
+  Widget _buildQuickMenuBar() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildQuickMenuButton(
+            label: 'TREN KEUANGAN',
+            subtitle: 'Grafik & omzet',
+            icon: Icons.analytics_outlined,
+            color: gold,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AdminFinanceScreen()),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _buildQuickMenuButton(
+            label: 'KELOLA USER',
+            subtitle: 'Data pengguna',
+            icon: Icons.people_outline,
+            color: const Color(0xFF1ABC9C),
+            onTap: () => _changeTab(2),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _buildQuickMenuButton(
+            label: 'KELOLA PRODUK',
+            subtitle: 'Katalog tenun',
+            icon: Icons.inventory_2_outlined,
+            color: Colors.lightBlueAccent,
+            onTap: () => _changeTab(1),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickMenuButton({
+    required String label,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.02),
+          border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 15),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: GoogleFonts.montserrat(
+                color: Colors.white,
+                fontSize: 7.5,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: const TextStyle(
+                color: Colors.white30,
+                fontSize: 7,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlatformSummaryCards() {
+    return SizedBox(
+      height: 76,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        children: [
+          _buildCompactSummaryCard(
+            'TOTAL PENGGUNA',
+            _stats!['totals']['users'].toString(),
+            Icons.people_outline,
+            gold,
+            onTap: () => _changeTab(2),
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'TOTAL PRODUK',
+            _stats!['totals']['products'].toString(),
+            Icons.inventory_2_outlined,
+            gold,
+            onTap: () => _changeTab(1),
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'TOTAL PESANAN',
+            _stats!['totals']['orders'].toString(),
+            Icons.shopping_bag_outlined,
+            gold,
+            onTap: () => _changeTab(3),
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'PESANAN SELESAI',
+            _stats!['totals']['processed'].toString(),
+            Icons.check_circle_outline,
+            Colors.greenAccent,
+            onTap: () => _changeTab(3),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompactSummaryCard(
+    String label,
+    String value,
+    IconData icon,
+    Color accentColor, {
+    VoidCallback? onTap,
+    bool isPrimary = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white.withOpacity(0.03),
+          border: Border.all(
+            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.white.withOpacity(0.06),
+            width: 0.8,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, color: accentColor.withOpacity(0.7), size: 13),
+                if (onTap != null)
+                  const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white38,
+                    fontSize: 7,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAdminPipelineChart() {
+    final recentOrders = (_stats!['recentOrders'] as List?) ?? [];
+
+    int countPending   = recentOrders.where((o) => o['status'] == 'PENDING' || o['status'] == 'DP_PAID').length;
+    int countVerified  = recentOrders.where((o) => o['status'] == 'VERIFIED').length;
+    int countProcessed = recentOrders.where((o) => o['status'] == 'PROCESSED' || o['status'] == 'FULL_PAY_PAID' || o['status'] == 'PAID').length;
+    int countCompleted = recentOrders.where((o) => o['status'] == 'COMPLETED' || o['status'] == 'DELIVERED' || o['status'] == 'SHIPPED').length;
+
+    final List<_AdminPipelineStage> stages = [
+      _AdminPipelineStage('PENDING',     countPending,   Colors.orangeAccent),
+      _AdminPipelineStage('VERIFIED',    countVerified,  Colors.amberAccent),
+      _AdminPipelineStage('DIPRODUKSI',  countProcessed, Colors.lightBlueAccent),
+      _AdminPipelineStage('SELESAI',     countCompleted, Colors.greenAccent),
+    ];
+
+    final int total = stages.fold(0, (sum, s) => sum + s.count);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.02),
+        border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Donut Chart
+          SizedBox(
+            width: 110,
+            height: 110,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 1200),
+              curve: Curves.easeOutBack,
+              builder: (context, value, child) {
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: CustomPaint(
+                        painter: AdminDonutChartPainter(stages: stages, animationProgress: value),
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          total.toString(),
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'PESANAN',
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white30,
+                            fontSize: 6.5,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(width: 24),
+          // Legends
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: stages.map((s) {
+                final percentage = total > 0 ? (s.count / total * 100).toStringAsFixed(0) : '0';
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: s.color,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          s.label,
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white54,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${s.count} ($percentage%)',
+                        style: GoogleFonts.montserrat(
+                          color: Colors.white70,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: darkSuite,
-      appBar: AppBar(
-        backgroundColor: darkSuite,
-        elevation: 0,
-        title: Text(
-          'ADMIN EXECUTIVE',
-          style: GoogleFonts.montserrat(color: gold, fontWeight: FontWeight.bold, letterSpacing: 4, fontSize: 14),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: AppBar(
+          backgroundColor: darkSuite,
+          elevation: 0,
+          titleSpacing: 0,
+          title: Container(
+            margin: const EdgeInsets.only(left: 20, top: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [gold.withOpacity(0.08), Colors.transparent],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              border: const Border(left: BorderSide(color: gold, width: 2.5)),
+            ),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  backgroundColor: gold,
+                  radius: 15,
+                  child: Icon(Icons.admin_panel_settings_rounded, color: Colors.black, size: 15),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'SELAMAT DATANG DI SUITE',
+                        style: GoogleFonts.montserrat(color: gold, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 2),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'ADMIN EXECUTIVE',
+                        style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(top: 12, right: 10),
+              child: IconButton(icon: const Icon(Icons.refresh, size: 20, color: gold), onPressed: _fetchStats),
+            ),
+          ],
         ),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: gold),
-        actions: [
-          IconButton(icon: const Icon(Icons.refresh, size: 20), onPressed: _fetchStats),
-        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: gold))
@@ -129,7 +501,19 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ─── BAGIAN 1: PERLU TINDAKAN SEGERA ───
+
+                    // ─── QUICK SHORTCUTS MENU BAR ───
+                    _buildQuickMenuBar(),
+                    const SizedBox(height: 24),
+
+                    // ─── BAGIAN 1: KESEHATAN PLATFORM ───
+                    _buildSectionHeader('KESEHATAN PLATFORM', gold),
+                    const SizedBox(height: 12),
+                    _buildPlatformSummaryCards(),
+
+                    const SizedBox(height: 28),
+
+                    // ─── BAGIAN 2: PERLU TINDAKAN SEGERA ───
                     _buildSectionHeader('⚠  PERLU TINDAKAN SEGERA', Colors.amberAccent),
                     const SizedBox(height: 12),
                     _buildUrgentActionCard(
@@ -138,85 +522,29 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                       description: 'DP & pelunasan belum diverifikasi',
                       icon: Icons.verified_user_outlined,
                       color: Colors.amberAccent,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const OrdersScreen(showBackButton: true)),
-                      ),
+                      onTap: () => _changeTab(3),
                     ),
                     const SizedBox(height: 12),
-                    if ((_stats!['totals']['lowStock'] ?? 0) > 0)
+                    if ((_stats!['totals']['lowStock'] ?? 0) > 0) ...[
                       _buildUrgentActionCard(
                         label: 'STOK PRODUK KRITIS (≤ 5 pcs)',
                         value: _stats!['totals']['lowStock'].toString(),
                         description: 'Produk segera perlu restock',
                         icon: Icons.warning_amber_rounded,
                         color: Colors.redAccent,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const AdminProductsScreen(showAppBar: true)),
-                        ),
+                        onTap: () => _changeTab(1),
                       ),
+                      const SizedBox(height: 24),
+                    ],
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
 
-                    // ─── BAGIAN 2: KESEHATAN PLATFORM ───
-                    _buildSectionHeader('KESEHATAN PLATFORM', gold),
-                    const SizedBox(height: 16),
-                    GridView.count(
-                      crossAxisCount: 2,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 1.4,
-                      children: [
-                        _buildStatCard(
-                          'TOTAL PENGGUNA',
-                          _stats!['totals']['users'].toString(),
-                          Icons.people_outline,
-                          gold,
-                          subtitle: 'terdaftar',
-                        ),
-                        _buildStatCard(
-                          'TOTAL PRODUK',
-                          _stats!['totals']['products'].toString(),
-                          Icons.inventory_2_outlined,
-                          gold,
-                          subtitle: '${_stats!['totals']['inStock']} tersedia',
-                        ),
-                        _buildStatCard(
-                          'TOTAL PESANAN',
-                          _stats!['totals']['orders'].toString(),
-                          Icons.shopping_bag_outlined,
-                          gold,
-                          subtitle: 'sepanjang waktu',
-                        ),
-                        _buildStatCard(
-                          'PESANAN SELESAI',
-                          _stats!['totals']['processed'].toString(),
-                          Icons.check_circle_outline,
-                          Colors.greenAccent,
-                          subtitle: 'dibayar & dikirim',
-                        ),
-                      ],
-                    ),
+                    // ─── BAGIAN 3: PIPELINE PESANAN ───
+                    _buildSectionHeader('PIPELINE PESANAN', gold),
+                    const SizedBox(height: 14),
+                    _buildAdminPipelineChart(),
 
-                    const SizedBox(height: 32),
-
-                    // ─── BAGIAN 3: LAPORAN KEUANGAN ───
-                    _buildSectionHeader('KEUANGAN', gold),
-                    const SizedBox(height: 12),
-                    _buildNavCard(
-                      icon: Icons.account_balance_wallet_outlined,
-                      title: 'LAPORAN KEUANGAN & ARUS DP',
-                      subtitle: 'Lihat detail pemasukan, DP masuk, dan pelunasan',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const AdminFinanceScreen()),
-                      ),
-                    ),
-
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 28),
 
                     // ─── BAGIAN 4: PESANAN TERBARU ───
                     _buildSectionHeader('PESANAN TERBARU', gold),
@@ -301,72 +629,6 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     ).animate().fadeIn().slideY(begin: 0.1);
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color, {String subtitle = ''}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color.withOpacity(0.7), size: 14),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  label,
-                  style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 8, letterSpacing: 1),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(value, style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
-              if (subtitle.isNotEmpty)
-                Text(subtitle, style: TextStyle(color: color.withOpacity(0.6), fontSize: 9)),
-            ],
-          ),
-        ],
-      ),
-    ).animate().fadeIn().scale(begin: const Offset(0.95, 0.95));
-  }
-
-  Widget _buildNavCard({required IconData icon, required String title, required String subtitle, required VoidCallback onTap}) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.03),
-          border: Border.all(color: gold.withOpacity(0.15)),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: gold, size: 22),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: GoogleFonts.montserrat(color: gold, fontSize: 10, letterSpacing: 1.5, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(subtitle, style: const TextStyle(color: Colors.white38, fontSize: 10)),
-                ],
-              ),
-            ),
-            Icon(Icons.arrow_forward_ios, color: gold.withOpacity(0.4), size: 14),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildRecentOrderTile(dynamic order) {
     final statusColor = _statusColor(order['status']);
@@ -461,17 +723,68 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     }
   }
 
-  Widget _dialogInput(TextEditingController ctrl, String label, Color color, {TextInputType type = TextInputType.text}) {
-    return TextField(
-      controller: ctrl,
-      keyboardType: type,
-      style: const TextStyle(color: Colors.white, fontSize: 13),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: color.withOpacity(0.4), fontSize: 9, letterSpacing: 2),
-        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: color.withOpacity(0.1))),
-        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: color)),
-      ),
-    );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DATA CLASS & PAINTER — Untuk diagram donat platform
+// ─────────────────────────────────────────────────────────────
+class _AdminPipelineStage {
+  final String label;
+  final int count;
+  final Color color;
+
+  const _AdminPipelineStage(this.label, this.count, this.color);
+}
+
+class AdminDonutChartPainter extends CustomPainter {
+  final List<_AdminPipelineStage> stages;
+  final double animationProgress;
+
+  AdminDonutChartPainter({required this.stages, required this.animationProgress});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double total = stages.fold(0.0, (sum, s) => sum + s.count);
+    final double strokeWidth = 8.0;
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - strokeWidth) / 2;
+
+    // Background track
+    final bgPaint = Paint()
+      ..color = Colors.white.withOpacity(0.04)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+    canvas.drawCircle(center, radius, bgPaint);
+
+    if (total == 0) return;
+
+    double startAngle = -3.1415926535 / 2; // Mulai dari atas
+
+    for (var stage in stages) {
+      if (stage.count == 0) continue;
+
+      final sweepAngle = (stage.count / total) * 2 * 3.1415926535 * animationProgress;
+
+      final paint = Paint()
+        ..color = stage.color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth
+        ..strokeCap = StrokeCap.round;
+
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        false,
+        paint,
+      );
+
+      startAngle += (stage.count / total) * 2 * 3.1415926535;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant AdminDonutChartPainter oldDelegate) {
+    return oldDelegate.animationProgress != animationProgress || oldDelegate.stages != stages;
   }
 }

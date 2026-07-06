@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               : CustomScrollView(
                   slivers: [
-                SliverToBoxAdapter(child: _buildGalleryHeader(goldPrimary)),
+                    const SliverToBoxAdapter(child: SizedBox(height: 24)),
                 // Horizontal Categories
                 SliverToBoxAdapter(
                   child: SingleChildScrollView(
@@ -143,20 +143,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     child: Container(
+                      height: 36,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.03),
-                        border: Border.all(color: goldPrimary.withOpacity(0.1)),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: goldPrimary.withOpacity(0.15), width: 0.8),
                       ),
                       child: TextField(
                         controller: _searchController,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        textAlignVertical: TextAlignVertical.center,
+                        style: const TextStyle(color: Colors.white, fontSize: 11),
                         onChanged: (_) => _filterProducts(),
                         decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                           hintText: 'Cari koleksi masterpiece...',
-                          hintStyle: TextStyle(color: Colors.white10, fontSize: 13),
-                          prefixIcon: Icon(Icons.search, color: goldPrimary.withOpacity(0.5), size: 18),
+                          hintStyle: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10),
+                          prefixIcon: const Icon(Icons.search, color: goldPrimary, size: 16),
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
                         ),
                       ),
                     ),
@@ -186,27 +192,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGalleryHeader(Color gold) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(24, 40, 24, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('KOLEKSI DIRAJA',
-              style: GoogleFonts.montserrat(
-                  color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 5)),
-          const SizedBox(height: 12),
-          Text('Mahakarya Tenun Riau',
-              style: GoogleFonts.playfairDisplay(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Container(width: 40, height: 1, color: gold),
-        ],
-      ),
-    ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.1);
-  }
 
   Widget _buildGalleryItem(dynamic product, Color gold) {
     return InkWell(

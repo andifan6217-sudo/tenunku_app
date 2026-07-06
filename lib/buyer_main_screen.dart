@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 import 'package:google_fonts/google_fonts.dart';
 import 'buyer_profile_screen.dart';
 import 'customer_dashboard.dart';
@@ -36,90 +35,27 @@ class _BuyerMainScreenState extends State<BuyerMainScreen> {
         index: _currentIndex,
         children: _screens,
       ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-          decoration: BoxDecoration(
-            color: const Color(0xFF130B22).withOpacity(0.85),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.08)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.4),
-                blurRadius: 16,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: BackdropFilter(
-              filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavItem(0, Icons.grid_view_rounded, 'Ringkasan', goldColor),
-                    _buildNavItem(1, Icons.inventory_2_outlined, 'Katalog', goldColor),
-                    _buildNavItem(2, Icons.shopping_cart_outlined, 'Pesanan', goldColor),
-                    _buildNavItem(3, Icons.star_border_rounded, 'Ulasan', goldColor),
-                    _buildNavItem(4, Icons.person_outline, 'Profil', goldColor),
-                  ],
-                ),
-              ),
-            ),
-          ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF130B22),
+          border: Border(top: BorderSide(color: goldColor.withOpacity(0.1), width: 0.5)),
         ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(int index, IconData icon, String label, Color accentColor) {
-    bool isActive = _currentIndex == index;
-
-    return Expanded(
-      child: InkWell(
-        onTap: () => setState(() => _currentIndex = index),
-        borderRadius: BorderRadius.circular(20),
-        highlightColor: Colors.transparent,
-        splashColor: accentColor.withOpacity(0.1),
-        child: AnimatedScale(
-          scale: isActive ? 1.05 : 1.0,
-          duration: const Duration(milliseconds: 200),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isActive ? accentColor.withOpacity(0.12) : Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: isActive ? accentColor : Colors.white38,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.montserrat(
-                    color: isActive ? accentColor : Colors.white38,
-                    fontSize: 9,
-                    fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          backgroundColor: const Color(0xFF130B22),
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: goldColor,
+          unselectedItemColor: Colors.white24,
+          selectedLabelStyle: GoogleFonts.montserrat(fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
+          unselectedLabelStyle: GoogleFonts.montserrat(fontSize: 8, letterSpacing: 1),
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.grid_view_outlined), activeIcon: Icon(Icons.grid_view_rounded), label: 'RINGKASAN'),
+            BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), activeIcon: Icon(Icons.inventory_2), label: 'KATALOG'),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: 'PESANAN'),
+            BottomNavigationBarItem(icon: Icon(Icons.star_border_rounded), activeIcon: Icon(Icons.star), label: 'ULASAN'),
+            BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'PROFIL'),
+          ],
         ),
       ),
     );

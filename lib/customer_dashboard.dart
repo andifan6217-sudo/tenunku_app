@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'api_service.dart';
 import 'home_screen.dart';
 import 'orders_screen.dart';
+import 'cart_screen.dart';
 import 'login_screen.dart';
 import 'language_provider.dart';
 import 'buyer_profile_screen.dart';
@@ -23,6 +24,7 @@ class CustomerDashboardScreen extends StatefulWidget {
 
 class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   Map<String, dynamic>? _stats;
+  List<dynamic> _popularProducts = [];
   bool _isLoading = true;
 
   static const gold = Color(0xFFD4AF37);
@@ -37,15 +39,31 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   Future<void> _fetchDashboardData() async {
     setState(() => _isLoading = true);
     try {
-      final stats = await ApiService.getCustomerStats();
+      final results = await Future.wait([
+        ApiService.getCustomerStats(),
+        ApiService.getProducts(),
+      ]);
+      final stats = results[0] as Map<String, dynamic>;
+      final products = List<dynamic>.from(results[1] as List);
+
+      // Sort by rating desc
+      products.sort((a, b) {
+        final double rA = (a['rating'] ?? 0.0).toDouble();
+        final double rB = (b['rating'] ?? 0.0).toDouble();
+        return rB.compareTo(rA);
+      });
+      final popular = products.take(4).toList();
+
       setState(() {
         _stats = stats;
+        _popularProducts = popular;
         _isLoading = false;
       });
     } catch (e) {
       if (mounted) {
         setState(() {
           _stats = null;
+          _popularProducts = [];
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -64,14 +82,74 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       appBar: AppBar(
         backgroundColor: darkLuxe,
         elevation: 0,
-        title: Text(
-          'CUSTOMER SUITE',
-          style: GoogleFonts.montserrat(color: gold, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 4),
-        ),
-        centerTitle: true,
+        toolbarHeight: 74,
         iconTheme: const IconThemeData(color: gold),
+        leading: widget.showDrawer
+            ? Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Builder(
+                  builder: (ctx) => IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () => Scaffold.of(ctx).openDrawer(),
+                  ),
+                ),
+              )
+            : null,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: Container(
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.03),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: gold.withOpacity(0.15), width: 0.8),
+            ),
+            child: TextField(
+              textAlignVertical: TextAlignVertical.center,
+              style: const TextStyle(color: Colors.white, fontSize: 11),
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                hintText: 'Cari kain tenun...',
+                hintStyle: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10),
+                prefixIcon: const Icon(Icons.search, color: gold, size: 16),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              ),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (value) {
+                if (value.trim().isNotEmpty) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => HomeScreen(initialSearch: value.trim(), showDrawer: false)),
+                  );
+                }
+              },
+            ),
+          ),
+        ),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh, size: 20), onPressed: _fetchDashboardData),
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: IconButton(
+              icon: const Icon(Icons.refresh, size: 20, color: gold),
+              onPressed: _fetchDashboardData,
+              tooltip: 'Segarkan',
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: IconButton(
+              icon: const Icon(Icons.shopping_cart_outlined, size: 20, color: gold),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CartScreen()),
+              ),
+              tooltip: 'Keranjang',
+            ),
+          ),
+          const SizedBox(width: 8),
         ],
       ),
       drawer: widget.showDrawer ? _buildCustomerDrawer(context, lang) : null,
@@ -101,73 +179,20 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                           const SizedBox(height: 32),
 
                           // ─── BAGIAN 2: RINGKASAN AKTIVITAS ───
-                          _buildSectionHeader('RINGKASAN AKTIVITAS', gold),
-                          const SizedBox(height: 16),
-
-                          // Total Belanja (highlight utama)
-                          _buildTotalSpentCard(),
-
-                          const SizedBox(height: 16),
-
-                          // Grid statistik 3 kolom
-                          GridView.count(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.85,
-                            children: [
-                              _buildStatCard(
-                                'TOTAL PESANAN',
-                                _stats!['totals']['orders'].toString(),
-                                Icons.shopping_basket_outlined,
-                                gold,
-                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ALL'))),
-                              ),
-                              _buildStatCard(
-                                'SEDANG PROSES',
-                                _stats!['totals']['pending'].toString(),
-                                Icons.pending_actions,
-                                Colors.orangeAccent,
-                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE'))),
-                              ),
-                              _buildStatCard(
-                                'SELESAI',
-                                _stats!['totals']['completed'].toString(),
-                                Icons.check_circle_outline,
-                                Colors.greenAccent,
-                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'COMPLETED'))),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 32),
-
-                          // ─── BAGIAN 3: RIWAYAT PESANAN ───
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _buildSectionHeader('RIWAYAT PESANAN', gold),
-                              TextButton(
-                                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen())),
-                                child: Text('LIHAT SEMUA', style: TextStyle(color: gold, fontSize: 10, letterSpacing: 1)),
-                              ),
-                            ],
-                          ),
+                          _buildSectionHeader('RINGKASAN AKTIVITAS SAYA', gold),
                           const SizedBox(height: 12),
 
-                          if (_stats!['recentOrders'].isEmpty)
-                            const Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(40),
-                                child: Text('Belum ada riwayat pesanan', style: TextStyle(color: Colors.white24, fontSize: 12)),
-                              ),
-                            )
-                          else
-                            ...(_stats!['recentOrders'] as List).map((order) => _buildOrderRow(order)),
+                          _buildCompactActivitySummary(),
 
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 28),
+
+                          // ─── BAGIAN 3: PRODUK TERPOPULER ───
+                          _buildSectionHeader('PRODUK TERPOPULER', gold),
+                          const SizedBox(height: 12),
+
+                          _buildPopularProductsGrid(),
+
+                          const SizedBox(height: 28),
 
                           // ─── TOMBOL JELAJAH ───
                           _buildExploreButton(context),
@@ -195,163 +220,147 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
         MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE')),
       ),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: info.color.withOpacity(0.06),
-          border: Border.all(color: info.color.withOpacity(0.35), width: 1),
+          border: Border.all(color: info.color.withOpacity(0.3), width: 0.8),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Row(
               children: [
-                Icon(Icons.track_changes, color: info.color, size: 18),
-                const SizedBox(width: 10),
+                Icon(Icons.track_changes, color: info.color, size: 16),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'PESANAN #${order['id']}',
-                    style: GoogleFonts.montserrat(color: info.color, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1),
+                    style: GoogleFonts.montserrat(color: info.color, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios, color: info.color.withOpacity(0.5), size: 13),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: info.color.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    info.label,
+                    style: TextStyle(color: info.color, fontSize: 9, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 14),
-
-            // Nama produk
+            const SizedBox(height: 8),
             Text(
               order['produk'] ?? '-',
-              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
-              maxLines: 2,
+              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8),
-
-            // Status dalam bahasa manusia
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: info.color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                info.label,
-                style: TextStyle(color: info.color, fontSize: 11, fontWeight: FontWeight.w600),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Progress bar
-            Stack(
+            Row(
               children: [
-                Container(height: 5, width: double.infinity, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(3))),
-                FractionallySizedBox(
-                  widthFactor: info.progress,
-                  child: Container(
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: info.color,
-                      borderRadius: BorderRadius.circular(3),
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    child: LinearProgressIndicator(
+                      value: info.progress,
+                      backgroundColor: Colors.white10,
+                      valueColor: AlwaysStoppedAnimation<Color>(info.color),
+                      minHeight: 4,
                     ),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(info.description, style: const TextStyle(color: Colors.white38, fontSize: 9)),
+                const SizedBox(width: 10),
                 Text('${(info.progress * 100).toInt()}%', style: TextStyle(color: info.color, fontSize: 9, fontWeight: FontWeight.bold)),
               ],
             ),
-
-            // Tombol aksi kontekstual
-            if (info.actionLabel != null) ...[
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE')),
-                  ),
-                  icon: Icon(info.actionIcon!, size: 16),
-                  label: Text(
-                    info.actionLabel!,
-                    style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: info.color,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                ),
-              ),
-            ],
-
-            // Tombol detail pelacakan (jika sudah dikirim)
-            if (order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') ...[
+            const SizedBox(height: 4),
+            Text(info.description, style: const TextStyle(color: Colors.white38, fontSize: 9)),
+            if (info.actionLabel != null || order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') ...[
               const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => TrackingScreen(orderId: order['id'])),
-                  ),
-                  icon: const Icon(Icons.receipt_long, size: 16),
-                  label: Text(
-                    'DETAIL PELACAKAN',
-                    style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.tealAccent,
-                    side: const BorderSide(color: Colors.tealAccent, width: 0.8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED')
+                    TextButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => TrackingScreen(orderId: order['id'])),
+                      ),
+                      icon: const Icon(Icons.receipt_long, size: 12, color: Colors.tealAccent),
+                      label: Text(
+                        'LACAK',
+                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.tealAccent, letterSpacing: 1),
+                      ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                  if (info.actionLabel != null) ...[
+                    if (order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') const SizedBox(width: 12),
+                    ElevatedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE')),
+                      ),
+                      icon: Icon(info.actionIcon!, size: 12, color: Colors.black),
+                      label: Text(
+                        info.actionLabel!,
+                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.black, letterSpacing: 1),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: info.color,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-            ],
+            ]
           ],
         ),
       ),
-    ).animate().fadeIn().slideY(begin: 0.1);
+    ).animate().fadeIn().slideY(begin: 0.05);
   }
 
   Widget _buildNoActiveOrderBanner() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        color: Colors.white.withOpacity(0.02),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
       child: Row(
         children: [
-          Icon(Icons.inbox_outlined, color: gold.withOpacity(0.4), size: 28),
-          const SizedBox(width: 16),
+          Icon(Icons.inbox_outlined, color: gold.withOpacity(0.4), size: 20),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Tidak ada pesanan aktif', style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 4),
-                Text('Mulai belanja untuk memesan produk tenun', style: TextStyle(color: Colors.white38, fontSize: 10)),
+                const Text('Tidak ada pesanan aktif', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 2),
+                Text('Mulai belanja untuk memesan produk tenun', style: TextStyle(color: Colors.white38, fontSize: 9)),
               ],
             ),
           ),
           InkWell(
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen(showDrawer: false))),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: gold.withOpacity(0.1),
-                border: Border.all(color: gold.withOpacity(0.4), width: 0.8),
+                border: Border.all(color: gold.withOpacity(0.3), width: 0.5),
               ),
-              child: Text('BELANJA', style: GoogleFonts.montserrat(color: gold, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+              child: Text('BELANJA', style: GoogleFonts.montserrat(color: gold, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 1)),
             ),
           ),
         ],
@@ -363,68 +372,107 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   // BAGIAN 2 WIDGETS: Ringkasan Aktivitas
   // ─────────────────────────────────────────────────────────────
 
-  Widget _buildTotalSpentCard() {
-    return InkWell(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ALL'))),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [gold.withOpacity(0.12), Colors.transparent],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+  Widget _buildCompactActivitySummary() {
+    return SizedBox(
+      height: 76,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        children: [
+          _buildCompactSummaryCard(
+            'TOTAL BELANJA SAYA',
+            Globals.formatRupiah(_stats!['totals']['spent']),
+            Icons.account_balance_wallet_outlined,
+            gold,
+            isPrimary: true,
+            // Info display only — tidak di-tap karena nilai Rupiah bukan navigasi
           ),
-          border: Border.all(color: gold.withOpacity(0.25)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.account_balance_wallet_outlined, color: gold, size: 20),
-                const SizedBox(width: 10),
-                Text('TOTAL BELANJA SAYA', style: GoogleFonts.montserrat(color: Colors.white54, fontSize: 10, letterSpacing: 2, fontWeight: FontWeight.w600)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              Globals.formatRupiah(_stats!['totals']['spent']),
-              style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text('dari semua pesanan', style: TextStyle(color: Colors.white38, fontSize: 10)),
-          ],
-        ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'TOTAL PESANAN',
+            _stats!['totals']['orders'].toString(),
+            Icons.shopping_basket_outlined,
+            gold,
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ALL'))),
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'SEDANG PROSES',
+            _stats!['totals']['pending'].toString(),
+            Icons.pending_actions,
+            Colors.orangeAccent,
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE'))),
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'SELESAI',
+            _stats!['totals']['completed'].toString(),
+            Icons.check_circle_outline,
+            Colors.greenAccent,
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'COMPLETED'))),
+          ),
+        ],
       ),
-    ).animate().fadeIn().slideY(begin: 0.1);
+    );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color, {VoidCallback? onTap}) {
+  Widget _buildCompactSummaryCard(
+    String label,
+    String value,
+    IconData icon,
+    Color accentColor, {
+    VoidCallback? onTap,
+    bool isPrimary = false,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(14),
+        width: isPrimary ? 160 : 110,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.04),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white.withOpacity(0.03),
+          border: Border.all(
+            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.white.withOpacity(0.06),
+            width: 0.8,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(icon, color: color.withOpacity(0.6), size: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, color: accentColor.withOpacity(0.7), size: 13),
+                if (onTap != null)
+                  const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
+              ],
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
-                  style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 8, letterSpacing: 0.5),
-                  maxLines: 2,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white38,
+                    fontSize: 7,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
-                Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white,
+                    fontSize: isPrimary ? 11 : 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ],
@@ -434,73 +482,24 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // BAGIAN 3 WIDGETS: Riwayat Pesanan
-  // ─────────────────────────────────────────────────────────────
-
-  Widget _buildOrderRow(dynamic order) {
-    DateTime? date;
-    String formattedDate = '';
-    try {
-      date = DateTime.parse(order['tanggal'].toString());
-      formattedDate = DateFormat('dd MMM yyyy').format(date);
-    } catch (_) {}
-
-    final info = _getStatusInfo(order['status'] ?? '');
-
-    return InkWell(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen())),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.02),
-          border: Border.all(color: Colors.white.withOpacity(0.06)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Pesanan #${order['id']}', style: GoogleFonts.montserrat(color: gold, fontSize: 10, fontWeight: FontWeight.bold)),
-                Text(formattedDate, style: const TextStyle(color: Colors.white24, fontSize: 9)),
-              ],
-            ),
-            const SizedBox(height: 8),
-            // Nama produk sebagai informasi utama
-            Text(
-              order['produk'] ?? '-',
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Total: ${Globals.formatRupiah(order['total'])}', style: const TextStyle(color: Colors.white70, fontSize: 11)),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: info.color.withOpacity(0.12),
-                    border: Border.all(color: info.color.withOpacity(0.3), width: 0.5),
-                  ),
-                  child: Text(
-                    info.label,
-                    style: TextStyle(color: info.color, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 0.5),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn().slideX(begin: 0.05);
-  }
-
-  // ─────────────────────────────────────────────────────────────
   // SHARED WIDGETS
   // ─────────────────────────────────────────────────────────────
+
+  /// Animated shimmer placeholder saat gambar sedang dimuat
+  Widget _buildImageShimmer() {
+    return Container(
+      color: const Color(0xFF1C1C1C),
+      child: Container(
+        decoration: const BoxDecoration(color: Color(0xFF232323)),
+      )
+          .animate(onPlay: (c) => c.repeat())
+          .shimmer(
+            duration: const Duration(milliseconds: 1200),
+            color: const Color(0xFF3A3A3A),
+            angle: 0.3,
+          ),
+    );
+  }
 
   Widget _buildSectionHeader(String title, Color color) {
     return Row(
@@ -548,6 +547,313 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
         ),
       ),
     );
+  }
+
+  void _showImagePreview(BuildContext context, String imageUrl, String productName) {
+    if (imageUrl.isEmpty) return;
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.92),
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Stack(
+          children: [
+            // Fullscreen tappable area to close
+            GestureDetector(
+              onTap: () => Navigator.of(ctx).pop(),
+              child: Container(color: Colors.transparent, width: double.infinity, height: double.infinity),
+            ),
+            // Zoomable image in center
+            Center(
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.contain,
+                  fadeInDuration: const Duration(milliseconds: 250),
+                  placeholder: (context, url) => const SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: CircularProgressIndicator(color: gold, strokeWidth: 1.5),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.broken_image,
+                    color: Colors.white54,
+                    size: 80,
+                  ),
+                ),
+              ),
+            ),
+            // Top bar: product name + close button
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          productName.toUpperCase(),
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () => Navigator.of(ctx).pop(),
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.close, color: Colors.white, size: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Bottom hint: pinch to zoom
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [Colors.black.withOpacity(0.55), Colors.transparent],
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Cubit atau rentangkan untuk zoom',
+                      style: TextStyle(color: Colors.white54, fontSize: 10),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPopularProductsGrid() {
+    if (_popularProducts.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Text(
+            'Tidak ada produk populer tersedia',
+            style: TextStyle(color: Colors.white38, fontSize: 11),
+          ),
+        ),
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _popularProducts.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.58,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 24,
+      ),
+      itemBuilder: (context, index) {
+        final product = _popularProducts[index];
+        return _buildPopularProductItem(product);
+      },
+    );
+  }
+
+  Widget _buildPopularProductItem(dynamic product) {
+    final double rating = (product['rating'] ?? 0.0).toDouble();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.01),
+        border: Border.all(color: Colors.white.withOpacity(0.04), width: 0.8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image Section
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.04), width: 0.8)),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: GestureDetector(
+                      onTap: () => _showImagePreview(
+                        context,
+                        ApiService.getFormattedImageUrl(product['imageUrl'] ?? ''),
+                        product['name']?.toString() ?? '',
+                      ),
+                      child: product['imageUrl'] != null && product['imageUrl'].isNotEmpty
+                          ? Container(
+                              color: const Color(0xFF111111),
+                              child: CachedNetworkImage(
+                                imageUrl: ApiService.getFormattedImageUrl(product['imageUrl']),
+                                fit: BoxFit.contain,
+                                fadeInDuration: const Duration(milliseconds: 350),
+                                placeholder: (context, url) => _buildImageShimmer(),
+                                errorWidget: (context, url, error) => const Center(
+                                  child: Icon(Icons.image_not_supported_outlined, color: Colors.white24, size: 32),
+                                ),
+                              ),
+                            )
+                          : const Center(
+                              child: Icon(Icons.image_outlined, color: Colors.white24, size: 32),
+                            ),
+                    ),
+                  ),
+                  // Rating Badge
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.75),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 10),
+                          const SizedBox(width: 3),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Preview hint icon
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Icon(Icons.zoom_in_rounded, color: Colors.white70, size: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Details Section
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product['name'].toString().toUpperCase(),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 1),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  Globals.formatRupiah(product['price']),
+                  style: GoogleFonts.playfairDisplay(color: gold, fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 28,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: gold.withOpacity(0.3), width: 0.5),
+                            foregroundColor: Colors.white70,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => ProductInfoSheet(product: product, gold: gold),
+                            );
+                          },
+                          child: Text('DETAIL', style: GoogleFonts.montserrat(fontSize: 8, letterSpacing: 0.5)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: SizedBox(
+                        height: 28,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: gold.withOpacity(0.85),
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+                            elevation: 0,
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => ProductOrderSheet(product: product, gold: gold),
+                            );
+                          },
+                          child: Text('PESAN', style: GoogleFonts.montserrat(fontSize: 8, letterSpacing: 0.5, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.05);
   }
 
   // ─────────────────────────────────────────────────────────────

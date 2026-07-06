@@ -97,7 +97,7 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
 
   Widget _buildStatsHeader(Color gold) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: gold.withOpacity(0.05)))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -113,26 +113,37 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
   Widget _statItem(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 8, letterSpacing: 2)),
-        const SizedBox(height: 4),
-        Text(value, style: GoogleFonts.montserrat(color: color, fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(label, style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 7.5, letterSpacing: 1.5)),
+        const SizedBox(height: 2),
+        Text(value, style: GoogleFonts.montserrat(color: color, fontSize: 12, fontWeight: FontWeight.bold)),
       ],
     );
   }
 
   Widget _buildSearchField(Color gold) {
     return Padding(
-      padding: const EdgeInsets.all(24),
-      child: TextField(
-        controller: _searchCtrl,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
-        decoration: InputDecoration(
-          hintText: 'Cari produk kebanggaan anda...',
-          hintStyle: const TextStyle(color: Colors.white10, fontSize: 12),
-          prefixIcon: Icon(Icons.search, color: gold.withOpacity(0.3), size: 18),
-          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: gold.withOpacity(0.1))),
-          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: gold.withOpacity(0.5))),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: Container(
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.03),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: gold.withOpacity(0.15), width: 0.8),
+        ),
+        child: TextField(
+          controller: _searchCtrl,
+          textAlignVertical: TextAlignVertical.center,
+          style: const TextStyle(color: Colors.white, fontSize: 11),
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            hintText: 'Cari produk kebanggaan anda...',
+            hintStyle: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10),
+            prefixIcon: Icon(Icons.search, color: gold, size: 16),
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+          ),
         ),
       ),
     );

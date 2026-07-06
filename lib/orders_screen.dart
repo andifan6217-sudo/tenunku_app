@@ -773,16 +773,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   Widget _buildSearchBar(Color gold, Color darkAccent) {
     return Container(
-      decoration: BoxDecoration(color: darkAccent, borderRadius: BorderRadius.circular(8)),
+      height: 36,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.03),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: gold.withOpacity(0.15), width: 0.8),
+      ),
       child: TextField(
         controller: _searchController,
-        style: const TextStyle(color: Colors.white, fontSize: 13),
+        textAlignVertical: TextAlignVertical.center,
+        style: const TextStyle(color: Colors.white, fontSize: 11),
         decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           hintText: 'Cari pesanan...',
-          hintStyle: const TextStyle(color: Colors.white24, fontSize: 13),
-          prefixIcon: const Icon(Icons.search, color: Colors.white24, size: 20),
+          hintStyle: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10),
+          prefixIcon: Icon(Icons.search, color: gold, size: 16),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
         ),
       ),
     );

@@ -68,28 +68,57 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
       appBar: widget.showAppBar ? AppBar(
         backgroundColor: darkSuite,
         elevation: 0,
-        title: _buildSearchField(gold),
+        title: Text('USER REGISTRY', style: GoogleFonts.montserrat(color: gold, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 4)),
         centerTitle: true,
         iconTheme: const IconThemeData(color: gold),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_add_alt_1_outlined),
+            icon: const Icon(Icons.person_add_alt_1_outlined, color: gold),
             onPressed: () => _showUserDialog(null),
           ),
         ],
       ) : null,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: gold))
-          : _filteredUsers.isEmpty
-              ? _buildEmptyState()
-              : ListView.builder(
-                  padding: const EdgeInsets.all(24),
-                  itemCount: _filteredUsers.length,
-                  itemBuilder: (context, index) {
-                    final user = _filteredUsers[index];
-                    final bool isInactive = user['status'] == 'INACTIVE';
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
+                  child: Container(
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.03),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: gold.withOpacity(0.15), width: 0.8),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      textAlignVertical: TextAlignVertical.center,
+                      style: const TextStyle(color: Colors.white, fontSize: 11),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        hintText: 'Cari pengguna...',
+                        hintStyle: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10),
+                        prefixIcon: const Icon(Icons.search, color: gold, size: 16),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: _filteredUsers.isEmpty
+                      ? _buildEmptyState()
+                      : ListView.builder(
+                    padding: const EdgeInsets.all(24),
+                    itemCount: _filteredUsers.length,
+                    itemBuilder: (context, index) {
+                      final user = _filteredUsers[index];
+                      final bool isInactive = user['status'] == 'INACTIVE';
 
-                    return Container(
+                      return Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: isInactive ? Colors.white.withOpacity(0.01) : Colors.white.withOpacity(0.02),
@@ -131,22 +160,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                         trailing: _buildPopupMenu(user, gold),
                       ),
                     ).animate().fadeIn(delay: (index * 50).ms).slideX(begin: 0.1);
-                  },
+                    },
+                  ),
                 ),
+              ],
+            ),
     );
   }
 
-  Widget _buildSearchField(Color gold) {
-    return TextField(
-      controller: _searchController,
-      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 13),
-      decoration: InputDecoration(
-        hintText: 'SEARCH REGISTRY...',
-        hintStyle: GoogleFonts.montserrat(color: Colors.white24, fontSize: 11, letterSpacing: 2),
-        border: InputBorder.none,
-      ),
-    );
-  }
 
   Widget _buildEmptyState() {
     return Center(

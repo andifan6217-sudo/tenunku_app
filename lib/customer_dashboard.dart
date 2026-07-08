@@ -11,7 +11,6 @@ import 'login_screen.dart';
 import 'language_provider.dart';
 import 'buyer_profile_screen.dart';
 import 'my_reviews_screen.dart';
-import 'tracking_screen.dart';
 import 'globals.dart';
 
 class CustomerDashboardScreen extends StatefulWidget {
@@ -167,26 +166,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ─── BAGIAN 1: PESANAN AKTIF SAYA (prioritas utama) ───
-                          _buildSectionHeader('PESANAN AKTIF SAYA', gold),
-                          const SizedBox(height: 12),
-
-                          if (_stats!['activeOrder'] != null)
-                            _buildActiveOrderCard(_stats!['activeOrder'])
-                          else
-                            _buildNoActiveOrderBanner(),
-
-                          const SizedBox(height: 32),
-
-                          // ─── BAGIAN 2: RINGKASAN AKTIVITAS ───
-                          _buildSectionHeader('RINGKASAN AKTIVITAS SAYA', gold),
-                          const SizedBox(height: 12),
-
-                          _buildCompactActivitySummary(),
-
-                          const SizedBox(height: 28),
-
-                          // ─── BAGIAN 3: PRODUK TERPOPULER ───
+                          // ─── PRODUK TERPOPULER ───
                           _buildSectionHeader('PRODUK TERPOPULER', gold),
                           const SizedBox(height: 12),
 
@@ -202,282 +182,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       ),
                     ).animate().fadeIn(duration: 600.ms),
                   ),
-      ),
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // BAGIAN 1 WIDGETS: Pesanan Aktif
-  // ─────────────────────────────────────────────────────────────
-
-  /// Card utama yang LANGSUNG menampilkan status pesanan aktif customer
-  Widget _buildActiveOrderCard(dynamic order) {
-    final info = _getStatusInfo(order['status']);
-
-    return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE')),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: info.color.withOpacity(0.06),
-          border: Border.all(color: info.color.withOpacity(0.3), width: 0.8),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.track_changes, color: info.color, size: 16),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'PESANAN #${order['id']}',
-                    style: GoogleFonts.montserrat(color: info.color, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: info.color.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    info.label,
-                    style: TextStyle(color: info.color, fontSize: 9, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              order['produk'] ?? '-',
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
-                    child: LinearProgressIndicator(
-                      value: info.progress,
-                      backgroundColor: Colors.white10,
-                      valueColor: AlwaysStoppedAnimation<Color>(info.color),
-                      minHeight: 4,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text('${(info.progress * 100).toInt()}%', style: TextStyle(color: info.color, fontSize: 9, fontWeight: FontWeight.bold)),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(info.description, style: const TextStyle(color: Colors.white38, fontSize: 9)),
-            if (info.actionLabel != null || order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') ...[
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED')
-                    TextButton.icon(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => TrackingScreen(orderId: order['id'])),
-                      ),
-                      icon: const Icon(Icons.receipt_long, size: 12, color: Colors.tealAccent),
-                      label: Text(
-                        'LACAK',
-                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.tealAccent, letterSpacing: 1),
-                      ),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                    ),
-                  if (info.actionLabel != null) ...[
-                    if (order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') const SizedBox(width: 12),
-                    ElevatedButton.icon(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE')),
-                      ),
-                      icon: Icon(info.actionIcon!, size: 12, color: Colors.black),
-                      label: Text(
-                        info.actionLabel!,
-                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.black, letterSpacing: 1),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: info.color,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ]
-          ],
-        ),
-      ),
-    ).animate().fadeIn().slideY(begin: 0.05);
-  }
-
-  Widget _buildNoActiveOrderBanner() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.inbox_outlined, color: gold.withOpacity(0.4), size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Tidak ada pesanan aktif', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 2),
-                Text('Mulai belanja untuk memesan produk tenun', style: TextStyle(color: Colors.white38, fontSize: 9)),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen(showDrawer: false))),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: gold.withOpacity(0.1),
-                border: Border.all(color: gold.withOpacity(0.3), width: 0.5),
-              ),
-              child: Text('BELANJA', style: GoogleFonts.montserrat(color: gold, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 1)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // BAGIAN 2 WIDGETS: Ringkasan Aktivitas
-  // ─────────────────────────────────────────────────────────────
-
-  Widget _buildCompactActivitySummary() {
-    return SizedBox(
-      height: 76,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        children: [
-          _buildCompactSummaryCard(
-            'TOTAL BELANJA SAYA',
-            Globals.formatRupiah(_stats!['totals']['spent']),
-            Icons.account_balance_wallet_outlined,
-            gold,
-            isPrimary: true,
-            // Info display only — tidak di-tap karena nilai Rupiah bukan navigasi
-          ),
-          const SizedBox(width: 10),
-          _buildCompactSummaryCard(
-            'TOTAL PESANAN',
-            _stats!['totals']['orders'].toString(),
-            Icons.shopping_basket_outlined,
-            gold,
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ALL'))),
-          ),
-          const SizedBox(width: 10),
-          _buildCompactSummaryCard(
-            'SEDANG PROSES',
-            _stats!['totals']['pending'].toString(),
-            Icons.pending_actions,
-            Colors.orangeAccent,
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE'))),
-          ),
-          const SizedBox(width: 10),
-          _buildCompactSummaryCard(
-            'SELESAI',
-            _stats!['totals']['completed'].toString(),
-            Icons.check_circle_outline,
-            Colors.greenAccent,
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'COMPLETED'))),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCompactSummaryCard(
-    String label,
-    String value,
-    IconData icon,
-    Color accentColor, {
-    VoidCallback? onTap,
-    bool isPrimary = false,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: isPrimary ? 160 : 110,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white.withOpacity(0.03),
-          border: Border.all(
-            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.white.withOpacity(0.06),
-            width: 0.8,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icon, color: accentColor.withOpacity(0.7), size: 13),
-                if (onTap != null)
-                  const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.montserrat(
-                    color: Colors.white38,
-                    fontSize: 7,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: GoogleFonts.montserrat(
-                    color: Colors.white,
-                    fontSize: isPrimary ? 11 : 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -683,7 +388,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       itemCount: _popularProducts.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.58,
+        childAspectRatio: 0.65,
         crossAxisSpacing: 16,
         mainAxisSpacing: 24,
       ),
@@ -726,7 +431,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                               color: const Color(0xFF111111),
                               child: CachedNetworkImage(
                                 imageUrl: ApiService.getFormattedImageUrl(product['imageUrl']),
-                                fit: BoxFit.contain,
+                                fit: BoxFit.cover,
                                 fadeInDuration: const Duration(milliseconds: 350),
                                 placeholder: (context, url) => _buildImageShimmer(),
                                 errorWidget: (context, url, error) => const Center(
@@ -856,95 +561,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.05);
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // STATUS HELPER — Konversi kode status ke bahasa manusia
-  // ─────────────────────────────────────────────────────────────
 
-  _StatusInfo _getStatusInfo(String status) {
-    switch (status) {
-      case 'PENDING':
-        return _StatusInfo(
-          color: Colors.orange,
-          label: 'Menunggu Pembayaran DP',
-          description: 'Silakan lakukan pembayaran DP untuk memulai produksi',
-          progress: 0.15,
-          actionLabel: 'BAYAR DP SEKARANG',
-          actionIcon: Icons.payment,
-        );
-      case 'DP_PAID':
-        return _StatusInfo(
-          color: Colors.amber,
-          label: 'DP Dibayar — Menunggu Konfirmasi Penjual',
-          description: 'Penjual sedang memverifikasi pembayaran DP kamu',
-          progress: 0.35,
-        );
-      case 'VERIFIED':
-        return _StatusInfo(
-          color: Colors.lightBlueAccent,
-          label: 'DP Dikonfirmasi — Dalam Produksi',
-          description: 'Produk kamu sedang dibuat oleh pengrajin',
-          progress: 0.5,
-        );
-      case 'PROCESSED':
-        return _StatusInfo(
-          color: Colors.blueAccent,
-          label: 'Produksi Selesai — Silakan Lunasi',
-          description: 'Produk selesai, lakukan pembayaran pelunasan',
-          progress: 0.65,
-          actionLabel: 'BAYAR PELUNASAN',
-          actionIcon: Icons.payment,
-        );
-      case 'FULL_PAY_PAID':
-        return _StatusInfo(
-          color: Colors.purpleAccent,
-          label: 'Pelunasan Dibayar — Menunggu Konfirmasi',
-          description: 'Penjual sedang memverifikasi pembayaran pelunasan',
-          progress: 0.75,
-        );
-      case 'PAID':
-        return _StatusInfo(
-          color: Colors.blue,
-          label: 'Lunas — Menunggu Pengiriman',
-          description: 'Pesanan akan segera dikirim ke alamat kamu',
-          progress: 0.82,
-        );
-      case 'SHIPPED':
-        return _StatusInfo(
-          color: Colors.tealAccent,
-          label: 'Dalam Perjalanan',
-          description: 'Pesanan sedang dalam pengiriman',
-          progress: 0.9,
-        );
-      case 'DELIVERED':
-        return _StatusInfo(
-          color: Colors.greenAccent,
-          label: 'Telah Sampai di Tujuan',
-          description: 'Pesanan sudah diterima',
-          progress: 1.0,
-        );
-      case 'COMPLETED':
-        return _StatusInfo(
-          color: Colors.green,
-          label: 'Selesai',
-          description: 'Pesanan telah selesai',
-          progress: 1.0,
-        );
-      case 'CANCELLED':
-        return _StatusInfo(
-          color: Colors.redAccent,
-          label: 'Dibatalkan',
-          description: 'Pesanan ini telah dibatalkan',
-          progress: 0.0,
-        );
-      default:
-        return _StatusInfo(
-          color: Colors.white38,
-          label: status,
-          description: '',
-          progress: 0.0,
-        );
-    }
-  }
 
   // ─────────────────────────────────────────────────────────────
   // DRAWER
@@ -1058,24 +675,4 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// DATA CLASS untuk informasi status pesanan
-// ─────────────────────────────────────────────────────────────
 
-class _StatusInfo {
-  final Color color;
-  final String label;       // Bahasa manusia (bukan kode teknis)
-  final String description; // Penjelasan apa yang sedang terjadi
-  final double progress;    // 0.0 - 1.0 untuk progress bar
-  final String? actionLabel;  // Tombol aksi jika ada
-  final IconData? actionIcon;
-
-  _StatusInfo({
-    required this.color,
-    required this.label,
-    required this.description,
-    required this.progress,
-    this.actionLabel,
-    this.actionIcon,
-  });
-}

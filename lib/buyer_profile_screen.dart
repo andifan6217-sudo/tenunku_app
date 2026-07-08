@@ -6,6 +6,9 @@ import 'address_screen.dart';
 import 'api_service.dart';
 import 'financial_report_screen.dart';
 import 'login_screen.dart';
+import 'orders_screen.dart';
+import 'tracking_screen.dart';
+import 'globals.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,10 +18,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  static const gold = Color(0xFFD4AF37);
   Map<String, dynamic>? _user;
   List<dynamic> _addresses = [];
   bool _isLoading = true;
   String? _role;
+  Map<String, dynamic>? _stats;
 
   // Edit Profile Controllers
   final _nameCtrl = TextEditingController();
@@ -61,12 +66,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final user = await ApiService.getMe();
       final addresses = await ApiService.getAddresses();
-      final role = await ApiService.getRole();
+      final role = (user['role']?.toString() ?? '').isNotEmpty ? user['role']?.toString() : await ApiService.getRole();
+      
+      Map<String, dynamic>? stats;
+      if (role != 'ADMIN' && role != 'PENJUAL') {
+        try {
+          stats = await ApiService.getCustomerStats();
+        } catch (_) {}
+      }
+      
       if (mounted) {
         setState(() {
           _user = user;
           _addresses = addresses;
-          _role = (user['role']?.toString() ?? '').isNotEmpty ? user['role']?.toString() : role;
+          _role = role;
+          _stats = stats;
           _isLoading = false;
         });
       }
@@ -583,6 +597,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
 
+                  if (_role != 'ADMIN' && _role != 'PENJUAL') ...[
+                    const SizedBox(height: 24),
+                    _buildSectionTitle('Pesanan Aktif Saya'),
+                    if (_stats != null && _stats!['activeOrder'] != null)
+                      _buildActiveOrderCard(_stats!['activeOrder'])
+                    else
+                      _buildNoActiveOrderBanner(),
+
+                    const SizedBox(height: 24),
+                    _buildSectionTitle('Ringkasan Aktivitas Saya'),
+                    if (_stats != null)
+                      _buildCompactActivitySummary()
+                    else
+                      const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text('Belum ada data aktivitas', style: TextStyle(color: Colors.white24, fontSize: 11)))),
+                  ],
+
                   // Card 2: Informasi Pribadi
                   _buildSectionTitle('Informasi Pribadi'),
                   _buildCard(
@@ -808,4 +838,362 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
+
+  Widget _buildActiveOrderCard(dynamic order) {
+    final info = _getStatusInfo(order['status']);
+
+    return InkWell(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE')),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: info.color.withOpacity(0.06),
+          border: Border.all(color: info.color.withOpacity(0.3), width: 0.8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.track_changes, color: gold, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'PESANAN #${order['id']}',
+                    style: GoogleFonts.montserrat(color: info.color, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: info.color.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    info.label,
+                    style: TextStyle(color: info.color, fontSize: 9, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              order['produk'] ?? '-',
+              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    child: LinearProgressIndicator(
+                      value: info.progress,
+                      backgroundColor: Colors.white10,
+                      valueColor: AlwaysStoppedAnimation<Color>(info.color),
+                      minHeight: 4,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text('${(info.progress * 100).toInt()}%', style: TextStyle(color: info.color, fontSize: 9, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(info.description, style: const TextStyle(color: Colors.white38, fontSize: 9)),
+            if (info.actionLabel != null || order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') ...[
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED')
+                    TextButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => TrackingScreen(orderId: order['id'])),
+                      ),
+                      icon: const Icon(Icons.receipt_long, size: 12, color: Colors.tealAccent),
+                      label: Text(
+                        'LACAK',
+                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.tealAccent, letterSpacing: 1),
+                      ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+                  if (info.actionLabel != null) ...[
+                    if (order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') const SizedBox(width: 12),
+                    ElevatedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE')),
+                      ),
+                      icon: Icon(info.actionIcon!, size: 12, color: Colors.black),
+                      label: Text(
+                        info.actionLabel!,
+                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.black, letterSpacing: 1),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: info.color,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ]
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoActiveOrderBanner() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.02),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.inbox_outlined, color: gold.withOpacity(0.4), size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Tidak ada pesanan aktif', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 2),
+                Text('Ayo jelajahi katalog tenun Geza kami!', style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 10)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompactActivitySummary() {
+    return SizedBox(
+      height: 76,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        children: [
+          _buildCompactSummaryCard(
+            'TOTAL BELANJA SAYA',
+            Globals.formatRupiah(_stats!['totals']['spent']),
+            Icons.account_balance_wallet_outlined,
+            gold,
+            isPrimary: true,
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'TOTAL PESANAN',
+            _stats!['totals']['orders'].toString(),
+            Icons.shopping_basket_outlined,
+            gold,
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ALL'))),
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'SEDANG PROSES',
+            _stats!['totals']['pending'].toString(),
+            Icons.pending_actions,
+            Colors.orangeAccent,
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'ACTIVE'))),
+          ),
+          const SizedBox(width: 10),
+          _buildCompactSummaryCard(
+            'SELESAI',
+            _stats!['totals']['completed'].toString(),
+            Icons.check_circle_outline,
+            Colors.greenAccent,
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen(initialStatus: 'COMPLETED'))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompactSummaryCard(
+    String label,
+    String value,
+    IconData icon,
+    Color accentColor, {
+    VoidCallback? onTap,
+    bool isPrimary = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: isPrimary ? 160 : 110,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white.withOpacity(0.03),
+          border: Border.all(
+            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.white.withOpacity(0.06),
+            width: 0.8,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, color: accentColor.withOpacity(0.7), size: 13),
+                if (onTap != null)
+                  const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white38,
+                    fontSize: 7,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white,
+                    fontSize: isPrimary ? 11 : 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _StatusInfo _getStatusInfo(String status) {
+    switch (status) {
+      case 'PENDING':
+        return _StatusInfo(
+          color: Colors.orange,
+          label: 'Menunggu Pembayaran DP',
+          description: 'Silakan lakukan pembayaran DP untuk memulai produksi',
+          progress: 0.15,
+          actionLabel: 'BAYAR DP SEKARANG',
+          actionIcon: Icons.payment,
+        );
+      case 'DP_PAID':
+        return _StatusInfo(
+          color: Colors.amber,
+          label: 'DP Dibayar — Menunggu Konfirmasi Penjual',
+          description: 'Penjual sedang memverifikasi pembayaran DP kamu',
+          progress: 0.35,
+        );
+      case 'VERIFIED':
+        return _StatusInfo(
+          color: Colors.lightBlueAccent,
+          label: 'DP Dikonfirmasi — Dalam Produksi',
+          description: 'Produk kamu sedang dibuat oleh pengrajin',
+          progress: 0.5,
+        );
+      case 'PROCESSED':
+        return _StatusInfo(
+          color: Colors.blueAccent,
+          label: 'Produksi Selesai — Silakan Lunasi',
+          description: 'Produk selesai, lakukan pembayaran pelunasan',
+          progress: 0.65,
+          actionLabel: 'BAYAR PELUNASAN',
+          actionIcon: Icons.payment,
+        );
+      case 'FULL_PAY_PAID':
+        return _StatusInfo(
+          color: Colors.purpleAccent,
+          label: 'Pelunasan Dibayar — Menunggu Konfirmasi',
+          description: 'Penjual sedang memverifikasi pembayaran pelunasan',
+          progress: 0.75,
+        );
+      case 'PAID':
+        return _StatusInfo(
+          color: Colors.blue,
+          label: 'Lunas — Menunggu Pengiriman',
+          description: 'Pesanan akan segera dikirim ke alamat kamu',
+          progress: 0.82,
+        );
+      case 'SHIPPED':
+        return _StatusInfo(
+          color: Colors.tealAccent,
+          label: 'Dalam Perjalanan',
+          description: 'Pesanan sedang dalam pengiriman',
+          progress: 0.9,
+        );
+      case 'DELIVERED':
+        return _StatusInfo(
+          color: Colors.greenAccent,
+          label: 'Telah Sampai di Tujuan',
+          description: 'Pesanan sudah diterima',
+          progress: 1.0,
+        );
+      case 'COMPLETED':
+        return _StatusInfo(
+          color: Colors.green,
+          label: 'Selesai',
+          description: 'Pesanan telah selesai',
+          progress: 1.0,
+        );
+      case 'CANCELLED':
+        return _StatusInfo(
+          color: Colors.redAccent,
+          label: 'Dibatalkan',
+          description: 'Pesanan ini telah dibatalkan',
+          progress: 0.0,
+        );
+      default:
+        return _StatusInfo(
+          color: Colors.white38,
+          label: status,
+          description: '',
+          progress: 0.0,
+        );
+    }
+  }
+}
+
+class _StatusInfo {
+  final Color color;
+  final String label;
+  final String description;
+  final double progress;
+  final String? actionLabel;
+  final IconData? actionIcon;
+
+  _StatusInfo({
+    required this.color,
+    required this.label,
+    required this.description,
+    required this.progress,
+    this.actionLabel,
+    this.actionIcon,
+  });
 }

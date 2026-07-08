@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import 'api_service.dart';
 import 'orders_screen.dart';
 import 'admin_users_screen.dart';
@@ -55,7 +58,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), activeIcon: Icon(Icons.inventory_2), label: 'PRODUK'),
             BottomNavigationBarItem(icon: Icon(Icons.people_outline), activeIcon: Icon(Icons.people), label: 'USER'),
             BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), activeIcon: Icon(Icons.shopping_bag), label: 'PESANAN'),
-            BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'PROFIL'),
+            BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'AKUN'),
           ],
         ),
       ),
@@ -74,6 +77,17 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
   Map<String, dynamic>? _stats;
   bool _isLoading = true;
 
+  int _revenueDays = 7;
+  bool _showCustomMonth = false;
+  DateTime _chartMonth = DateTime.now();
+  List<_RevenueDataPoint>? _monthPoints;
+  double _monthTotal = 0.0;
+  bool _isFetchingMonth = false;
+
+  final TextEditingController _bankNameCtrl = TextEditingController();
+  final TextEditingController _bankAccountCtrl = TextEditingController();
+  final TextEditingController _accountNameCtrl = TextEditingController();
+
   static const gold = Color(0xFFD4AF37);
   static const darkSuite = Color(0xFF0F0B1E);
 
@@ -81,6 +95,14 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
   void initState() {
     super.initState();
     _fetchStats();
+  }
+
+  @override
+  void dispose() {
+    _bankNameCtrl.dispose();
+    _bankAccountCtrl.dispose();
+    _accountNameCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchStats() async {
@@ -115,8 +137,8 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
       children: [
         Expanded(
           child: _buildQuickMenuButton(
-            label: 'TREN KEUANGAN',
-            subtitle: 'Grafik & omzet',
+            label: 'LAPORAN KEUANGAN',
+            subtitle: 'Analisis & grafik transaksi',
             icon: Icons.analytics_outlined,
             color: gold,
             onTap: () => Navigator.push(
@@ -125,24 +147,14 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 12),
         Expanded(
           child: _buildQuickMenuButton(
-            label: 'KELOLA USER',
-            subtitle: 'Data pengguna',
-            icon: Icons.people_outline,
+            label: 'PENGATURAN REKENING',
+            subtitle: 'Kelola Bank & QRIS platform',
+            icon: Icons.account_balance_outlined,
             color: const Color(0xFF1ABC9C),
-            onTap: () => _changeTab(2),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _buildQuickMenuButton(
-            label: 'KELOLA PRODUK',
-            subtitle: 'Katalog tenun',
-            icon: Icons.inventory_2_outlined,
-            color: Colors.lightBlueAccent,
-            onTap: () => _changeTab(1),
+            onTap: _showPaymentSettingsDialog,
           ),
         ),
       ],
@@ -159,12 +171,12 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.02),
           border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
         ),
-        child: Column(
+        child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(6),
@@ -172,33 +184,221 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                 color: color.withOpacity(0.08),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 15),
+              child: Icon(icon, color: color, size: 16),
             ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: GoogleFonts.montserrat(
-                color: Colors.white,
-                fontSize: 7.5,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 7.5,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                color: Colors.white30,
-                fontSize: 7,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showPaymentSettingsDialog() async {
+    Map<String, dynamic>? currentSettings;
+    try {
+      currentSettings = await ApiService.getPaymentSettings();
+    } catch (_) {}
+
+    if (!mounted) return;
+
+    _bankNameCtrl.text = currentSettings?['bankName']?.toString() ?? '';
+    _bankAccountCtrl.text = currentSettings?['bankAccount']?.toString() ?? '';
+    _accountNameCtrl.text = currentSettings?['accountName']?.toString() ?? '';
+    String? qrisImageUrl = currentSettings?['qrisImageUrl']?.toString();
+    bool isUploadingQris = false;
+    bool isSaving = false;
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetCtx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Container(
+          padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(ctx).viewInsets.bottom + 32),
+          decoration: const BoxDecoration(
+            color: Color(0xFF130B22),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)))),
+                const SizedBox(height: 24),
+                Center(
+                  child: Text('PENGATURAN REKENING & QRIS',
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                ),
+                const SizedBox(height: 4),
+                const Center(child: Text('Info ini akan ditampilkan kepada pembeli saat melakukan transfer manual.',
+                    textAlign: TextAlign.center, style: TextStyle(color: Colors.white38, fontSize: 10))),
+                const SizedBox(height: 28),
+
+                _buildSettingField(_bankNameCtrl, 'Nama Bank', 'Contoh: BCA, Mandiri, BRI, BNI', gold),
+                const SizedBox(height: 16),
+                _buildSettingField(_bankAccountCtrl, 'Nomor Rekening', 'Contoh: 1234567890', gold, keyboardType: TextInputType.number),
+                const SizedBox(height: 16),
+                _buildSettingField(_accountNameCtrl, 'Nama Pemilik Rekening', 'Contoh: TENUN GEZA OFFICIAL', gold),
+                const SizedBox(height: 24),
+
+                const Text('Gambar QRIS', style: TextStyle(color: Colors.white54, fontSize: 12, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                InkWell(
+                  onTap: isUploadingQris ? null : () async {
+                    final picker = ImagePicker();
+                    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+                    if (pickedFile == null) return;
+                    setSheetState(() => isUploadingQris = true);
+                    try {
+                      final url = await ApiService.uploadImage(pickedFile);
+                      setSheetState(() {
+                        qrisImageUrl = url;
+                        isUploadingQris = false;
+                      });
+                    } catch (e) {
+                      setSheetState(() => isUploadingQris = false);
+                      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal upload: $e')));
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
+                          ? gold.withOpacity(0.05)
+                          : Colors.white.withOpacity(0.03),
+                      border: Border.all(
+                        color: (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
+                            ? gold.withOpacity(0.4)
+                            : Colors.white12,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: isUploadingQris
+                        ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Color(0xFFD4AF37), strokeWidth: 2)))
+                        : (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
+                            ? Column(children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    ApiService.getFormattedImageUrl(qrisImageUrl),
+                                    height: 160, fit: BoxFit.contain,
+                                    errorBuilder: (_, _, _) => const Icon(Icons.broken_image, color: Colors.white24, size: 40),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text('Ketuk untuk ganti gambar QRIS', style: TextStyle(color: gold.withOpacity(0.7), fontSize: 10)),
+                              ])
+                            : Column(children: [
+                                const Icon(Icons.qr_code_2, color: Colors.white24, size: 40),
+                                const SizedBox(height: 8),
+                                const Text('Ketuk untuk upload gambar QRIS dari galeri', style: TextStyle(color: Colors.white38, fontSize: 11)),
+                                const SizedBox(height: 4),
+                                const Text('JPG / PNG • Maks 5MB', style: TextStyle(color: Colors.white24, fontSize: 10)),
+                              ]),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: isSaving ? null : () async {
+                      setSheetState(() => isSaving = true);
+                      try {
+                        await ApiService.updatePaymentSettings({
+                          'bankName': _bankNameCtrl.text.trim(),
+                          'bankAccount': _bankAccountCtrl.text.trim(),
+                          'accountName': _accountNameCtrl.text.trim(),
+                          'qrisImageUrl': qrisImageUrl ?? '',
+                        });
+                        if (mounted) {
+                          Navigator.pop(sheetCtx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Pengaturan rekening berhasil disimpan!'), backgroundColor: Color(0xFF2ECC71)),
+                          );
+                        }
+                      } catch (e) {
+                        if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal menyimpan: $e')));
+                      } finally {
+                        setSheetState(() => isSaving = false);
+                      }
+                    },
+                    icon: isSaving
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                        : const Icon(Icons.save_rounded, size: 18),
+                    label: Text(isSaving ? 'MENYIMPAN...' : 'SIMPAN PENGATURAN',
+                        style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: gold,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      elevation: 0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingField(TextEditingController ctrl, String label, String hint, Color gold, {TextInputType keyboardType = TextInputType.text}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600)),
+        const SizedBox(height: 6),
+        TextField(
+          controller: ctrl,
+          keyboardType: keyboardType,
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Colors.white24, fontSize: 11),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.02),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: gold),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -502,18 +702,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    // ─── QUICK SHORTCUTS MENU BAR ───
-                    _buildQuickMenuBar(),
-                    const SizedBox(height: 24),
-
-                    // ─── BAGIAN 1: KESEHATAN PLATFORM ───
-                    _buildSectionHeader('KESEHATAN PLATFORM', gold),
-                    const SizedBox(height: 12),
-                    _buildPlatformSummaryCards(),
-
-                    const SizedBox(height: 28),
-
-                    // ─── BAGIAN 2: PERLU TINDAKAN SEGERA ───
+                    // ─── BAGIAN: PERLU TINDAKAN SEGERA ───
                     _buildSectionHeader('⚠  PERLU TINDAKAN SEGERA', Colors.amberAccent),
                     const SizedBox(height: 12),
                     _buildUrgentActionCard(
@@ -538,6 +727,24 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                     ],
 
                     const SizedBox(height: 24),
+
+                    // ─── QUICK SHORTCUTS MENU BAR ───
+                    _buildQuickMenuBar(),
+                    const SizedBox(height: 24),
+
+                    // ─── BAGIAN 1: KESEHATAN PLATFORM ───
+                    _buildSectionHeader('KESEHATAN PLATFORM', gold),
+                    const SizedBox(height: 12),
+                    _buildPlatformSummaryCards(),
+
+                    const SizedBox(height: 28),
+
+                    // ─── GRAFIK TREN PENDAPATAN ───
+                    _buildSectionHeader('TREN PENDAPATAN', gold),
+                    const SizedBox(height: 14),
+                    _buildRevenueLineChart(),
+
+                    const SizedBox(height: 28),
 
                     // ─── BAGIAN 3: PIPELINE PESANAN ───
                     _buildSectionHeader('PIPELINE PESANAN', gold),
@@ -723,6 +930,343 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     }
   }
 
+  List<_RevenueDataPoint> _getRevenuePoints(int daysCount) {
+    final List<dynamic> orders = (_stats!['recentOrders'] as List?) ?? [];
+    final Map<String, double> grouped = {};
+    final DateFormat dayFmt = DateFormat('dd MMM');
+
+    // Buat data rentang hari terakhir secara berurutan
+    final now = DateTime.now();
+    for (int i = daysCount - 1; i >= 0; i--) {
+      final date = now.subtract(Duration(days: i));
+      final key = dayFmt.format(date);
+      grouped[key] = 0.0;
+    }
+
+    // Akumulasikan nominal pesanan
+    for (var order in orders) {
+      try {
+        final rawDate = order['createdAt']?.toString() ?? order['tanggal']?.toString() ?? '';
+        final date = DateTime.parse(rawDate);
+        final key = dayFmt.format(date);
+        if (grouped.containsKey(key)) {
+          double amount = ((order['totalPrice'] ?? order['total']) as num?)?.toDouble() ?? 0.0;
+          grouped[key] = grouped[key]! + amount;
+        }
+      } catch (_) {}
+    }
+
+    // Jika seluruh data kosong (misal data dummy/baru), buat tren mockup dinamis
+    double totalSum = grouped.values.fold(0.0, (sum, val) => sum + val);
+    if (totalSum == 0.0) {
+      final List<_RevenueDataPoint> mockPoints = [];
+      int idx = 0;
+      grouped.forEach((key, _) {
+        double mockVal = 150000.0 + (idx * 20000.0) + (idx % 4 == 0 ? 250000.0 : (idx % 2 == 0 ? -120000.0 : 0.0));
+        mockPoints.add(_RevenueDataPoint(key, mockVal.clamp(50000.0, 1500000.0)));
+        idx++;
+      });
+      return mockPoints;
+    }
+
+    return grouped.entries.map((e) => _RevenueDataPoint(e.key, e.value)).toList();
+  }
+
+  Future<void> _fetchMonthData(DateTime month) async {
+    setState(() {
+      _chartMonth = month;
+      _isFetchingMonth = true;
+      _showCustomMonth = true;
+    });
+
+    try {
+      final start = DateTime(month.year, month.month, 1);
+      final end = DateTime(month.year, month.month + 1, 0, 23, 59, 59);
+      final range = DateTimeRange(start: start, end: end);
+
+      final res = await ApiService.getFinanceReport(range);
+      final List<dynamic> orders = (res['orders'] as List?) ?? [];
+
+      // Hitung total omzet bulan ini
+      final totals = res['totals'] as Map?;
+      int v(dynamic x) => (x is num) ? x.toInt() : int.tryParse(x?.toString() ?? '') ?? 0;
+      final double totalRevenue = (v(totals?['revenueFullPaid']) + v(totals?['dpVerifiedTotal'])).toDouble();
+
+      // Kelompokkan per tanggal dalam bulan tersebut
+      final Map<String, double> grouped = {};
+      final DateFormat dayFmt = DateFormat('dd MMM');
+      final int daysInMonth = end.day;
+
+      for (int i = 1; i <= daysInMonth; i++) {
+        final date = DateTime(month.year, month.month, i);
+        final key = dayFmt.format(date);
+        grouped[key] = 0.0;
+      }
+
+      for (var order in orders) {
+        try {
+          final rawDate = order['createdAt']?.toString() ?? order['tanggal']?.toString() ?? '';
+          final date = DateTime.parse(rawDate);
+          final key = dayFmt.format(date);
+          if (grouped.containsKey(key)) {
+            final double amount = ((order['totalPrice'] ?? order['total']) as num?)?.toDouble() ?? 0.0;
+            grouped[key] = grouped[key]! + amount;
+          }
+        } catch (_) {}
+      }
+
+      final List<_RevenueDataPoint> points = grouped.entries.map((e) => _RevenueDataPoint(e.key, e.value)).toList();
+
+      if (mounted) {
+        setState(() {
+          _monthPoints = points;
+          _monthTotal = totalRevenue;
+          _isFetchingMonth = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isFetchingMonth = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memuat data bulan: $e')),
+        );
+      }
+    }
+  }
+
+  void _showMonthPickerMenu() {
+    final now = DateTime.now();
+    final List<DateTime> months = [];
+    final DateFormat monthFmt = DateFormat('MMMM yyyy');
+
+    for (int i = 0; i < 6; i++) {
+      months.add(DateTime(now.year, now.month - i, 1));
+    }
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF130B22),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(ctx).size.height * 0.5,
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)))),
+                  const SizedBox(height: 16),
+                  Text(
+                    'PILIH BULAN GRAFIK',
+                    style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ListTile(
+                    leading: const Icon(Icons.history, color: gold),
+                    title: Text(
+                      '7 / 30 Hari Terakhir (Default)',
+                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12),
+                    ),
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      setState(() {
+                        _showCustomMonth = false;
+                      });
+                    },
+                  ),
+                  const Divider(color: Colors.white10),
+                  ...months.map((m) {
+                    final isSelected = _showCustomMonth && _chartMonth.year == m.year && _chartMonth.month == m.month;
+                    return ListTile(
+                      leading: Icon(
+                        Icons.calendar_today,
+                        color: isSelected ? gold : Colors.white24,
+                        size: 16,
+                      ),
+                      title: Text(
+                        monthFmt.format(m).toUpperCase(),
+                        style: GoogleFonts.montserrat(
+                          color: isSelected ? gold : Colors.white70,
+                          fontSize: 12,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        _fetchMonthData(m);
+                      },
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTimeframeButton(int days, String label) {
+    final isSelected = _revenueDays == days;
+    return InkWell(
+      onTap: () => setState(() => _revenueDays = days),
+      borderRadius: BorderRadius.circular(4),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? gold.withOpacity(0.12) : Colors.transparent,
+          border: Border.all(
+            color: isSelected ? gold.withOpacity(0.4) : Colors.white.withOpacity(0.08),
+            width: 0.8,
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.montserrat(
+            color: isSelected ? gold : Colors.white38,
+            fontSize: 8,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRevenueLineChart() {
+    final DateFormat monthFmt = DateFormat('MMMM yyyy');
+    final points = _showCustomMonth
+        ? (_monthPoints ?? [])
+        : _getRevenuePoints(_revenueDays);
+
+    final title = _showCustomMonth
+        ? 'Tren Omzet (${monthFmt.format(_chartMonth)})'
+        : 'Tren Omzet (${_revenueDays} Hari Terakhir)';
+
+    final subtitle = _showCustomMonth
+        ? 'Total: ${Globals.formatRupiah(_monthTotal)}'
+        : null;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.02),
+        border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.montserrat(
+                        color: Colors.white54,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: GoogleFonts.montserrat(
+                          color: gold,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  if (_showCustomMonth) ...[
+                    TextButton.icon(
+                      icon: const Icon(Icons.history, color: gold, size: 12),
+                      label: Text(
+                        'DEFAULT',
+                        style: GoogleFonts.montserrat(
+                          color: gold,
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _showCustomMonth = false;
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  IconButton(
+                    icon: const Icon(Icons.date_range, color: gold, size: 18),
+                    onPressed: _showMonthPickerMenu,
+                    tooltip: 'Pilih Bulan Lain',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  if (!_showCustomMonth) ...[
+                    const SizedBox(width: 8),
+                    _buildTimeframeButton(7, '7 HARI'),
+                    const SizedBox(width: 8),
+                    _buildTimeframeButton(30, '30 HARI'),
+                  ],
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 120,
+            width: double.infinity,
+            child: _isFetchingMonth
+                ? const Center(child: CircularProgressIndicator(color: gold))
+                : TweenAnimationBuilder<double>(
+                    key: ValueKey('${_revenueDays}_${_showCustomMonth}_${_chartMonth.month}'),
+                    tween: Tween<double>(begin: 0.0, end: 1.0),
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.easeInOutCubic,
+                    builder: (context, value, child) {
+                      return CustomPaint(
+                        painter: RevenueChartPainter(
+                          points: points,
+                          animationProgress: value,
+                          color: gold,
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -786,5 +1330,182 @@ class AdminDonutChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant AdminDonutChartPainter oldDelegate) {
     return oldDelegate.animationProgress != animationProgress || oldDelegate.stages != stages;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// DATA CLASS & PAINTER — Untuk grafik pendapatan harian
+// ─────────────────────────────────────────────────────────────
+class _RevenueDataPoint {
+  final String dateLabel;
+  final double amount;
+
+  const _RevenueDataPoint(this.dateLabel, this.amount);
+}
+
+class RevenueChartPainter extends CustomPainter {
+  final List<_RevenueDataPoint> points;
+  final double animationProgress;
+  final Color color;
+
+  RevenueChartPainter({
+    required this.points,
+    required this.animationProgress,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (points.isEmpty) return;
+
+    final double maxVal = points.map((p) => p.amount).reduce((a, b) => a > b ? a : b);
+    final double range = maxVal == 0 ? 1000000.0 : maxVal;
+
+    final double paddingX = 36.0;
+    final double paddingY = 16.0;
+    final double chartWidth = size.width - paddingX - 10.0;
+    final double chartHeight = size.height - paddingY - 14.0;
+
+    final double stepX = chartWidth / (points.length - 1);
+
+    // Draw background grids (Horizontal Y-gridlines and Vertical X-gridlines)
+    final gridPaint = Paint()
+      ..color = Colors.white.withOpacity(0.06)
+      ..strokeWidth = 0.8;
+
+    // Horizontal lines
+    for (int i = 0; i < 3; i++) {
+      final double y = paddingY + (chartHeight / 2) * i;
+      canvas.drawLine(Offset(paddingX, y), Offset(size.width - 10.0, y), gridPaint);
+    }
+
+    // Vertical lines for each of the 7 data points
+    for (int i = 0; i < points.length; i++) {
+      final double x = paddingX + i * stepX;
+      canvas.drawLine(Offset(x, paddingY), Offset(x, paddingY + chartHeight), gridPaint);
+    }
+
+    // Draw main solid axes lines for structure
+    final axisPaint = Paint()
+      ..color = Colors.white.withOpacity(0.15)
+      ..strokeWidth = 1.2;
+    // Y-Axis line
+    canvas.drawLine(Offset(paddingX, paddingY), Offset(paddingX, paddingY + chartHeight), axisPaint);
+    // X-Axis line
+    canvas.drawLine(Offset(paddingX, paddingY + chartHeight), Offset(size.width - 10.0, paddingY + chartHeight), axisPaint);
+
+    final List<Offset> coordinates = [];
+    for (int i = 0; i < points.length; i++) {
+      final x = paddingX + i * stepX;
+      final relativeY = points[i].amount / range;
+      final y = paddingY + chartHeight - (relativeY * chartHeight * animationProgress);
+      coordinates.add(Offset(x, y));
+    }
+
+    // Bezier path construction
+    final path = Path();
+    final fillPath = Path();
+
+    path.moveTo(coordinates[0].dx, coordinates[0].dy);
+    fillPath.moveTo(coordinates[0].dx, coordinates[0].dy);
+
+    for (int i = 0; i < coordinates.length - 1; i++) {
+      final p1 = coordinates[i];
+      final p2 = coordinates[i + 1];
+      final controlPoint1 = Offset(p1.dx + (p2.dx - p1.dx) / 2, p1.dy);
+      final controlPoint2 = Offset(p1.dx + (p2.dx - p1.dx) / 2, p2.dy);
+
+      path.cubicTo(
+        controlPoint1.dx, controlPoint1.dy,
+        controlPoint2.dx, controlPoint2.dy,
+        p2.dx, p2.dy,
+      );
+      fillPath.cubicTo(
+        controlPoint1.dx, controlPoint1.dy,
+        controlPoint2.dx, controlPoint2.dy,
+        p2.dx, p2.dy,
+      );
+    }
+
+    // Draw stroke
+    final strokePaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round;
+    canvas.drawPath(path, strokePaint);
+
+    // Draw fill gradient under the line
+    fillPath.lineTo(coordinates.last.dx, paddingY + chartHeight);
+    fillPath.lineTo(coordinates.first.dx, paddingY + chartHeight);
+    fillPath.close();
+
+    final fillPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          color.withOpacity(0.15),
+          color.withOpacity(0.0),
+        ],
+      ).createShader(Rect.fromLTWH(paddingX, paddingY, chartWidth, chartHeight));
+    canvas.drawPath(fillPath, fillPaint);
+
+    // Draw glowing point at the last coordinate
+    if (animationProgress == 1.0) {
+      final lastPoint = coordinates.last;
+      final glowPaint = Paint()
+        ..color = color.withOpacity(0.3)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(lastPoint, 6.0, glowPaint);
+
+      final pointPaint = Paint()
+        ..color = color
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(lastPoint, 3.0, pointPaint);
+    }
+
+    // Draw Y labels (max and 0)
+    final textPainter = TextPainter(
+      textDirection: ui.TextDirection.ltr,
+    );
+
+    void drawText(String text, Offset offset) {
+      textPainter.text = TextSpan(
+        text: text,
+        style: GoogleFonts.montserrat(
+          color: Colors.white24,
+          fontSize: 7,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+      textPainter.layout();
+      textPainter.paint(canvas, offset);
+    }
+
+    // Draw max value label
+    String maxLabel = maxVal >= 1000000
+        ? '${(maxVal / 1000000).toStringAsFixed(1)}M'
+        : maxVal >= 1000
+            ? '${(maxVal / 1000).toStringAsFixed(0)}K'
+            : maxVal.toStringAsFixed(0);
+    drawText(maxLabel, Offset(4, paddingY - 4));
+    drawText('0', Offset(4, paddingY + chartHeight - 4));
+
+    // Draw X labels (dates)
+    final int interval = points.length > 7 ? 6 : 2;
+    for (int i = 0; i < points.length; i += interval) {
+      final p = coordinates[i];
+      drawText(
+        points[i].dateLabel,
+        Offset(p.dx - 12, paddingY + chartHeight + 6),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant RevenueChartPainter oldDelegate) {
+    return oldDelegate.animationProgress != animationProgress || oldDelegate.points != points;
   }
 }

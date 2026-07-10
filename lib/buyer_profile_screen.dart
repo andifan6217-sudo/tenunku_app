@@ -18,7 +18,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  static const gold = Color(0xFFD4AF37);
+  static const gold = Color(0xFFA67C1E);
   Map<String, dynamic>? _user;
   List<dynamic> _addresses = [];
   bool _isLoading = true;
@@ -104,51 +104,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final updated = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF130B22),
-        title: Text('UBAH PROFIL', style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)),
+        backgroundColor: Colors.white,
+        title: Text('UBAH PROFIL', style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: _nameCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: const InputDecoration(
                   labelText: 'Nama Lengkap',
-                  labelStyle: TextStyle(color: Colors.white38),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  labelStyle: TextStyle(color: Colors.black54),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _phoneCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
                   labelText: 'Nomor Telepon',
-                  labelStyle: TextStyle(color: Colors.white38),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  labelStyle: TextStyle(color: Colors.black54),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _emailCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  labelStyle: TextStyle(color: Colors.white38),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  labelStyle: TextStyle(color: Colors.black54),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _birthCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: const InputDecoration(
                   labelText: 'Tanggal Lahir (YYYY-MM-DD)',
-                  labelStyle: TextStyle(color: Colors.white38),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  labelStyle: TextStyle(color: Colors.black54),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
                 onTap: () async {
                   FocusScope.of(ctx).requestFocus(FocusNode());
@@ -160,11 +160,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     builder: (context, child) {
                       return Theme(
                         data: Theme.of(context).copyWith(
-                          colorScheme: const ColorScheme.dark(
-                            primary: Color(0xFFD4AF37),
-                            onPrimary: Colors.black,
-                            surface: Color(0xFF130B22),
-                            onSurface: Colors.white,
+                          colorScheme: const ColorScheme.light(
+                            primary: Color(0xFFA67C1E),
+                            onPrimary: Colors.white,
+                            surface: Colors.white,
+                            onSurface: Colors.black87,
                           ),
                         ),
                         child: child!,
@@ -180,8 +180,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('SIMPAN', style: TextStyle(color: Color(0xFFD4AF37)))),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('SIMPAN', style: TextStyle(color: Color(0xFFA67C1E)))),
         ],
       ),
     );
@@ -215,20 +215,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setStateDialog) => AlertDialog(
-          backgroundColor: const Color(0xFF130B22),
-          title: Text('UBAH PASSWORD', style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)),
+          backgroundColor: Colors.white,
+          title: Text('UBAH PASSWORD', style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: _currentCtrl,
                 obscureText: obscureCurrent,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: InputDecoration(
                   labelText: 'Password Sekarang',
-                  labelStyle: const TextStyle(color: Colors.white38),
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                   suffixIcon: IconButton(
-                    icon: Icon(obscureCurrent ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFD4AF37), size: 18),
+                    icon: Icon(obscureCurrent ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFA67C1E), size: 18),
                     onPressed: () => setStateDialog(() => obscureCurrent = !obscureCurrent),
                   ),
                 ),
@@ -236,12 +237,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               TextField(
                 controller: _newCtrl,
                 obscureText: obscureNew,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: InputDecoration(
                   labelText: 'Password Baru',
-                  labelStyle: const TextStyle(color: Colors.white38),
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                   suffixIcon: IconButton(
-                    icon: Icon(obscureNew ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFD4AF37), size: 18),
+                    icon: Icon(obscureNew ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFA67C1E), size: 18),
                     onPressed: () => setStateDialog(() => obscureNew = !obscureNew),
                   ),
                 ),
@@ -249,12 +251,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               TextField(
                 controller: _confirmCtrl,
                 obscureText: obscureConfirm,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: InputDecoration(
                   labelText: 'Konfirmasi Password Baru',
-                  labelStyle: const TextStyle(color: Colors.white38),
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                   suffixIcon: IconButton(
-                    icon: Icon(obscureConfirm ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFD4AF37), size: 18),
+                    icon: Icon(obscureConfirm ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFA67C1E), size: 18),
                     onPressed: () => setStateDialog(() => obscureConfirm = !obscureConfirm),
                   ),
                 ),
@@ -262,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
           TextButton(
             onPressed: () {
               if (_newCtrl.text != _confirmCtrl.text) {
@@ -271,7 +274,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               }
               Navigator.pop(ctx, true);
             },
-            child: const Text('UBAH', style: TextStyle(color: Color(0xFFD4AF37))),
+            child: const Text('UBAH', style: TextStyle(color: Color(0xFFA67C1E))),
           ),
         ],
       ),
@@ -305,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showPaymentSettingsDialog() async {
-    const gold = Color(0xFFD4AF37);
+    const gold = Color(0xFFA67C1E);
     // Muat pengaturan yang sudah ada
     Map<String, dynamic>? currentSettings;
     try {
@@ -502,9 +505,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkArt = Color(0xFF0F0918);
-    const darkCard = Color(0xFF1A1128);
+    const gold = Color(0xFFA67C1E);
+    const lightArt = Color(0xFFF9FAFC);
+    const lightCard = Colors.white;
 
     final isAdminOrSeller = _role == 'ADMIN' || _role == 'PENJUAL';
     
@@ -519,12 +522,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: darkArt,
+      backgroundColor: lightArt,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: gold),
-        title: Text('Profil Saya', style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text('Profil Saya', style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: false,
       ),
       body: _isLoading
@@ -535,7 +538,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 children: [
-                  const Text('Kelola informasi akun Anda', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                  const Text('Kelola informasi akun Anda', style: TextStyle(color: Colors.black54, fontSize: 13)),
                   const SizedBox(height: 24),
                   
                   // Tombol Edit Profil Utama
@@ -544,8 +547,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: const Icon(Icons.edit_outlined, size: 18),
                     label: const Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.bold)),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: BorderSide(color: Colors.white.withOpacity(0.2)),
+                      foregroundColor: Colors.black87,
+                      side: BorderSide(color: Colors.black.withOpacity(0.12)),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
@@ -555,7 +558,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Card 1: Avatar & Info Singkat
                   _buildCard(
-                    darkCard,
+                    lightCard,
                     child: Column(
                       children: [
                         Container(
@@ -567,32 +570,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: const Icon(Icons.person_outline, color: Color(0xFF00E5FF), size: 48),
                         ),
                         const SizedBox(height: 16),
-                        Text(_user?['name'] ?? 'Guest', style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text(_user?['name'] ?? 'Guest', style: const TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 4),
-                        Text(_user?['email'] ?? '', style: const TextStyle(color: Colors.white54, fontSize: 13)),
+                        Text(_user?['email'] ?? '', style: const TextStyle(color: Colors.black54, fontSize: 13)),
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
+                            color: Colors.black.withOpacity(0.03),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white10),
+                            border: Border.all(color: Colors.black12),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.verified, color: Colors.blueAccent, size: 14),
                               const SizedBox(width: 6),
-                              Text('${_role == 'ADMIN' ? 'Admin' : _role == 'PENJUAL' ? 'Penjual' : 'Pelanggan'} Terverifikasi', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                              Text('${_role == 'ADMIN' ? 'Admin' : _role == 'PENJUAL' ? 'Penjual' : 'Pelanggan'} Terverifikasi', style: const TextStyle(color: Colors.black87, fontSize: 11)),
                             ],
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Divider(color: Colors.white10, height: 1),
+                        const Divider(color: Colors.black12, height: 1),
                         const SizedBox(height: 16),
-                        Text('Bergabung sejak', style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 11)),
+                        Text('Bergabung sejak', style: TextStyle(color: Colors.black54, fontSize: 11)),
                         const SizedBox(height: 4),
-                        Text(_getJoinedDate(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(_getJoinedDate(), style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -610,21 +613,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     if (_stats != null)
                       _buildCompactActivitySummary()
                     else
-                      const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text('Belum ada data aktivitas', style: TextStyle(color: Colors.white24, fontSize: 11)))),
+                      const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text('Belum ada data aktivitas', style: TextStyle(color: Colors.black26, fontSize: 11)))),
                   ],
 
                   // Card 2: Informasi Pribadi
                   _buildSectionTitle('Informasi Pribadi'),
                   _buildCard(
-                    darkCard,
+                    lightCard,
                     child: Column(
                       children: [
                         _buildInfoRow(Icons.person, 'Nama Lengkap', _user?['name'] ?? '-'),
-                        const Divider(color: Colors.white10, height: 24),
+                        const Divider(color: Colors.black12, height: 24),
                         _buildInfoRow(Icons.email, 'Email', _user?['email'] ?? '-'),
-                        const Divider(color: Colors.white10, height: 24),
+                        const Divider(color: Colors.black12, height: 24),
                         _buildInfoRow(Icons.phone, 'Nomor Telepon', _user?['phone'] ?? 'Belum diatur'),
-                        const Divider(color: Colors.white10, height: 24),
+                        const Divider(color: Colors.black12, height: 24),
                         _buildInfoRow(Icons.cake, 'Tanggal Lahir', _user?['birthDate'] ?? 'Belum diatur'),
                       ],
                     ),
@@ -633,15 +636,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Card 3: Alamat Pengiriman
                   _buildSectionTitle('Alamat Pengiriman'),
                   _buildCard(
-                    darkCard,
+                    lightCard,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.location_on, color: Colors.white54, size: 18),
+                            const Icon(Icons.location_on, color: Colors.black45, size: 18),
                             const SizedBox(width: 12),
-                            const Text('Alamat Lengkap', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                            const Text('Alamat Lengkap', style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold)),
                             const Spacer(),
                             TextButton(
                               onPressed: () {
@@ -662,16 +665,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.03),
+                            color: Colors.black.withOpacity(0.01),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white10),
+                            border: Border.all(color: Colors.black12),
                           ),
                           child: mainAddress != null
                               ? Text(
                                   '${mainAddress['streetAddress']}, ${mainAddress['district']}, ${mainAddress['city']}, ${mainAddress['province']} ${mainAddress['postalCode']}',
-                                  style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
+                                  style: const TextStyle(color: Colors.black87, fontSize: 13, height: 1.5),
                                 )
-                              : const Text('Belum ada alamat pengiriman.', style: TextStyle(color: Colors.white38, fontSize: 13)),
+                              : const Text('Belum ada alamat pengiriman.', style: TextStyle(color: Colors.black45, fontSize: 13)),
                         ),
                       ],
                     ),
@@ -680,7 +683,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Card 4: Keamanan Akun
                   _buildSectionTitle('Keamanan Akun'),
                   _buildCard(
-                    darkCard,
+                    lightCard,
                     child: Column(
                       children: [
                         _buildSecurityRow(
@@ -689,7 +692,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           'Ubah Password',
                           _changePassword,
                         ),
-                        const Divider(color: Colors.white10, height: 32),
+                        const Divider(color: Colors.black12, height: 32),
                         _buildSecurityRow(
                           'Two-Factor Authentication',
                           _user?['isTwoFactorEnabled'] == true ? 'Lapisan keamanan 2FA aktif' : 'Tambahkan lapisan keamanan ekstra',
@@ -704,7 +707,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (isAdminOrSeller) ...[
                     _buildSectionTitle('Lainnya'),
                     _buildCard(
-                      darkCard,
+                      lightCard,
                       child: Column(
                         children: [
                           ListTile(
@@ -714,12 +717,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               decoration: BoxDecoration(color: gold.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
                               child: const Icon(Icons.query_stats, color: gold, size: 20),
                             ),
-                            title: const Text('Laporan Keuangan', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                            subtitle: const Text('Lihat ringkasan transaksi & pendapatan', style: TextStyle(color: Colors.white54, fontSize: 11)),
-                            trailing: const Icon(Icons.chevron_right, color: Colors.white24),
+                            title: const Text('Laporan Keuangan', style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold)),
+                            subtitle: const Text('Lihat ringkasan transaksi & pendapatan', style: TextStyle(color: Colors.black54, fontSize: 11)),
+                            trailing: const Icon(Icons.chevron_right, color: Colors.black26),
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FinancialReportScreen())),
                           ),
-                          const Divider(color: Colors.white10, height: 1),
+                          const Divider(color: Colors.black12, height: 1),
                           ListTile(
                             contentPadding: EdgeInsets.zero,
                             leading: Container(
@@ -727,9 +730,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               decoration: BoxDecoration(color: const Color(0xFF1ABC9C).withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
                               child: const Icon(Icons.account_balance, color: Color(0xFF1ABC9C), size: 20),
                             ),
-                            title: const Text('Pengaturan Rekening & QRIS', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                            subtitle: const Text('Atur info rekening bank & upload QRIS untuk pembeli', style: TextStyle(color: Colors.white54, fontSize: 11)),
-                            trailing: const Icon(Icons.chevron_right, color: Colors.white24),
+                            title: const Text('Pengaturan Rekening & QRIS', style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold)),
+                            subtitle: const Text('Atur info rekening bank & upload QRIS untuk pembeli', style: TextStyle(color: Colors.black54, fontSize: 11)),
+                            trailing: const Icon(Icons.chevron_right, color: Colors.black26),
                             onTap: _showPaymentSettingsDialog,
                           ),
                         ],
@@ -772,19 +775,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(top: 24, bottom: 12, left: 4),
       child: Text(
         title,
-        style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+        style: const TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.bold),
       ),
     );
   }
 
   Widget _buildCard(Color bgColor, {required Widget child}) {
+    final isLightTheme = bgColor == Colors.white;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: isLightTheme ? Colors.black.withOpacity(0.06) : Colors.white.withOpacity(0.05)),
+        boxShadow: isLightTheme
+            ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                )
+              ]
+            : null,
       ),
       child: child,
     );
@@ -794,15 +807,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.white38, size: 18),
+        Icon(icon, color: Colors.black45, size: 18),
         const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: Colors.white54, fontSize: 11)),
-              const SizedBox(height: 4),
-              Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+              Text(label, style: const TextStyle(color: Colors.black38, fontSize: 10)),
+              const SizedBox(height: 2),
+              Text(value, style: const TextStyle(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.w600)),
             ],
           ),
         ),
@@ -817,9 +830,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+              Text(title, style: const TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text(subtitle, style: const TextStyle(color: Colors.white54, fontSize: 11)),
+              Text(subtitle, style: const TextStyle(color: Colors.black54, fontSize: 11)),
             ],
           ),
         ),
@@ -827,8 +840,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ElevatedButton(
           onPressed: onTap,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -882,7 +895,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 8),
             Text(
               order['produk'] ?? '-',
-              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+              style: const TextStyle(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.w600),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -894,7 +907,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     borderRadius: BorderRadius.circular(2),
                     child: LinearProgressIndicator(
                       value: info.progress,
-                      backgroundColor: Colors.white10,
+                      backgroundColor: Colors.black.withOpacity(0.06),
                       valueColor: AlwaysStoppedAnimation<Color>(info.color),
                       minHeight: 4,
                     ),
@@ -905,7 +918,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
             const SizedBox(height: 4),
-            Text(info.description, style: const TextStyle(color: Colors.white38, fontSize: 9)),
+            Text(info.description, style: const TextStyle(color: Colors.black54, fontSize: 9)),
             if (info.actionLabel != null || order['status'] == 'SHIPPED' || order['status'] == 'DELIVERED') ...[
               const SizedBox(height: 10),
               Row(
@@ -917,10 +930,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context,
                         MaterialPageRoute(builder: (_) => TrackingScreen(orderId: order['id'])),
                       ),
-                      icon: const Icon(Icons.receipt_long, size: 12, color: Colors.tealAccent),
+                      icon: const Icon(Icons.receipt_long, size: 12, color: Colors.teal),
                       label: Text(
                         'LACAK',
-                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.tealAccent, letterSpacing: 1),
+                        style: GoogleFonts.montserrat(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.teal, letterSpacing: 1),
                       ),
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -963,8 +976,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
+        color: Colors.black.withOpacity(0.01),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
       ),
       child: Row(
         children: [
@@ -974,9 +987,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Tidak ada pesanan aktif', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
+                const Text('Tidak ada pesanan aktif', style: TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
-                Text('Ayo jelajahi katalog tenun Geza kami!', style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 10)),
+                Text('Ayo jelajahi katalog tenun Geza kami!', style: TextStyle(color: Colors.black45, fontSize: 10)),
               ],
             ),
           ),
@@ -1042,9 +1055,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         width: isPrimary ? 160 : 110,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white.withOpacity(0.03),
+          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.black.withOpacity(0.01),
           border: Border.all(
-            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.white.withOpacity(0.06),
+            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.black.withOpacity(0.06),
             width: 0.8,
           ),
         ),
@@ -1057,7 +1070,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Icon(icon, color: accentColor.withOpacity(0.7), size: 13),
                 if (onTap != null)
-                  const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
+                  const Icon(Icons.arrow_forward_ios, color: Colors.black26, size: 7),
               ],
             ),
             Column(
@@ -1066,7 +1079,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   label,
                   style: GoogleFonts.montserrat(
-                    color: Colors.white38,
+                    color: Colors.black45,
                     fontSize: 7,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
@@ -1078,7 +1091,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   value,
                   style: GoogleFonts.montserrat(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontSize: isPrimary ? 11 : 13,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1124,7 +1137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           label: 'Produksi Selesai — Silakan Lunasi',
           description: 'Produk selesai, lakukan pembayaran pelunasan',
           progress: 0.65,
-          actionLabel: 'BAYAR PELUNASAN',
+          actionLabel: 'PELUNASAN',
           actionIcon: Icons.payment,
         );
       case 'FULL_PAY_PAID':
@@ -1171,7 +1184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       default:
         return _StatusInfo(
-          color: Colors.white38,
+          color: Colors.black38,
           label: status,
           description: '',
           progress: 0.0,

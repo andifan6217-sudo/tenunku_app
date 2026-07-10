@@ -86,12 +86,13 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
+    const gold = Color(0xFFA67C1E);
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0918),
+      backgroundColor: const Color(0xFFF9FAFC),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         title: Text(
           'ULASAN SAYA',
           style: GoogleFonts.montserrat(
@@ -102,20 +103,21 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
           ),
         ),
         centerTitle: true,
+        iconTheme: const IconThemeData(color: gold),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: gold))
           : _reviews.isEmpty
-              ? Center(
+               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.star_border, color: Colors.white10, size: 80),
+                      const Icon(Icons.star_border, color: Colors.black12, size: 80),
                       const SizedBox(height: 20),
                       Text(
                         'BELUM ADA ULASAN',
                         style: GoogleFonts.montserrat(
-                          color: Colors.white24,
+                          color: Colors.black38,
                           letterSpacing: 4,
                           fontSize: 12,
                         ),
@@ -123,7 +125,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                       const SizedBox(height: 8),
                       const Text(
                         'Anda belum memberikan ulasan',
-                        style: TextStyle(color: Colors.white10, fontSize: 10),
+                        style: TextStyle(color: Colors.black38, fontSize: 10),
                       ),
                     ],
                   ),
@@ -152,9 +154,16 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                       return Container(
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.02),
-                          border: Border.all(color: Colors.white.withOpacity(0.05)),
-                          borderRadius: BorderRadius.circular(4),
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.02),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +178,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                                     child: Text(
                                       review['product']['name'].toString().toUpperCase(),
                                       style: const TextStyle(
-                                        color: Colors.white,
+                                        color: Colors.black87,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
                                       ),
@@ -185,7 +194,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                                         Icons.star,
                                         color: i < (review['rating'] as num? ?? 0).round()
                                             ? gold
-                                            : Colors.white12,
+                                            : Colors.black12,
                                         size: 12,
                                       ),
                                     ),
@@ -201,7 +210,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                                 child: Text(
                                   review['comment'].toString(),
                                   style: const TextStyle(
-                                    color: Colors.white70,
+                                    color: Colors.black87,
                                     fontSize: 11,
                                     height: 1.5,
                                   ),
@@ -234,7 +243,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                                                 return Container(
                                                   width: 90,
                                                   height: 90,
-                                                  color: Colors.white.withOpacity(0.04),
+                                                  color: Colors.black.withOpacity(0.04),
                                                   child: const Center(
                                                     child: SizedBox(
                                                       width: 20,
@@ -250,10 +259,10 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                                               errorBuilder: (_, _, _) => Container(
                                                 width: 90,
                                                 height: 90,
-                                                color: Colors.white.withOpacity(0.04),
+                                                color: Colors.black.withOpacity(0.04),
                                                 child: const Icon(
                                                   Icons.broken_image,
-                                                  color: Colors.white24,
+                                                  color: Colors.black26,
                                                   size: 28,
                                                 ),
                                               ),
@@ -275,7 +284,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                                   DateTime.tryParse(review['createdAt']?.toString() ?? '') ??
                                       DateTime.now(),
                                 ),
-                                style: const TextStyle(color: Colors.white24, fontSize: 9),
+                                style: const TextStyle(color: Colors.black38, fontSize: 9),
                               ),
                             ),
                           ],

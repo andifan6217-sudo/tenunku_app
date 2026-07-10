@@ -177,13 +177,14 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
       initialDateRange: _range,
       builder: (context, child) {
         return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0xFFD4AF37),
-              onPrimary: Colors.black,
-              surface: Color(0xFF130B22),
-              onSurface: Colors.white,
-            ), dialogTheme: DialogThemeData(backgroundColor: const Color(0xFF130B22)),
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFFA67C1E),
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black87,
+            ),
+            dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -282,18 +283,19 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkBg = Color(0xFF0F0B1E);
-    const cardBg = Color(0xFF161226);
+    const gold = Color(0xFFA67C1E);
+    const scaffoldBg = Color(0xFFF9FAFC);
+    const cardBg = Colors.white;
 
     final fmt = DateFormat('dd MMM yyyy');
     final rangeLabel = '${fmt.format(_range.start)} - ${fmt.format(_range.end)}';
 
     return Scaffold(
-      backgroundColor: darkBg,
+      backgroundColor: scaffoldBg,
       appBar: AppBar(
-        backgroundColor: darkBg,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: gold),
           onPressed: () => Navigator.pop(context),
@@ -333,7 +335,10 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                         decoration: BoxDecoration(
                           color: cardBg,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.white.withOpacity(0.04)),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          boxShadow: [
+                            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -342,7 +347,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                             Expanded(
                               child: Text(
                                 rangeLabel,
-                                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                                style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 11, fontWeight: FontWeight.bold),
                               ),
                             ),
                             TextButton(
@@ -363,8 +368,8 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                         mainAxisSpacing: 14,
                         childAspectRatio: 1.35,
                         children: [
-                          _buildKpiCard('TOTAL DP MASUK', Globals.formatRupiah(_totalDpReceived), Icons.payments, Colors.greenAccent, cardBg),
-                          _buildKpiCard('DP MENUNGGU', Globals.formatRupiah(_totalDpPending), Icons.hourglass_top, Colors.orangeAccent, cardBg),
+                          _buildKpiCard('TOTAL DP MASUK', Globals.formatRupiah(_totalDpReceived), Icons.payments, Colors.green, cardBg),
+                          _buildKpiCard('DP MENUNGGU', Globals.formatRupiah(_totalDpPending), Icons.hourglass_top, Colors.orange, cardBg),
                           _buildKpiCard('DP DITOLAK', Globals.formatRupiah(_totalDpRejected), Icons.cancel_outlined, Colors.redAccent, cardBg),
                           _buildKpiCard('TOTAL PENDAPATAN', Globals.formatRupiah(_totalRevenue), Icons.account_balance, gold, cardBg),
                         ],
@@ -383,11 +388,11 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                         children: [
                           Text(
                             'DAFTAR TRANSAKSI',
-                            style: GoogleFonts.montserrat(color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 4, fontWeight: FontWeight.bold),
+                            style: GoogleFonts.montserrat(color: gold.withOpacity(0.8), fontSize: 10, letterSpacing: 4, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             '${_filteredTransactions.length} Transaksi',
-                            style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 10),
+                            style: GoogleFonts.montserrat(color: Colors.black38, fontSize: 10),
                           ),
                         ],
                       ),
@@ -404,7 +409,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                           alignment: Alignment.center,
                           child: const Text(
                             'Tidak ada transaksi',
-                            style: TextStyle(color: Colors.white24, fontSize: 12, fontStyle: FontStyle.italic),
+                            style: TextStyle(color: Colors.black38, fontSize: 12, fontStyle: FontStyle.italic),
                           ),
                         )
                       else
@@ -429,7 +434,10 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.03)),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -440,18 +448,18 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
             children: [
               Text(
                 title,
-                style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 1),
+                style: GoogleFonts.montserrat(color: Colors.black45, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 1),
               ),
               Icon(icon, color: color.withOpacity(0.8), size: 16),
             ],
           ),
           Text(
             value,
-            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+            style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.bold),
           ),
           const Text(
             'Periode terpilih',
-            style: TextStyle(color: Colors.white12, fontSize: 9),
+            style: TextStyle(color: Colors.black38, fontSize: 9),
           ),
         ],
       ),
@@ -484,7 +492,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _pendingOrders.length,
-            separatorBuilder: (_, _) => const Divider(color: Colors.white10, height: 12),
+            separatorBuilder: (_, _) => const Divider(color: Colors.black12, height: 12),
             itemBuilder: (context, idx) {
               final o = _pendingOrders[idx];
               return Row(
@@ -496,12 +504,12 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                       children: [
                         Text(
                           'Order #${o['id']} - ${o['customerName']}',
-                          style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                          style: const TextStyle(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           o['products'] ?? 'Item tenun',
-                          style: const TextStyle(color: Colors.white30, fontSize: 9),
+                          style: const TextStyle(color: Colors.black45, fontSize: 9),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -510,7 +518,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                   ),
                   Text(
                     Globals.formatRupiah(o['dpAmount']),
-                    style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                 ],
               );
@@ -529,7 +537,10 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.black.withOpacity(0.06)),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+            ],
           ),
           child: TextField(
             onChanged: (val) {
@@ -538,11 +549,11 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                 _applyFilters();
               });
             },
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+            style: const TextStyle(color: Colors.black87, fontSize: 12),
             decoration: InputDecoration(
               hintText: 'Cari log transaksi...',
-              hintStyle: const TextStyle(color: Colors.white24, fontSize: 12),
-              prefixIcon: const Icon(Icons.search, color: Colors.white30, size: 16),
+              hintStyle: const TextStyle(color: Colors.black38, fontSize: 12),
+              prefixIcon: const Icon(Icons.search, color: Colors.black45, size: 16),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(vertical: 10),
             ),
@@ -556,10 +567,10 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
             return Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: ChoiceChip(
-                label: Text(label, style: TextStyle(color: isSelected ? Colors.black : Colors.white70, fontSize: 10)),
+                label: Text(label, style: TextStyle(color: isSelected ? Colors.black : Colors.black54, fontSize: 10)),
                 selected: isSelected,
                 selectedColor: gold,
-                backgroundColor: bg,
+                backgroundColor: Colors.black.withOpacity(0.04),
                 checkmarkColor: Colors.black,
                 onSelected: (selected) {
                   if (selected) {
@@ -582,10 +593,10 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
     final isSuccess = tx['status'] == 'completed';
     final isFailed = tx['status'] == 'failed';
 
-    Color statusColor = Colors.orangeAccent;
+    Color statusColor = Colors.orange;
     String statusLabel = 'PENDING';
     if (isSuccess) {
-      statusColor = Colors.greenAccent;
+      statusColor = Colors.green;
       statusLabel = 'BERHASIL';
     } else if (isFailed) {
       statusColor = Colors.redAccent;
@@ -597,20 +608,23 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withOpacity(0.02)),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isDp ? Colors.blue.withOpacity(0.1) : Colors.green.withOpacity(0.1),
+              color: isDp ? Colors.blue.withOpacity(0.08) : Colors.green.withOpacity(0.08),
               shape: BoxShape.circle,
             ),
             child: Icon(
               isDp ? Icons.payment : Icons.done_all,
-              color: isDp ? Colors.blueAccent : Colors.greenAccent,
+              color: isDp ? Colors.blue : Colors.green,
               size: 16,
             ),
           ),
@@ -623,18 +637,18 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                   children: [
                     Text(
                       tx['id'],
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: isDp ? Colors.blueAccent.withOpacity(0.1) : gold.withOpacity(0.1),
+                        color: isDp ? Colors.blue.withOpacity(0.08) : gold.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         isDp ? 'DP' : 'PELUNASAN',
-                        style: TextStyle(color: isDp ? Colors.blueAccent : gold, fontSize: 8, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: isDp ? Colors.blue : gold, fontSize: 8, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -642,7 +656,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'Order #${tx['orderId']} • ${tx['customerName']}',
-                  style: const TextStyle(color: Colors.white38, fontSize: 9),
+                  style: const TextStyle(color: Colors.black45, fontSize: 9),
                 ),
               ],
             ),
@@ -652,7 +666,7 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
             children: [
               Text(
                 Globals.formatRupiah(tx['amount']),
-                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               Container(
@@ -685,12 +699,12 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen> {
             const SizedBox(height: 12),
             Text(
               'Gagal memuat keuangan',
-              style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.montserrat(color: Colors.black87, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               _error ?? '',
-              style: const TextStyle(color: Colors.white38, fontSize: 11),
+              style: const TextStyle(color: Colors.black45, fontSize: 11),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),

@@ -136,12 +136,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF130B22),
-        title: const Text('Konfirmasi Sampai', style: TextStyle(color: Colors.white)),
-        content: const Text('Tandai pesanan ini telah sampai ke pelanggan?', style: TextStyle(color: Colors.white54)),
+        backgroundColor: Colors.white,
+        title: const Text('Konfirmasi Sampai', style: TextStyle(color: Colors.black87)),
+        content: const Text('Tandai pesanan ini telah sampai ke pelanggan?', style: TextStyle(color: Colors.black54)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('YA, SAMPAI', style: TextStyle(color: Colors.greenAccent))),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('YA, SAMPAI', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold))),
         ],
       ),
     );
@@ -166,27 +166,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF130B22),
-        title: const Text('Tolak Pembayaran DP?', style: TextStyle(color: Colors.white, fontSize: 16)),
+        backgroundColor: Colors.white,
+        title: const Text('Tolak Pembayaran DP?', style: TextStyle(color: Colors.black87, fontSize: 16)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Pembayaran akan ditolak dan status pesanan kembali ke PENDING.', style: TextStyle(color: Colors.white54, fontSize: 12)),
+            const Text('Pembayaran akan ditolak dan status pesanan kembali ke PENDING.', style: TextStyle(color: Colors.black54, fontSize: 12)),
             const SizedBox(height: 16),
             TextField(
               controller: reasonCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.black87, fontSize: 12),
               decoration: const InputDecoration(
                 hintText: 'Alasan penolakan (opsional)',
-                hintStyle: TextStyle(color: Colors.white24, fontSize: 12),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
+                hintStyle: TextStyle(color: Colors.black38, fontSize: 12),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.redAccent)),
               ),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.white38))),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
           TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('YA, TOLAK', style: TextStyle(color: Colors.redAccent))),
         ],
       ),
@@ -218,47 +218,47 @@ class _OrdersScreenState extends State<OrdersScreen> {
       await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          backgroundColor: const Color(0xFF130B22),
-          title: const Text('Update Pengiriman (Resi)', style: TextStyle(color: Colors.white, fontSize: 16)),
+          backgroundColor: Colors.white,
+          title: const Text('Update Pengiriman (Resi)', style: TextStyle(color: Colors.black87, fontSize: 16)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: courierCtrl,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
+                style: const TextStyle(color: Colors.black87, fontSize: 12),
                 decoration: const InputDecoration(
                   hintText: 'Kurir Ekspedisi (JNE, J&T, dll)',
-                  hintStyle: TextStyle(color: Colors.white24),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  hintStyle: TextStyle(color: Colors.black38),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: awbCtrl,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
+                style: const TextStyle(color: Colors.black87, fontSize: 12),
                 decoration: const InputDecoration(
                   hintText: 'Nomor Resi',
-                  hintStyle: TextStyle(color: Colors.white24),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  hintStyle: TextStyle(color: Colors.black38),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: statusCtrl,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
+                style: const TextStyle(color: Colors.black87, fontSize: 12),
                 decoration: const InputDecoration(
                   hintText: 'Status detail (contoh: Di Hub Jakarta)',
-                  hintStyle: TextStyle(color: Colors.white24),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  hintStyle: TextStyle(color: Colors.black38),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
             TextButton(
               onPressed: () async {
                 try {
@@ -388,11 +388,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
     const gold = Color(0xFFD4AF37);
     final picker = ImagePicker();
 
-    // Fungsi untuk menampilkan pilihan sumber gambar (Kamera / Galeri)
     Future<void> pickImage(StateSetter setDialogState) async {
       await showModalBottomSheet(
         context: context,
-        backgroundColor: const Color(0xFF1A1128),
+        backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -404,7 +403,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               children: [
                 Container(
                   width: 40, height: 4,
-                  decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+                  decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(2)),
                 ),
                 const SizedBox(height: 20),
                 Text('TAMBAH FOTO ULASAN',
@@ -468,15 +467,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.04),
-                          border: Border.all(color: Colors.white12),
+                          color: Colors.black.withOpacity(0.02),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Column(
                           children: [
-                            const Icon(Icons.photo_library_outlined, color: Colors.white70, size: 32),
+                            const Icon(Icons.photo_library_outlined, color: Colors.black54, size: 32),
                             const SizedBox(height: 8),
-                            Text('GALERI', style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                            Text('GALERI', style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
                           ],
                         ),
                       ),
@@ -495,10 +494,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          backgroundColor: const Color(0xFF130B22),
+          backgroundColor: Colors.white,
           title: Text(
             'BERI ULASAN PADA #${order['id']}',
-            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2),
+            style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2),
           ),
           content: SingleChildScrollView(
             child: Column(
@@ -506,34 +505,34 @@ class _OrdersScreenState extends State<OrdersScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (productList.length > 1) ...[
-                  const Text('PILIH PRODUK:', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                  const Text('PILIH PRODUK:', style: TextStyle(color: Colors.black45, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: Colors.black.withOpacity(0.02), borderRadius: BorderRadius.circular(8)),
                     child: DropdownButton<int>(
                       value: selectedProductId,
-                      dropdownColor: const Color(0xFF130B22),
+                      dropdownColor: Colors.white,
                       isExpanded: true,
                       underline: const SizedBox(),
                       items: productList.map<DropdownMenuItem<int>>((i) => DropdownMenuItem<int>(
                         value: i['productId'],
-                        child: Text(i['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 11)),
+                        child: Text(i['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 11)),
                       )).toList(),
                       onChanged: (val) => setDialogState(() => selectedProductId = val),
                     ),
                   ),
                   const SizedBox(height: 20),
                 ] else if (productList.isNotEmpty) ...[
-                  Text(productList[0]['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                  Text(productList[0]['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
                 ],
 
-                const Center(child: Text('RATING ANDA', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 2))),
+                const Center(child: Text('RATING ANDA', style: TextStyle(color: Colors.black45, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 2))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(5, (i) => IconButton(
-                    icon: Icon(Icons.star, color: i < rating ? gold : Colors.white10),
+                    icon: Icon(Icons.star, color: i < rating ? gold : Colors.black12),
                     onPressed: () => setDialogState(() => rating = i + 1),
                   )),
                 ),
@@ -542,12 +541,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 TextField(
                   controller: commentCtrl,
                   maxLines: 3,
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  style: const TextStyle(color: Colors.black87, fontSize: 12),
                   decoration: const InputDecoration(
                     hintText: 'Tuliskan ulasan anda...',
-                    hintStyle: TextStyle(color: Colors.white10),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                    hintStyle: TextStyle(color: Colors.black38),
+                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -556,8 +555,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('FOTO ULASAN', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                    Text('${selectedImages.length}/5', style: const TextStyle(color: Colors.white24, fontSize: 9)),
+                    const Text('FOTO ULASAN', style: TextStyle(color: Colors.black45, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                    Text('${selectedImages.length}/5', style: const TextStyle(color: Colors.black38, fontSize: 9)),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -583,8 +582,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     fit: BoxFit.cover,
                                     errorBuilder: (_, _, _) => Container(
                                       width: 80, height: 80,
-                                      color: Colors.white10,
-                                      child: const Icon(Icons.image, color: Colors.white24),
+                                      color: Colors.black12,
+                                      child: const Icon(Icons.image, color: Colors.black26),
                                     ),
                                   ),
                                 ),
@@ -641,7 +640,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     children: [
                       SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: gold, strokeWidth: 2)),
                       SizedBox(width: 12),
-                      Text('Mengunggah foto...', style: TextStyle(color: Colors.white38, fontSize: 11)),
+                      Text('Mengunggah foto...', style: TextStyle(color: Colors.black54, fontSize: 11)),
                     ],
                   ),
                 ],
@@ -651,7 +650,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           actions: [
             TextButton(
               onPressed: isUploading ? null : () => Navigator.pop(ctx),
-              child: const Text('BATAL', style: TextStyle(color: Colors.white24)),
+              child: const Text('BATAL', style: TextStyle(color: Colors.black38)),
             ),
             TextButton(
               onPressed: isUploading
@@ -710,9 +709,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkArt = Color(0xFF0F0918);
-    const darkAccent = Color(0xFF1A1128);
+    const gold = Color(0xFFA67C1E);
+    const darkArt = Color(0xFFF9FAFC);
+    const darkAccent = Colors.white;
 
     final activeOrders = _filteredOrders.where((o) => ['PENDING', 'DP_PAID', 'VERIFIED', 'PROCESSED', 'FULL_PAY_PAID', 'PAID', 'SHIPPED'].contains(o['status'])).toList();
     final historyOrders = _filteredOrders.where((o) => !['PENDING', 'DP_PAID', 'VERIFIED', 'PROCESSED', 'FULL_PAY_PAID', 'PAID', 'SHIPPED'].contains(o['status'])).toList();
@@ -720,8 +719,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Scaffold(
       backgroundColor: darkArt,
       appBar: AppBar(
-        backgroundColor: darkArt,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         leading: widget.showBackButton 
             ? IconButton(icon: const Icon(Icons.arrow_back, color: gold), onPressed: () => Navigator.pop(context))
             : null,
@@ -738,11 +738,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Lihat dan lacak semua pesanan Anda', style: TextStyle(color: Colors.white38, fontSize: 12)),
+                    const Text('Lihat dan lacak semua pesanan Anda', style: TextStyle(color: Colors.black54, fontSize: 12)),
                     const SizedBox(height: 24),
                     
                     _buildSearchBar(gold, darkAccent),
                     const SizedBox(height: 24),
+                    
+                    if (_filteredOrders.isEmpty)
+                      Center(child: Padding(padding: const EdgeInsets.all(40), child: Text('TIADA PESANAN DITEMUI', style: GoogleFonts.montserrat(color: Colors.black26, fontSize: 10, letterSpacing: 4)))),
                     
                     _buildSummaryChips(gold),
                     const SizedBox(height: 32),
@@ -760,9 +763,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ...historyOrders.map((o) => _buildHistoryOrderCard(o, gold, darkAccent)),
                     ],
                     
-                    if (_filteredOrders.isEmpty)
-                      Center(child: Padding(padding: const EdgeInsets.all(40), child: Text('TIADA PESANAN DITEMUI', style: GoogleFonts.montserrat(color: Colors.white10, fontSize: 10, letterSpacing: 4)))),
-                    
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -775,19 +775,26 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: gold.withOpacity(0.15), width: 0.8),
+        border: Border.all(color: Colors.black.withOpacity(0.08), width: 0.8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: TextField(
         controller: _searchController,
         textAlignVertical: TextAlignVertical.center,
-        style: const TextStyle(color: Colors.white, fontSize: 11),
+        style: const TextStyle(color: Colors.black87, fontSize: 11),
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           hintText: 'Cari pesanan...',
-          hintStyle: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10),
+          hintStyle: GoogleFonts.montserrat(color: Colors.black38, fontSize: 10),
           prefixIcon: Icon(Icons.search, color: gold, size: 16),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
@@ -806,9 +813,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
       children: [
         _chip('Total: $total', _filterStatus == null || _filterStatus == 'ALL', () => setState(() { _filterStatus = 'ALL'; _applyFilter(); }), gold),
         const SizedBox(width: 8),
-        _chip('Aktif: $active', _filterStatus == 'ACTIVE', () => setState(() { _filterStatus = 'ACTIVE'; _applyFilter(); }), Colors.orangeAccent),
+        _chip('Aktif: $active', _filterStatus == 'ACTIVE', () => setState(() { _filterStatus = 'ACTIVE'; _applyFilter(); }), Colors.orange),
         const SizedBox(width: 8),
-        _chip('Selesai: $history', _filterStatus == 'COMPLETED', () => setState(() { _filterStatus = 'COMPLETED'; _applyFilter(); }), Colors.greenAccent),
+        _chip('Selesai: $history', _filterStatus == 'COMPLETED', () => setState(() { _filterStatus = 'COMPLETED'; _applyFilter(); }), Colors.green),
       ],
     );
   }
@@ -819,17 +826,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: active ? color.withOpacity(0.15) : Colors.transparent,
-          border: Border.all(color: active ? color : Colors.white.withOpacity(0.1), width: 0.5),
-          borderRadius: BorderRadius.circular(4),
+          color: active ? color.withOpacity(0.08) : Colors.transparent,
+          border: Border.all(color: active ? color : Colors.black.withOpacity(0.08), width: 0.8),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(label.toUpperCase(), style: GoogleFonts.montserrat(color: active ? color : Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
+        child: Text(label.toUpperCase(), style: GoogleFonts.montserrat(color: active ? color : Colors.black45, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
       ),
     );
   }
 
   Widget _sectionHeader(String title, Color gold) {
-    return Text(title, style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4));
+    return Text(title, style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4));
   }
 
   Widget _buildActiveOrderCard(dynamic order, Color gold, Color darkAccent) {
@@ -841,8 +848,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         color: darkAccent,
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
         borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -860,8 +874,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(firstItem['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                          Text('ORD-${order['id']}', style: const TextStyle(color: Colors.white38, fontSize: 11)),
+                          Text(firstItem['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold)),
+                          Text('ORD-${order['id']}', style: const TextStyle(color: Colors.black45, fontSize: 11)),
                         ],
                       ),
                     ),
@@ -876,56 +890,36 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 
                 if (order['paymentProofUrl'] != null && order['paymentProofUrl'].toString().isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  const Text('BUKTI PEMBAYARAN:', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                  const SizedBox(height: 8),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       final url = ApiService.getFormattedImageUrl(order['paymentProofUrl']);
                       _showImagePreviewDialog(url, 'BUKTI TRANSFER');
                     },
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Tooltip(
-                        message: 'Klik untuk memperbesar bukti pembayaran',
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              Image.network(
-                                ApiService.getFormattedImageUrl(order['paymentProofUrl']),
-                                height: 180,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, _, _) => const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 20),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.error_outline, color: Colors.white24, size: 16),
-                                        SizedBox(width: 8),
-                                        Text('Gagal memuat bukti transfer', style: TextStyle(color: Colors.white24, fontSize: 11)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                color: Colors.black.withOpacity(0.6),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.zoom_in, color: Colors.white, size: 14),
-                                    SizedBox(width: 4),
-                                    Text('PERBESAR BUKTI', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                              ),
-                            ],
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: gold.withOpacity(0.06),
+                        border: Border.all(color: gold.withOpacity(0.2), width: 0.8),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.receipt_long_rounded, color: Colors.black54, size: 16),
+                          const SizedBox(width: 8),
+                          Text(
+                            'LIHAT BUKTI TRANSFER',
+                            style: GoogleFonts.montserrat(
+                              color: Colors.black87,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          Icon(Icons.open_in_new_rounded, color: Colors.black38, size: 11),
+                        ],
                       ),
                     ),
                   ),
@@ -936,8 +930,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.02),
-                      border: Border.all(color: Colors.white10),
+                      color: Colors.black.withOpacity(0.02),
+                      border: Border.all(color: Colors.black.withOpacity(0.06)),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
@@ -945,31 +939,31 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.local_shipping_outlined, color: Color(0xFFD4AF37), size: 14),
+                            const Icon(Icons.local_shipping_outlined, color: Color(0xFFA67C1E), size: 14),
                             const SizedBox(width: 8),
-                            Text('INFORMASI PENGIRIMAN', style: GoogleFonts.montserrat(color: const Color(0xFFD4AF37), fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                            Text('INFORMASI PENGIRIMAN', style: GoogleFonts.montserrat(color: const Color(0xFFA67C1E), fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text('Kurir: ${order['courierName'] ?? '-'}', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                        Text('Kurir: ${order['courierName'] ?? '-'}', style: const TextStyle(color: Colors.black87, fontSize: 11)),
                         const SizedBox(height: 4),
-                        Text('No. Resi: ${order['awbNumber'] ?? '-'}', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                        Text('No. Resi: ${order['awbNumber'] ?? '-'}', style: const TextStyle(color: Colors.black87, fontSize: 11)),
                         if (order['trackingStatus'] != null && order['trackingStatus'].toString().isNotEmpty) ...[
                           const SizedBox(height: 4),
-                          Text('Status: ${order['trackingStatus']}', style: const TextStyle(color: Colors.white38, fontSize: 10)),
+                          Text('Status: ${order['trackingStatus']}', style: const TextStyle(color: Colors.black54, fontSize: 10)),
                         ],
                       ],
                     ),
                   ),
                 ],
                 
-                const Divider(color: Colors.white10, height: 40),
+                const Divider(color: Colors.black12, height: 40),
                 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Total: ${Globals.formatRupiah(order['totalPrice'])}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                    Text(formattedDate, style: const TextStyle(color: Colors.white24, fontSize: 11)),
+                    Text('Total: ${Globals.formatRupiah(order['totalPrice'])}', style: const TextStyle(color: Colors.black87, fontSize: 12)),
+                    Text(formattedDate, style: const TextStyle(color: Colors.black45, fontSize: 11)),
                   ],
                 ),
 
@@ -986,7 +980,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           backgroundColor: Colors.redAccent.withOpacity(0.8),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -1064,18 +1058,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.04),
+                        color: Colors.black.withOpacity(0.02),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.white10),
+                        border: Border.all(color: Colors.black.withOpacity(0.06)),
                       ),
                       child: Row(
                         children: const [
-                          Icon(Icons.hourglass_empty, color: Colors.white38, size: 18),
+                          Icon(Icons.hourglass_empty, color: Colors.black45, size: 18),
                           SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               'Menunggu pelunasan pembayaran dari pelanggan.',
-                              style: TextStyle(color: Colors.white38, fontSize: 11),
+                              style: TextStyle(color: Colors.black54, fontSize: 11),
                             ),
                           ),
                         ],
@@ -1196,7 +1190,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             children: const [
                               Text('Menunggu Verifikasi Penjual', style: TextStyle(color: Colors.amber, fontSize: 12, fontWeight: FontWeight.bold)),
                               SizedBox(height: 2),
-                              Text('Pembayaran DP Anda sedang diperiksa oleh penjual.', style: TextStyle(color: Colors.white38, fontSize: 10)),
+                              Text('Pembayaran DP Anda sedang diperiksa oleh penjual.', style: TextStyle(color: Colors.black54, fontSize: 10)),
                             ],
                           ),
                         ),
@@ -1211,21 +1205,21 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.greenAccent.withOpacity(0.08),
+                      color: Colors.green.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.greenAccent.withOpacity(0.3)),
+                      border: Border.all(color: Colors.green.withOpacity(0.2)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.verified, color: Colors.greenAccent, size: 18),
+                        const Icon(Icons.verified, color: Colors.green, size: 18),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              Text('DP Terverifikasi ✓', style: TextStyle(color: Colors.greenAccent, fontSize: 12, fontWeight: FontWeight.bold)),
+                              Text('DP Terverifikasi ✓', style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold)),
                               SizedBox(height: 2),
-                              Text('Pesanan Anda sedang diproses oleh penjual.', style: TextStyle(color: Colors.white38, fontSize: 10)),
+                              Text('Pesanan Anda sedang diproses oleh penjual.', style: TextStyle(color: Colors.black54, fontSize: 10)),
                             ],
                           ),
                         ),
@@ -1250,18 +1244,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           children: [
                             Icon(Icons.stars, color: gold, size: 18),
                             const SizedBox(width: 12),
-                            Text('PESANAN SELESAI DIPROSES', style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                            Text('PESANAN SELESAI DIPROSES', style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1)),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        const Text('Karya agung Anda telah siap. Sila selesaikan baki bayaran untuk proses penghantaran.', style: TextStyle(color: Colors.white60, fontSize: 11)),
+                        const Text('Karya agung Anda telah siap. Sila selesaikan baki bayaran untuk proses penghantaran.', style: TextStyle(color: Colors.black54, fontSize: 11)),
                         const SizedBox(height: 20),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
                             onPressed: () => _showPaymentDialog(order, gold, isPelunasan: true),
                             icon: const Icon(Icons.account_balance_wallet, size: 16),
-                            label: Text('BAYAR PELUNASAN (${Globals.formatRupiah(order['totalPrice'] - (order['dpAmount'] ?? 0))})', style: GoogleFonts.montserrat(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                            label: Text('PELUNASAN (${Globals.formatRupiah(order['totalPrice'] - (order['dpAmount'] ?? 0))})', style: GoogleFonts.montserrat(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: gold,
                               foregroundColor: Colors.black,
@@ -1296,7 +1290,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             children: const [
                               Text('Menunggu Verifikasi Pelunasan', style: TextStyle(color: Colors.blueAccent, fontSize: 12, fontWeight: FontWeight.bold)),
                               SizedBox(height: 2),
-                              Text('Bukti pelunasan Anda sedang diperiksa oleh penjual.', style: TextStyle(color: Colors.white38, fontSize: 10)),
+                              Text('Bukti pelunasan Anda sedang diperiksa oleh penjual.', style: TextStyle(color: Colors.black54, fontSize: 10)),
                             ],
                           ),
                         ),
@@ -1311,15 +1305,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.tealAccent.withOpacity(0.08),
+                      color: Colors.teal.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.tealAccent.withOpacity(0.3)),
+                      border: Border.all(color: Colors.teal.withOpacity(0.2)),
                     ),
                     child: Column(
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.local_shipping, color: Colors.tealAccent, size: 18),
+                            const Icon(Icons.local_shipping, color: Colors.teal, size: 18),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
@@ -1327,14 +1321,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 children: [
                                   Text(
                                     order['status'] == 'SHIPPED' ? 'Pesanan Dalam Pengiriman' : 'Informasi Pengiriman', 
-                                    style: const TextStyle(color: Colors.tealAccent, fontSize: 12, fontWeight: FontWeight.bold)
+                                    style: const TextStyle(color: Colors.teal, fontSize: 12, fontWeight: FontWeight.bold)
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     order['status'] == 'SHIPPED' 
                                       ? 'Pesanan Anda sedang dalam perjalanan.' 
                                       : 'Lacak posisi paket secara real-time di peta.', 
-                                    style: const TextStyle(color: Colors.white38, fontSize: 10)
+                                    style: const TextStyle(color: Colors.black54, fontSize: 10)
                                   ),
                                 ],
                               ),
@@ -1408,23 +1402,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.greenAccent.withOpacity(0.08),
+                      color: Colors.green.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.greenAccent.withOpacity(0.3)),
+                      border: Border.all(color: Colors.green.withOpacity(0.2)),
                     ),
                     child: Column(
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.stars, color: Colors.greenAccent, size: 18),
+                            const Icon(Icons.stars, color: Colors.green, size: 18),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: const [
-                                  Text('Pesanan Selesai ✓', style: TextStyle(color: Colors.greenAccent, fontSize: 12, fontWeight: FontWeight.bold)),
+                                  Text('Pesanan Selesai ✓', style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold)),
                                   SizedBox(height: 2),
-                                  Text('Terima kasih telah berbelanja di Tenun Geza!', style: TextStyle(color: Colors.white38, fontSize: 10)),
+                                  Text('Terima kasih telah berbelanja di Tenun Geza!', style: TextStyle(color: Colors.black54, fontSize: 10)),
                                 ],
                               ),
                             ),
@@ -1460,18 +1454,29 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget _buildHistoryOrderCard(dynamic order, Color gold, Color darkAccent) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(color: darkAccent.withOpacity(0.5), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: ExpansionTile(
         iconColor: gold,
-        collapsedIconColor: gold.withOpacity(0.5),
+        collapsedIconColor: gold,
         title: Text('ORDER #${order['id']}', style: GoogleFonts.montserrat(color: gold, fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 2)),
-        subtitle: Text('Status: ${order['status']} | Total: ${Globals.formatRupiah(order['totalPrice'])}', style: const TextStyle(color: Colors.white38, fontSize: 10)),
+        subtitle: Text('Status: ${order['status']} | Total: ${Globals.formatRupiah(order['totalPrice'])}', style: const TextStyle(color: Colors.black45, fontSize: 10)),
         children: [
           _buildBuyerAddress(order),
           ...(order['items'] as List).map<Widget>((item) {
             return ListTile(
               dense: true,
-              title: Text(item['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white70, fontSize: 11)),
+              title: Text(item['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 11)),
               trailing: Text('x${item['quantity']}', style: TextStyle(color: gold, fontSize: 11)),
             );
           }),
@@ -1482,23 +1487,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.greenAccent.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.greenAccent.withOpacity(0.3)),
+                  color: Colors.green.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.green.withOpacity(0.2)),
                 ),
                 child: Column(
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.stars, color: Colors.greenAccent, size: 18),
+                        const Icon(Icons.stars, color: Colors.green, size: 18),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
-                              Text('Pesanan Selesai ✓', style: TextStyle(color: Colors.greenAccent, fontSize: 12, fontWeight: FontWeight.bold)),
+                              Text('Pesanan Selesai ✓', style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold)),
                               SizedBox(height: 2),
-                              Text('Terima kasih telah berbelanja di Tenun Geza!', style: TextStyle(color: Colors.white38, fontSize: 10)),
+                              Text('Terima kasih telah berbelanja di Tenun Geza!', style: TextStyle(color: Colors.black54, fontSize: 10)),
                             ],
                           ),
                         ),
@@ -1513,9 +1518,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         label: const Text('BERI ULASAN', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: gold,
-                          side: BorderSide(color: gold.withOpacity(0.5)),
+                          side: BorderSide(color: gold.withOpacity(0.5), width: 1.2),
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -1563,11 +1568,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: active ? gold.withOpacity(0.15) : Colors.white.withOpacity(0.05),
+        color: active ? gold.withOpacity(0.15) : Colors.black.withOpacity(0.04),
         shape: BoxShape.circle,
-        border: Border.all(color: active ? gold : Colors.white10),
+        border: Border.all(color: active ? gold : Colors.black12),
       ),
-      child: Icon(icon, color: active ? gold : Colors.white24, size: 16),
+      child: Icon(icon, color: active ? gold : Colors.black26, size: 16),
     );
   }
 
@@ -1575,28 +1580,28 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Expanded(
       child: Container(
         height: 1,
-        color: active ? gold : Colors.white10,
+        color: active ? gold : Colors.black12,
       ),
     );
   }
 
   Widget _statusBadge(String status) {
-    Color color = Colors.white24;
+    Color color = Colors.black45;
     String text = status;
-    if (status == 'PENDING') { color = Colors.orangeAccent; text = 'Menunggu DP'; }
+    if (status == 'PENDING') { color = Colors.orange; text = 'Menunggu DP'; }
     if (status == 'DP_PAID') { color = Colors.amber; text = 'Verifikasi DP'; }
-    if (status == 'VERIFIED') { color = Colors.lightBlueAccent; text = 'Sedang Diproses'; }
-    if (status == 'PROCESSED') { color = Colors.indigoAccent; text = 'Menunggu Pelunasan'; }
-    if (status == 'FULL_PAY_PAID') { color = Colors.blue; text = 'Verifikasi Pelunasan'; }
-    if (status == 'PAID') { color = Colors.tealAccent; text = 'Sudah Lunas'; }
-    if (status == 'SHIPPED') { color = Colors.tealAccent; text = 'Dikirim'; }
-    if (status == 'DELIVERED') { color = Colors.greenAccent; text = 'Sampai'; }
-    if (status == 'CANCELLED') { color = Colors.redAccent; text = 'Batal'; }
-    if (status == 'COMPLETED') { color = Colors.greenAccent; text = 'Selesai'; }
+    if (status == 'VERIFIED') { color = Colors.blue; text = 'Sedang Diproses'; }
+    if (status == 'PROCESSED') { color = Colors.indigo; text = 'Menunggu Pelunasan'; }
+    if (status == 'FULL_PAY_PAID') { color = Colors.blueAccent; text = 'Verifikasi Pelunasan'; }
+    if (status == 'PAID') { color = Colors.teal; text = 'Sudah Lunas'; }
+    if (status == 'SHIPPED') { color = Colors.teal; text = 'Dikirim'; }
+    if (status == 'DELIVERED') { color = Colors.green; text = 'Sampai'; }
+    if (status == 'CANCELLED') { color = Colors.red; text = 'Batal'; }
+    if (status == 'COMPLETED') { color = Colors.green; text = 'Selesai'; }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+      decoration: BoxDecoration(color: color.withOpacity(0.08), borderRadius: BorderRadius.circular(12)),
       child: Text(text, style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.bold)),
     );
   }
@@ -1605,11 +1610,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF130B22),
-        title: const Text('Batalkan Pesanan?', style: TextStyle(color: Colors.white, fontSize: 16)),
-        content: const Text('Tindakan ini tidak dapat dibatalkan.', style: TextStyle(color: Colors.white54, fontSize: 13)),
+        backgroundColor: Colors.white,
+        title: const Text('Batalkan Pesanan?', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
+        content: const Text('Tindakan ini tidak dapat dibatalkan.', style: TextStyle(color: Colors.black54, fontSize: 13)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('TIDAK', style: TextStyle(color: Colors.white24))),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('TIDAK', style: TextStyle(color: Colors.black38))),
           TextButton(onPressed: () { Navigator.pop(context); _handleCancel(id); }, child: const Text('YA, BATALKAN', style: TextStyle(color: Colors.redAccent))),
         ],
       ),
@@ -1632,33 +1637,39 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 children: [
                   Align(
                     alignment: Alignment.topRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 28),
-                      onPressed: () => Navigator.pop(context),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 18,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.black87, size: 20),
+                        onPressed: () => Navigator.pop(context),
+                        padding: EdgeInsets.zero,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Container(
+                    constraints: const BoxConstraints(maxWidth: 500),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF130B22),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3)),
+                      border: Border.all(color: const Color(0xFFA67C1E).withOpacity(0.15)),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           title,
                           style: GoogleFonts.montserrat(
-                            color: const Color(0xFFD4AF37),
+                            color: Colors.black87,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                             letterSpacing: 2,
@@ -1667,17 +1678,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         const SizedBox(height: 4),
                         const Text(
                           'Cubit/Pinch untuk memperbesar gambar',
-                          style: TextStyle(color: Colors.white54, fontSize: 11),
+                          style: TextStyle(color: Colors.black45, fontSize: 11),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Container(
-                            color: const Color(0xFF0F0B1E),
-                            padding: const EdgeInsets.all(12),
+                            color: const Color(0xFFF9FAFC),
+                            width: double.infinity,
                             constraints: BoxConstraints(
-                              maxHeight: MediaQuery.of(context).size.height * 0.6,
+                              maxHeight: MediaQuery.of(context).size.height * 0.75,
                             ),
                             child: InteractiveViewer(
                               panEnabled: true,
@@ -1692,7 +1703,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     children: [
                                       Icon(Icons.error_outline, color: Colors.redAccent, size: 40),
                                       SizedBox(height: 12),
-                                      Text('Gagal memuat gambar', style: TextStyle(color: Colors.white38, fontSize: 12)),
+                                      Text('Gagal memuat gambar', style: TextStyle(color: Colors.black38, fontSize: 12)),
                                     ],
                                   ),
                                 ),
@@ -1869,7 +1880,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             return Container(
               padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(context).viewInsets.bottom + 32),
               decoration: const BoxDecoration(
-                color: Color(0xFF130B22),
+                color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
               child: SingleChildScrollView(
@@ -1877,12 +1888,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)))),
+                    Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(2)))),
                     const SizedBox(height: 24),
                     Center(
                       child: Text(
                         isPelunasan ? 'KONFIRMASI PELUNASAN' : 'KONFIRMASI PEMBAYARAN DP',
-                        style: GoogleFonts.montserrat(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1),
+                        style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -1891,20 +1902,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.03),
+                        color: Colors.black.withOpacity(0.02),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white10),
+                        border: Border.all(color: Colors.black.withOpacity(0.06)),
                       ),
                       child: Column(children: [
                         _detailRow('ID Pesanan', 'ORD-${order['id']}'),
                         const SizedBox(height: 8),
                         _detailRow('Produk', firstItem['product']['name']),
-                        const Divider(color: Colors.white10, height: 20),
+                        const Divider(color: Colors.black12, height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(isPelunasan ? 'Jumlah Pelunasan' : 'Jumlah DP (50%)',
-                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+                                style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13)),
                             Text(Globals.formatRupiah(paymentAmount),
                                 style: const TextStyle(color: Color(0xFF1ABC9C), fontSize: 20, fontWeight: FontWeight.bold)),
                           ],
@@ -1915,12 +1926,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
                     // ── BAYAR ONLINE ──
                     Row(children: [
-                      const Expanded(child: Divider(color: Colors.white10)),
+                      const Expanded(child: Divider(color: Colors.black12)),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('BAYAR ONLINE', style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 9, letterSpacing: 3)),
+                        child: Text('BAYAR ONLINE', style: GoogleFonts.montserrat(color: Colors.black45, fontSize: 9, letterSpacing: 3)),
                       ),
-                      const Expanded(child: Divider(color: Colors.white10)),
+                      const Expanded(child: Divider(color: Colors.black12)),
                     ]),
                     const SizedBox(height: 16),
 
@@ -1945,8 +1956,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               if (channels.isEmpty) {
                                 return Container(
                                   padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(8)),
-                                  child: const Text('Tidak ada metode pembayaran online yang tersedia saat ini.\nSilakan gunakan transfer manual.', style: TextStyle(color: Colors.white38, fontSize: 11)),
+                                  decoration: BoxDecoration(color: Colors.black.withOpacity(0.02), borderRadius: BorderRadius.circular(8)),
+                                  child: const Text('Tidak ada metode pembayaran online yang tersedia saat ini.\nSilakan gunakan transfer manual.', style: TextStyle(color: Colors.black45, fontSize: 11)),
                                 );
                               }
                               // Kelompokkan channel berdasarkan grup
@@ -1958,12 +1969,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text('Pilih Metode Pembayaran:', style: TextStyle(color: Colors.white54, fontSize: 11)),
+                                  const Text('Pilih Metode Pembayaran:', style: TextStyle(color: Colors.black54, fontSize: 11)),
                                   const SizedBox(height: 12),
                                   ...grouped.entries.map((entry) => Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(entry.key.toUpperCase(), style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 9, letterSpacing: 2, fontWeight: FontWeight.bold)),
+                                      Text(entry.key.toUpperCase(), style: GoogleFonts.montserrat(color: Colors.black26, fontSize: 9, letterSpacing: 2, fontWeight: FontWeight.bold)),
                                       const SizedBox(height: 8),
                                       GridView.builder(
                                         shrinkWrap: true,
@@ -1985,15 +1996,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                             borderRadius: BorderRadius.circular(8),
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                color: Colors.white.withOpacity(0.04),
-                                                border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3)),
+                                                color: Colors.black.withOpacity(0.02),
+                                                border: Border.all(color: const Color(0xFFA67C1E).withOpacity(0.3)),
                                                 borderRadius: BorderRadius.circular(8),
                                               ),
                                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                                               child: Center(
                                                 child: Text(
                                                   ch['name']?.toString() ?? ch['code'],
-                                                  style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                                                  style: const TextStyle(color: Colors.black87, fontSize: 9, fontWeight: FontWeight.bold),
                                                   textAlign: TextAlign.center,
                                                   maxLines: 2,
                                                   overflow: TextOverflow.ellipsis,
@@ -2034,40 +2045,39 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 6),
-                    const Center(child: Text('Anda akan diarahkan ke halaman pembayaran',
-                        style: TextStyle(color: Colors.white24, fontSize: 10))),
+                      const Center(child: Text('Anda akan diarahkan ke halaman pembayaran',
+                        style: TextStyle(color: Colors.black38, fontSize: 10))),
                     const SizedBox(height: 28),
 
                     // ── TRANSFER MANUAL ──
                     Row(children: [
-                      const Expanded(child: Divider(color: Colors.white10)),
+                      const Expanded(child: Divider(color: Colors.black12)),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('ATAU TRANSFER MANUAL', style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 9, letterSpacing: 3)),
+                        child: Text('ATAU TRANSFER MANUAL', style: GoogleFonts.montserrat(color: Colors.black45, fontSize: 9, letterSpacing: 3)),
                       ),
-                      const Expanded(child: Divider(color: Colors.white10)),
+                      const Expanded(child: Divider(color: Colors.black12)),
                     ]),
                     const SizedBox(height: 16),
 
                     if (modalLoading)
                       const Center(child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
-                        child: CircularProgressIndicator(color: Color(0xFFD4AF37), strokeWidth: 2),
+                        child: CircularProgressIndicator(color: Color(0xFFA67C1E), strokeWidth: 2),
                       ))
                     else if (modalError != null)
                       Container(
                         padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(8)),
+                        decoration: BoxDecoration(color: Colors.black.withOpacity(0.02), borderRadius: BorderRadius.circular(8)),
                         child: const Text('Gagal memuat info rekening. Gunakan pembayaran online di atas.',
-                            style: TextStyle(color: Colors.white38, fontSize: 11)),
+                            style: TextStyle(color: Colors.black45, fontSize: 11)),
                       )
                     else ...[
                       // Bank info
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.04),
+                          color: Colors.black.withOpacity(0.02),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: gold.withOpacity(0.25)),
                         ),
@@ -2082,12 +2092,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(paymentSettings!['bankName'] ?? 'BANK',
-                                  style: TextStyle(color: gold, fontWeight: FontWeight.bold, fontSize: 12)),
+                                  style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
                               const SizedBox(height: 4),
                               Text(paymentSettings!['bankAccount'] ?? '-',
-                                  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                                  style: const TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2)),
                               Text('a.n ${paymentSettings!['accountName'] ?? '-'}',
-                                  style: const TextStyle(color: Colors.white54, fontSize: 11)),
+                                  style: const TextStyle(color: Colors.black54, fontSize: 11)),
                             ],
                           )),
                         ]),
@@ -2100,18 +2110,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.04),
+                            color: Colors.black.withOpacity(0.02),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.white10),
+                            border: Border.all(color: Colors.black.withOpacity(0.06)),
                           ),
                           child: Column(children: [
                             Row(children: [
-                              const Icon(Icons.qr_code_2, color: Colors.white70, size: 16),
+                              const Icon(Icons.qr_code_2, color: Colors.black54, size: 16),
                               const SizedBox(width: 8),
-                              Text('BAYAR VIA QRIS', style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                              Text('BAYAR VIA QRIS', style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
                             ]),
                             const SizedBox(height: 4),
-                            const Text('Ketuk gambar untuk memperbesar (preview)', style: TextStyle(color: Colors.white38, fontSize: 9)),
+                            const Text('Ketuk gambar untuk memperbesar (preview)', style: TextStyle(color: Colors.black38, fontSize: 9)),
                             const SizedBox(height: 12),
                             GestureDetector(
                               onTap: () {
@@ -2128,7 +2138,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                         ApiService.getFormattedImageUrl(paymentSettings!['qrisImageUrl']),
                                         height: 200, fit: BoxFit.contain,
                                         errorBuilder: (ctx, e, st) => const Text('Gagal memuat gambar QRIS',
-                                            style: TextStyle(color: Colors.white38, fontSize: 11)),
+                                            style: TextStyle(color: Colors.black38, fontSize: 11)),
                                       ),
                                     ),
                                     Positioned.fill(
@@ -2160,7 +2170,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ],
                     ],
                     const SizedBox(height: 20),
-
                     // Upload bukti transfer
                     InkWell(
                       onTap: () async {
@@ -2173,27 +2182,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: selectedImage != null ? const Color(0xFF1ABC9C).withOpacity(0.08) : const Color(0xFF1A1128),
+                          color: selectedImage != null ? const Color(0xFF1ABC9C).withOpacity(0.08) : Colors.black.withOpacity(0.02),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: selectedImage != null ? const Color(0xFF1ABC9C) : Colors.white10),
+                          border: Border.all(color: selectedImage != null ? const Color(0xFF1ABC9C) : Colors.black.withOpacity(0.06)),
                         ),
                         child: Column(children: [
                           Icon(
                             selectedImage != null ? Icons.check_circle_rounded : Icons.upload_file_rounded,
-                            color: selectedImage != null ? const Color(0xFF1ABC9C) : Colors.white24, size: 30,
+                            color: selectedImage != null ? const Color(0xFF1ABC9C) : Colors.black26, size: 30,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             selectedImage != null ? '✓ ${selectedImage!.name}' : 'Pilih Bukti Transfer dari Galeri',
                             style: TextStyle(
-                              color: selectedImage != null ? const Color(0xFF1ABC9C) : Colors.white54,
+                              color: selectedImage != null ? const Color(0xFF1ABC9C) : Colors.black54,
                               fontSize: 12, fontWeight: FontWeight.w600,
                             ),
                           ),
                           if (selectedImage == null) ...[
                             const SizedBox(height: 4),
                             const Text('JPG / PNG • Maks 5MB',
-                                style: TextStyle(color: Colors.white24, fontSize: 10)),
+                                style: TextStyle(color: Colors.black38, fontSize: 10)),
                           ],
                         ]),
                       ),
@@ -2230,7 +2239,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Center(
                       child: TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('BATAL', style: TextStyle(color: Colors.white24, fontSize: 11)),
+                        child: const Text('BATAL', style: TextStyle(color: Colors.black38, fontSize: 11)),
                       ),
                     ),
                   ],
@@ -2248,8 +2257,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 12)),
-        Text(value, style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+        Text(label, style: const TextStyle(color: Colors.black45, fontSize: 11)),
+        Text(value, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 11)),
       ],
     );
   }
@@ -2263,9 +2272,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
         padding: const EdgeInsets.only(top: 12),
         child: Row(
           children: [
-            Icon(Icons.location_off, color: Colors.white24, size: 14),
+            Icon(Icons.location_off, color: Colors.black38, size: 14),
             const SizedBox(width: 8),
-            Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.white24, fontSize: 11, fontStyle: FontStyle.italic)),
+            Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.black38, fontSize: 11, fontStyle: FontStyle.italic)),
           ],
         ),
       );
@@ -2276,33 +2285,33 @@ class _OrdersScreenState extends State<OrdersScreen> {
       margin: const EdgeInsets.only(top: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFD4AF37).withOpacity(0.05),
-        border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.15)),
-        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFFA67C1E).withOpacity(0.05),
+        border: Border.all(color: const Color(0xFFA67C1E).withOpacity(0.15)),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on, color: Color(0xFFD4AF37), size: 16),
+              const Icon(Icons.location_on, color: Color(0xFFA67C1E), size: 16),
               const SizedBox(width: 8),
-              Text('ALAMAT PENGIRIMAN', style: GoogleFonts.montserrat(color: const Color(0xFFD4AF37), fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
+              Text('ALAMAT PENGIRIMAN', style: GoogleFonts.montserrat(color: const Color(0xFFA67C1E), fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
             ],
           ),
           const SizedBox(height: 12),
-          Text(order['user']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+          Text(order['user']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text('${addr['name']} • ${addr['phone']}', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+          Text('${addr['name']} • ${addr['phone']}', style: const TextStyle(color: Colors.black87, fontSize: 11)),
           const SizedBox(height: 4),
           Text(
             '${addr['streetAddress']}, ${addr['district']}, ${addr['city']}, ${addr['province']} ${addr['postalCode']}',
-            style: const TextStyle(color: Colors.white38, fontSize: 10),
+            style: const TextStyle(color: Colors.black54, fontSize: 10),
           ),
           if (addr['detailAddress'] != null && addr['detailAddress'].toString().isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: Text('(${addr['detailAddress']})', style: const TextStyle(color: Colors.white24, fontSize: 10)),
+              child: Text('(${addr['detailAddress']})', style: const TextStyle(color: Colors.black45, fontSize: 10)),
             ),
         ],
       ),

@@ -89,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const goldPrimary = Color(0xFFD4AF37);
+    const goldPrimary = Color(0xFFA67C1E);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -117,60 +117,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 40),
 
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                    child: Container(
-                      width: double.infinity,
-                      constraints: const BoxConstraints(maxWidth: 450),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.04),
-                        border: Border.all(color: Colors.white.withOpacity(0.1), width: 0.5),
-                        boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 40, spreadRadius: -10),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          _buildInput(_nameController, 'NAMA LENGKAP', Icons.person_outline),
-                          const SizedBox(height: 20),
-                          _buildInput(_phoneController, 'NOMOR TELEPON', Icons.phone_android_outlined, keyboard: TextInputType.phone),
-                          const SizedBox(height: 20),
-                          _buildInput(_emailController, 'ALAMAT EMAIL', Icons.email_outlined, keyboard: TextInputType.emailAddress),
-                          const SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: _isLoading && !_otpSent
-                              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: goldPrimary, strokeWidth: 1.5))
-                              : TextButton(
-                                  onPressed: _otpSent ? null : _requestOtp,
-                                  style: TextButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    minimumSize: Size.zero,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                  child: Text(
-                                    _otpSent ? 'OTP TERKIRIM' : 'KIRIM KODE OTP',
-                                    style: GoogleFonts.montserrat(
-                                      color: _otpSent ? Colors.green : goldPrimary,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 1,
-                                    ),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    width: double.infinity,
+                    constraints: const BoxConstraints(maxWidth: 450),
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black.withOpacity(0.08), width: 0.8),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 30, spreadRadius: 0),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        _buildInput(_nameController, 'NAMA LENGKAP', Icons.person_outline),
+                        const SizedBox(height: 20),
+                        _buildInput(_phoneController, 'NOMOR TELEPON', Icons.phone_android_outlined, keyboard: TextInputType.phone),
+                        const SizedBox(height: 20),
+                        _buildInput(_emailController, 'ALAMAT EMAIL', Icons.email_outlined, keyboard: TextInputType.emailAddress),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: _isLoading && !_otpSent
+                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: goldPrimary, strokeWidth: 1.5))
+                            : TextButton(
+                                onPressed: _otpSent ? null : _requestOtp,
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: Text(
+                                  _otpSent ? 'OTP TERKIRIM' : 'KIRIM KODE OTP',
+                                  style: GoogleFonts.montserrat(
+                                    color: _otpSent ? Colors.green : goldPrimary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1,
                                   ),
                                 ),
-                          ),
-                          const SizedBox(height: 10),
-                          _buildInput(_otpController, 'KODE OTP', Icons.security_outlined, keyboard: TextInputType.number),
-                          const SizedBox(height: 20),
-                          _buildInput(_passwordController, 'PASSWORD', Icons.lock_outline, isPassword: true),
-                          const SizedBox(height: 40),
-                          _isLoading && _otpSent
-                            ? const CircularProgressIndicator(color: goldPrimary, strokeWidth: 1.5)
-                            : _buildCraftedButton('DAFTAR SEKARANG', _register),
-                        ],
-                      ),
+                              ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildInput(_otpController, 'KODE OTP', Icons.security_outlined, keyboard: TextInputType.number),
+                        const SizedBox(height: 20),
+                        _buildInput(_passwordController, 'PASSWORD', Icons.lock_outline, isPassword: true),
+                        const SizedBox(height: 40),
+                        _isLoading && _otpSent
+                          ? const CircularProgressIndicator(color: goldPrimary, strokeWidth: 1.5)
+                          : _buildCraftedButton('DAFTAR SEKARANG', _register),
+                      ],
                     ),
                   ),
                 ).animate().fadeIn(delay: 300.ms),
@@ -202,19 +199,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       controller: controller,
       obscureText: isPassword ? _obscurePassword : false,
       keyboardType: keyboard,
-      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 13, letterSpacing: 1),
+      style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 13, letterSpacing: 1),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.4), fontSize: 9, letterSpacing: 4),
-        prefixIcon: Icon(icon, color: const Color(0xFFD4AF37), size: 16),
+        labelStyle: GoogleFonts.montserrat(color: Colors.black45, fontSize: 9, letterSpacing: 4),
+        prefixIcon: Icon(icon, color: const Color(0xFFA67C1E), size: 16),
         suffixIcon: isPassword
             ? IconButton(
-                icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFD4AF37), size: 16),
+                icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: const Color(0xFFA67C1E), size: 16),
                 onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
               )
             : null,
-        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
-        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
       ),
     );
   }
@@ -225,12 +222,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       height: 50,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: Color(0xFFD4AF37), width: 1),
-          foregroundColor: const Color(0xFFD4AF37),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          side: const BorderSide(color: Color(0xFFA67C1E), width: 1.2),
+          foregroundColor: const Color(0xFFA67C1E),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         onPressed: onPressed,
-        child: Text(text, style: GoogleFonts.montserrat(fontWeight: FontWeight.w400, letterSpacing: 3, fontSize: 11)),
+        child: Text(text, style: GoogleFonts.montserrat(fontWeight: FontWeight.w600, letterSpacing: 3, fontSize: 11)),
       ),
     );
   }

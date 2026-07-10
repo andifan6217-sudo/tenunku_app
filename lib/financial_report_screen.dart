@@ -88,9 +88,9 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const dark = Color(0xFF0F0918);
-    const card = Color(0xFF130B22);
+    const gold = Color(0xFFA67C1E);
+    const dark = Color(0xFFF9FAFC);
+    const card = Colors.white;
 
     final fmt = DateFormat('dd MMM yyyy');
     final rangeLabel = '${fmt.format(_range.start)} - ${fmt.format(_range.end)}';
@@ -109,8 +109,9 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
     return Scaffold(
       backgroundColor: dark,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         title: Text(
           'LAPORAN KEUANGAN',
           style: GoogleFonts.montserrat(
@@ -144,7 +145,7 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator(color: gold))
           : _error != null
-              ? Center(
+               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24),
                     child: Column(
@@ -154,18 +155,22 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
                         const SizedBox(height: 12),
                         Text(
                           'Gagal memuat laporan',
-                          style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: GoogleFonts.montserrat(color: Colors.black87, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           _error!,
-                          style: const TextStyle(color: Colors.white38, fontSize: 11),
+                          style: const TextStyle(color: Colors.black45, fontSize: 11),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
                         OutlinedButton(
                           onPressed: _fetch,
-                          style: OutlinedButton.styleFrom(foregroundColor: gold, side: BorderSide(color: gold.withOpacity(0.6))),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: gold,
+                            side: BorderSide(color: gold.withOpacity(0.6)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
                           child: const Text('COBA LAGI'),
                         ),
                       ],
@@ -183,8 +188,15 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: card,
-                          border: Border.all(color: Colors.white10),
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
                           borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.02),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -193,12 +205,12 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
                             Expanded(
                               child: Text(
                                 rangeLabel,
-                                style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
+                                style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600),
                               ),
                             ),
                             TextButton(
                               onPressed: _pickRange,
-                              child: const Text('UBAH', style: TextStyle(color: gold)),
+                              child: const Text('UBAH', style: TextStyle(color: gold, fontWeight: FontWeight.bold)),
                             )
                           ],
                         ),
@@ -207,18 +219,18 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
 
                       _kpiCard('TOTAL PESANAN', '$countOrders', Icons.receipt_long, gold, card),
                       const SizedBox(height: 12),
-                      _kpiCard('PENDAPATAN (LUNAS)', Globals.formatRupiah(revenueFullPaid), Icons.payments_outlined, Colors.greenAccent, card),
+                      _kpiCard('PENDAPATAN (LUNAS)', Globals.formatRupiah(revenueFullPaid), Icons.payments_outlined, Colors.green, card),
                       const SizedBox(height: 12),
-                      _kpiCard('DP TERVERIFIKASI', Globals.formatRupiah(dpVerifiedTotal), Icons.verified_outlined, Colors.amber, card),
+                      _kpiCard('DP TERVERIFIKASI', Globals.formatRupiah(dpVerifiedTotal), Icons.verified_outlined, gold, card),
                       const SizedBox(height: 12),
-                      _kpiCard('TUNGGAKAN DP', Globals.formatRupiah(outstandingDpTotal), Icons.hourglass_top, Colors.orangeAccent, card),
+                      _kpiCard('TUNGGAKAN DP', Globals.formatRupiah(outstandingDpTotal), Icons.hourglass_top, Colors.orange, card),
                       const SizedBox(height: 12),
-                      _kpiCard('TUNGGAKAN PELUNASAN', Globals.formatRupiah(outstandingFullTotal), Icons.hourglass_bottom, Colors.lightBlueAccent, card),
+                      _kpiCard('TUNGGAKAN PELUNASAN', Globals.formatRupiah(outstandingFullTotal), Icons.hourglass_bottom, Colors.blue, card),
 
                       const SizedBox(height: 28),
                       Text(
                         'RINCIAN PESANAN',
-                        style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4),
+                        style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4),
                       ),
                       const SizedBox(height: 12),
 
@@ -226,7 +238,7 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 32),
-                            child: Text('Tidak ada transaksi pada rentang ini', style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 11)),
+                            child: Text('Tidak ada transaksi pada rentang ini', style: GoogleFonts.montserrat(color: Colors.black38, fontSize: 11)),
                           ),
                         )
                       else
@@ -375,8 +387,15 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: card,
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
         borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -394,9 +413,9 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.w600, letterSpacing: 2)),
+                Text(label, style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 9, fontWeight: FontWeight.w600, letterSpacing: 2)),
                 const SizedBox(height: 6),
-                Text(value, style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                Text(value, style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -420,8 +439,15 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: card,
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
         borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -430,19 +456,19 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
             children: [
               Text('ORD-${o['id']}', style: GoogleFonts.montserrat(color: gold, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
               const Spacer(),
-              Text(date, style: const TextStyle(color: Colors.white24, fontSize: 10)),
+              Text(date, style: const TextStyle(color: Colors.black38, fontSize: 10)),
             ],
           ),
           const SizedBox(height: 8),
-          Text(products, style: const TextStyle(color: Colors.white70, fontSize: 11), maxLines: 2, overflow: TextOverflow.ellipsis),
+          Text(products, style: const TextStyle(color: Colors.black87, fontSize: 11), maxLines: 2, overflow: TextOverflow.ellipsis),
           const SizedBox(height: 4),
-          Text('Pelanggan: $customer', style: const TextStyle(color: Colors.white38, fontSize: 10)),
+          Text('Pelanggan: $customer', style: const TextStyle(color: Colors.black54, fontSize: 10)),
           const SizedBox(height: 12),
           Row(
             children: [
-              _pill('Status: $status', Colors.white24),
+              _pill('Status: $status', Colors.black38),
               const SizedBox(width: 8),
-              _pill('Total: ${Globals.formatRupiah(total)}', gold.withOpacity(0.7)),
+              _pill('Total: ${Globals.formatRupiah(total)}', gold.withOpacity(0.8)),
             ],
           ),
           const SizedBox(height: 8),
@@ -462,11 +488,11 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
-      child: Text(text, style: const TextStyle(color: Colors.white70, fontSize: 10)),
+      child: Text(text, style: TextStyle(color: color.withOpacity(0.9), fontSize: 10, fontWeight: FontWeight.bold)),
     );
   }
 
@@ -474,16 +500,16 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.black.withOpacity(0.02),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: Colors.white24, fontSize: 9)),
+          Text(label, style: const TextStyle(color: Colors.black45, fontSize: 9)),
           const SizedBox(height: 4),
-          Text(value, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
+          Text(value, style: const TextStyle(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.bold)),
         ],
       ),
     );

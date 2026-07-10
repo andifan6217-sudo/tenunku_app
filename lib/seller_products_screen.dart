@@ -56,23 +56,24 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkStudio = Color(0xFF0F0B1E);
+    const gold = Color(0xFFA67C1E);
+    const scaffoldBg = Color(0xFFF9FAFC);
 
     return Scaffold(
-      backgroundColor: darkStudio,
+      backgroundColor: scaffoldBg,
       appBar: widget.showAppBar ? AppBar(
-        backgroundColor: darkStudio,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         title: Text('PRODUK SAYA', style: GoogleFonts.montserrat(color: gold, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 4)),
         centerTitle: true,
-        iconTheme: const IconThemeData(color: gold),
+        iconTheme: const IconThemeData(color: Color(0xFFA67C1E)),
         actions: [
-          IconButton(icon: const Icon(Icons.add, color: gold), onPressed: () => _showProductDialog(null)),
+          IconButton(icon: const Icon(Icons.add, color: Color(0xFFA67C1E)), onPressed: () => _showProductDialog(null)),
         ],
       ) : null,
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: gold))
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFFA67C1E)))
           : Column(
               children: [
                 _buildStatsHeader(gold),
@@ -83,7 +84,7 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
                     itemCount: _filteredProducts.length,
                     itemBuilder: (context, index) {
                       final product = _filteredProducts[index];
-                      return _buildProductItem(product, gold, darkStudio)
+                      return _buildProductItem(product, gold, scaffoldBg)
                           .animate()
                           .fadeIn(delay: (index * 50).ms)
                           .slideX(begin: 0.1);
@@ -98,13 +99,13 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
   Widget _buildStatsHeader(Color gold) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: gold.withOpacity(0.05)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.06)))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _statItem('TOTAL', _totalProduct.toString(), gold),
-          _statItem('AKTIF', _activeProduct.toString(), Colors.greenAccent),
-          _statItem('LOW', _lowStockProduct.toString(), Colors.redAccent),
+          _statItem('AKTIF', _activeProduct.toString(), Colors.green),
+          _statItem('LOW', _lowStockProduct.toString(), Colors.red),
         ],
       ),
     );
@@ -113,7 +114,7 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
   Widget _statItem(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 7.5, letterSpacing: 1.5)),
+        Text(label, style: GoogleFonts.montserrat(color: Colors.black38, fontSize: 7.5, letterSpacing: 1.5)),
         const SizedBox(height: 2),
         Text(value, style: GoogleFonts.montserrat(color: color, fontSize: 12, fontWeight: FontWeight.bold)),
       ],
@@ -126,19 +127,20 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
       child: Container(
         height: 36,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.03),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: gold.withOpacity(0.15), width: 0.8),
+          border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: TextField(
           controller: _searchCtrl,
           textAlignVertical: TextAlignVertical.center,
-          style: const TextStyle(color: Colors.white, fontSize: 11),
+          style: const TextStyle(color: Colors.black87, fontSize: 11),
           decoration: InputDecoration(
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             hintText: 'Cari produk kebanggaan anda...',
-            hintStyle: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10),
+            hintStyle: GoogleFonts.montserrat(color: Colors.black45, fontSize: 10),
             prefixIcon: Icon(Icons.search, color: gold, size: 16),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -149,7 +151,7 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
     );
   }
 
-  Widget _buildProductItem(dynamic product, Color gold, Color darkBg) {
+  Widget _buildProductItem(dynamic product, Color gold, Color lightBg) {
     final bool isActive = product['status'] == 'ACTIVE';
 
     final String imageUrl = ApiService.getFormattedImageUrl(product['imageUrl']);
@@ -158,8 +160,10 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,13 +175,14 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: const Color(0xFFF0F0F0),
+                  borderRadius: BorderRadius.circular(8),
                   image: imageUrl.isNotEmpty
                       ? DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover)
                       : null,
                 ),
                 child: imageUrl.isEmpty
-                    ? const Icon(Icons.image_outlined, color: Colors.white24)
+                    ? const Icon(Icons.image_outlined, color: Colors.black38)
                     : null,
               ),
               const SizedBox(width: 16),
@@ -185,18 +190,18 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(product['name'].toString().toUpperCase(), style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text(product['name'].toString().toUpperCase(), style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
                     Text(
                       product['description'] ?? 'No description',
-                      style: const TextStyle(color: Colors.white38, fontSize: 10, height: 1.4),
+                      style: const TextStyle(color: Colors.black45, fontSize: 10, height: 1.4),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        _infoBadge(Icons.star, product['rating'].toString(), Colors.orangeAccent),
+                        _infoBadge(Icons.star, product['rating'].toString(), Colors.orange),
                         const SizedBox(width: 8),
                         _infoBadge(Icons.inventory_2, 'Stok: ${product['stock']}', gold),
                       ],
@@ -213,15 +218,15 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
               ),
             ],
           ),
-          const Divider(color: Colors.white10, height: 32),
+          const Divider(color: Colors.black12, height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               _actionBtn(Icons.edit_outlined, 'Edit', gold, () => _showProductDialog(product)),
               const SizedBox(width: 12),
-              _actionBtn(Icons.power_settings_new_outlined, isActive ? 'Nonaktif' : 'Aktifkan', isActive ? Colors.orangeAccent : Colors.greenAccent, () => _toggleStatus(product['id'])),
+              _actionBtn(Icons.power_settings_new_outlined, isActive ? 'Nonaktif' : 'Aktifkan', isActive ? Colors.orange : Colors.green, () => _toggleStatus(product['id'])),
               const SizedBox(width: 12),
-              _actionBtn(Icons.delete_outline, 'Hapus', Colors.redAccent, () => _confirmDelete(product['id'])),
+              _actionBtn(Icons.delete_outline, 'Hapus', Colors.red, () => _confirmDelete(product['id'])),
             ],
           ),
         ],
@@ -295,9 +300,12 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
             return BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: AlertDialog(
-                backgroundColor: const Color(0xFF0F0B1E).withOpacity(0.9),
-                shape: const RoundedRectangleBorder(side: BorderSide(color: Color(0xFFD4AF37), width: 0.5)),
-                title: Text(isEdit ? 'Ubah Koleksi' : 'Koleksi Baru', style: GoogleFonts.playfairDisplay(color: const Color(0xFFD4AF37))),
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.black.withOpacity(0.06)),
+                ),
+                title: Text(isEdit ? 'Ubah Koleksi' : 'Koleksi Baru', style: GoogleFonts.playfairDisplay(color: const Color(0xFFA67C1E))),
                 content: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -324,21 +332,22 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
                             width: double.infinity,
                             height: 180,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.05),
-                              border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.4), width: 1),
+                              color: const Color(0xFFF0F0F0),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFFA67C1E).withOpacity(0.4), width: 1),
                             ),
                             child: pickedFileBytes != null
-                                ? Image.memory(pickedFileBytes!, fit: BoxFit.cover)
+                                ? ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.memory(pickedFileBytes!, fit: BoxFit.cover))
                                 : currentImageUrl != null && currentImageUrl.isNotEmpty
-                                    ? Image.network(ApiService.getFormattedImageUrl(currentImageUrl), fit: BoxFit.cover)
+                                    ? ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.network(ApiService.getFormattedImageUrl(currentImageUrl), fit: BoxFit.cover))
                                     : Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          const Icon(Icons.add_a_photo_outlined, color: Color(0xFFD4AF37), size: 40),
+                                          const Icon(Icons.add_a_photo_outlined, color: Color(0xFFA67C1E), size: 40),
                                           const SizedBox(height: 12),
-                                          Text('TAP UNTUK PILIH FOTO', style: GoogleFonts.montserrat(color: const Color(0xFFD4AF37), fontSize: 10, letterSpacing: 2, fontWeight: FontWeight.bold)),
+                                          Text('TAP UNTUK PILIH FOTO', style: GoogleFonts.montserrat(color: const Color(0xFFA67C1E), fontSize: 10, letterSpacing: 2, fontWeight: FontWeight.bold)),
                                           const SizedBox(height: 4),
-                                          const Text('(PNG, JPG)', style: TextStyle(color: Colors.white24, fontSize: 8)),
+                                          const Text('(PNG, JPG)', style: TextStyle(color: Colors.black38, fontSize: 8)),
                                         ],
                                       ),
                           ),
@@ -354,9 +363,9 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
                   ),
                 ),
                 actions: [
-                  TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
+                  TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.black54))),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD4AF37), foregroundColor: Colors.black),
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFA67C1E), foregroundColor: Colors.white),
                     onPressed: () async {
                       try {
                         // Sanitize numeric inputs (remove dots/commas commonly used in ID formatting)
@@ -403,16 +412,16 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
   }
 
   Widget _dialogInput(TextEditingController ctrl, String label, {TextInputType type = TextInputType.text}) {
-    const gold = Color(0xFFD4AF37);
+    const gold = Color(0xFFA67C1E);
     return TextField(
       controller: ctrl,
       keyboardType: type,
-      style: const TextStyle(color: Colors.white, fontSize: 13),
+      style: const TextStyle(color: Colors.black87, fontSize: 13),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: gold.withOpacity(0.4), fontSize: 9, letterSpacing: 2),
-        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: gold.withOpacity(0.1))),
-        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: gold)),
+        labelStyle: TextStyle(color: gold.withOpacity(0.6), fontSize: 9, letterSpacing: 2),
+        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
       ),
     );
   }
@@ -430,11 +439,15 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF0F0B1E),
-        title: const Text('Hapus Koleksi?', style: TextStyle(color: Colors.white)),
-        content: const Text('Tindakan ini tidak dapat dibatalkan.', style: TextStyle(color: Colors.white54)),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: Colors.black.withOpacity(0.06)),
+        ),
+        title: const Text('Hapus Koleksi?', style: TextStyle(color: Colors.black87)),
+        content: const Text('Tindakan ini tidak dapat dibatalkan.', style: TextStyle(color: Colors.black54)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.black54))),
           TextButton(onPressed: () async {
             try {
               await ApiService.deleteProduct(id);
@@ -445,7 +458,7 @@ class _SellerProductsScreenState extends State<SellerProductsScreen> {
             } catch (e) {
               if (ctx.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gagal menghapus')));
             }
-          }, child: const Text('HAPUS', style: TextStyle(color: Colors.redAccent))),
+          }, child: const Text('HAPUS', style: TextStyle(color: Colors.red))),
         ],
       )
     );

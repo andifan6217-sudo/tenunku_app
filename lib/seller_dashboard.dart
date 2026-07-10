@@ -35,8 +35,7 @@ class _SellerDashboardState extends State<SellerDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkStudio = Color(0xFF0F0B1E);
+    const gold = Color(0xFFA67C1E);
 
     return Scaffold(
       body: IndexedStack(
@@ -45,21 +44,21 @@ class _SellerDashboardState extends State<SellerDashboard> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: gold.withOpacity(0.1), width: 0.5)),
+          border: Border(top: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         ),
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: (index) => setState(() => _selectedIndex = index),
-          backgroundColor: darkStudio,
+          backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: gold,
-          unselectedItemColor: Colors.white24,
+          unselectedItemColor: Colors.black38,
           selectedLabelStyle: GoogleFonts.montserrat(fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
           unselectedLabelStyle: GoogleFonts.montserrat(fontSize: 8, letterSpacing: 1),
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.storefront_outlined), activeIcon: Icon(Icons.storefront), label: 'STUDIO'),
             BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), activeIcon: Icon(Icons.inventory_2), label: 'ITEM'),
-            BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), activeIcon: Icon(Icons.shopping_bag), label: 'ORDER'),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: 'ORDER'),
             BottomNavigationBarItem(icon: Icon(Icons.payments_outlined), activeIcon: Icon(Icons.payments), label: 'PEMBAYARAN'),
             BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'AKUN'),
           ],
@@ -95,8 +94,8 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
   final _bankAccountCtrl = TextEditingController();
   final _accountNameCtrl = TextEditingController();
 
-  static const gold = Color(0xFFD4AF37);
-  static const darkStudio = Color(0xFF0F0B1E);
+  static const gold = Color(0xFFA67C1E);
+  static const darkBg = Color(0xFFF9FAFC);
 
   @override
   void initState() {
@@ -157,27 +156,27 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF130B22),
-        title: const Text('Tolak Pembayaran DP?', style: TextStyle(color: Colors.white, fontSize: 16)),
+        backgroundColor: Colors.white,
+        title: const Text('Tolak Pembayaran DP?', style: TextStyle(color: Colors.black87, fontSize: 16)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Pembayaran akan ditolak dan status pesanan kembali ke PENDING.', style: TextStyle(color: Colors.white54, fontSize: 12)),
+            const Text('Pembayaran akan ditolak dan status pesanan kembali ke PENDING.', style: TextStyle(color: Colors.black54, fontSize: 12)),
             const SizedBox(height: 16),
             TextField(
               controller: reasonCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+              style: const TextStyle(color: Colors.black87, fontSize: 12),
               decoration: const InputDecoration(
                 hintText: 'Alasan penolakan (opsional)',
-                hintStyle: TextStyle(color: Colors.white24, fontSize: 12),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
+                hintStyle: TextStyle(color: Colors.black38, fontSize: 12),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.redAccent)),
               ),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.white38))),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.black45))),
           TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('YA, TOLAK', style: TextStyle(color: Colors.redAccent))),
         ],
       ),
@@ -278,8 +277,10 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.01),
-          border: Border.all(color: Colors.white.withOpacity(0.04), width: 0.8),
+          color: Colors.white,
+          border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -288,7 +289,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
             const SizedBox(width: 8),
             Text(
               'Semua tugas telah diselesaikan',
-              style: GoogleFonts.montserrat(color: Colors.white30, fontSize: 10, letterSpacing: 0.5),
+              style: GoogleFonts.montserrat(color: Colors.black45, fontSize: 10, letterSpacing: 0.5),
             ),
           ],
         ),
@@ -338,7 +339,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                 ),
                 Text(
                   value,
-                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -354,7 +355,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                 const SizedBox(height: 1),
                 Text(
                   subtitle,
-                  style: const TextStyle(color: Colors.white30, fontSize: 8),
+                  style: const TextStyle(color: Colors.black45, fontSize: 8),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -369,12 +370,13 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: darkStudio,
+      backgroundColor: darkBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: AppBar(
-          backgroundColor: darkStudio,
+          backgroundColor: Colors.white,
           elevation: 0,
+          shape: const Border(bottom: BorderSide(color: Color(0x0D000000), width: 0.8)),
           titleSpacing: 0,
           title: Container(
             margin: const EdgeInsets.only(left: 20, top: 12),
@@ -407,7 +409,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                       const SizedBox(height: 2),
                       Text(
                         'SELLER STUDIO',
-                        style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                        style: GoogleFonts.playfairDisplay(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                       ),
                     ],
                   ),
@@ -493,7 +495,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                             const Center(
                               child: Padding(
                                 padding: EdgeInsets.all(40),
-                                child: Text('Belum ada pesanan', style: TextStyle(color: Colors.white24, fontSize: 12)),
+                                child: Text('Belum ada pesanan', style: TextStyle(color: Colors.black38, fontSize: 12)),
                               ),
                             )
                           else
@@ -583,7 +585,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         decoration: BoxDecoration(
           color: isSelected ? gold.withOpacity(0.12) : Colors.transparent,
           border: Border.all(
-            color: isSelected ? gold.withOpacity(0.4) : Colors.white.withOpacity(0.08),
+            color: isSelected ? gold.withOpacity(0.4) : Colors.black.withOpacity(0.08),
             width: 0.8,
           ),
           borderRadius: BorderRadius.circular(4),
@@ -591,7 +593,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         child: Text(
           label,
           style: GoogleFonts.montserrat(
-            color: isSelected ? gold : Colors.white38,
+            color: isSelected ? gold : Colors.black54,
             fontSize: 8,
             fontWeight: FontWeight.bold,
           ),
@@ -673,7 +675,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF130B22),
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -688,12 +690,12 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)))),
+                  Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(2)))),
                   const SizedBox(height: 16),
                   Text(
                     'PILIH BULAN GRAFIK',
                     style: GoogleFonts.montserrat(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.5,
@@ -704,7 +706,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                     leading: const Icon(Icons.history, color: gold),
                     title: Text(
                       '7 / 30 Hari Terakhir (Default)',
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12),
+                      style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 12),
                     ),
                     onTap: () {
                       Navigator.pop(ctx);
@@ -713,19 +715,19 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                       });
                     },
                   ),
-                  const Divider(color: Colors.white10),
+                  const Divider(color: Colors.black12),
                   ...months.map((m) {
                     final isSelected = _showCustomMonth && _chartMonth.year == m.year && _chartMonth.month == m.month;
                     return ListTile(
                       leading: Icon(
                         Icons.calendar_today,
-                        color: isSelected ? gold : Colors.white24,
+                        color: isSelected ? gold : Colors.black38,
                         size: 16,
                   ),
                   title: Text(
                     monthFmt.format(m).toUpperCase(),
                     style: GoogleFonts.montserrat(
-                      color: isSelected ? gold : Colors.white70,
+                      color: isSelected ? gold : Colors.black54,
                       fontSize: 12,
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
@@ -762,8 +764,10 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -778,7 +782,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                     Text(
                       title,
                       style: GoogleFonts.montserrat(
-                        color: Colors.white54,
+                      color: Colors.black54,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -894,8 +898,10 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -925,7 +931,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                         Text(
                           total.toString(),
                           style: GoogleFonts.montserrat(
-                            color: Colors.white,
+                            color: Colors.black87,
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
@@ -933,7 +939,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                         Text(
                           'TOTAL',
                           style: GoogleFonts.montserrat(
-                            color: Colors.white30,
+                            color: Colors.black45,
                             fontSize: 7,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
@@ -971,7 +977,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                         child: Text(
                           s.label,
                           style: GoogleFonts.montserrat(
-                            color: Colors.white54,
+                            color: Colors.black54,
                             fontSize: 8,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,
@@ -981,7 +987,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                       Text(
                         '${s.count} ($percentage%)',
                         style: GoogleFonts.montserrat(
-                          color: Colors.white70,
+                          color: Colors.black87,
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1037,8 +1043,10 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.02),
-          border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+          color: Colors.white,
+          border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Row(
           children: [
@@ -1058,7 +1066,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                   Text(
                     label,
                     style: GoogleFonts.montserrat(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 8.5,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
@@ -1068,7 +1076,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                   Text(
                     subtitle,
                     style: const TextStyle(
-                      color: Colors.white30,
+                      color: Colors.black45,
                       fontSize: 8,
                     ),
                     maxLines: 1,
@@ -1077,7 +1085,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
+            const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 7),
           ],
         ),
       ),
@@ -1107,7 +1115,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         builder: (ctx, setSheetState) => Container(
           padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(ctx).viewInsets.bottom + 32),
           decoration: const BoxDecoration(
-            color: Color(0xFF130B22),
+            color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: SingleChildScrollView(
@@ -1115,15 +1123,15 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)))),
+                Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(2)))),
                 const SizedBox(height: 24),
                 Center(
                   child: Text('PENGATURAN REKENING & QRIS',
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                      style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
                 ),
                 const SizedBox(height: 4),
                 const Center(child: Text('Info ini akan ditampilkan kepada pembeli saat melakukan transfer manual.',
-                    textAlign: TextAlign.center, style: TextStyle(color: Colors.white38, fontSize: 10))),
+                    textAlign: TextAlign.center, style: TextStyle(color: Colors.black45, fontSize: 10))),
                 const SizedBox(height: 28),
 
                 _buildSettingField(_bankNameCtrl, 'Nama Bank', 'Contoh: BCA, Mandiri, BRI, BNI', gold),
@@ -1133,7 +1141,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                 _buildSettingField(_accountNameCtrl, 'Nama Pemilik Rekening', 'Contoh: TENUN GEZA OFFICIAL', gold),
                 const SizedBox(height: 24),
 
-                const Text('Gambar QRIS', style: TextStyle(color: Colors.white54, fontSize: 12, fontWeight: FontWeight.bold)),
+                const Text('Gambar QRIS', style: TextStyle(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 InkWell(
                   onTap: isUploadingQris ? null : () async {
@@ -1159,16 +1167,16 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                     decoration: BoxDecoration(
                       color: (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
                           ? gold.withOpacity(0.05)
-                          : Colors.white.withOpacity(0.03),
+                          : const Color(0xFFF0F0F0),
                       border: Border.all(
                         color: (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
                             ? gold.withOpacity(0.4)
-                            : Colors.white12,
+                            : Colors.black.withOpacity(0.06),
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: isUploadingQris
-                        ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Color(0xFFD4AF37), strokeWidth: 2)))
+                        ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Color(0xFFA67C1E), strokeWidth: 2)))
                         : (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
                             ? Column(children: [
                                 ClipRRect(
@@ -1176,18 +1184,18 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                                   child: Image.network(
                                     ApiService.getFormattedImageUrl(qrisImageUrl),
                                     height: 160, fit: BoxFit.contain,
-                                    errorBuilder: (_, _, _) => const Icon(Icons.broken_image, color: Colors.white24, size: 40),
+                                    errorBuilder: (_, _, _) => const Icon(Icons.broken_image, color: Colors.black38, size: 40),
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text('Ketuk untuk ganti gambar QRIS', style: TextStyle(color: gold.withOpacity(0.7), fontSize: 10)),
                               ])
                             : Column(children: [
-                                const Icon(Icons.qr_code_2, color: Colors.white24, size: 40),
+                                const Icon(Icons.qr_code_2, color: Colors.black38, size: 40),
                                 const SizedBox(height: 8),
-                                const Text('Ketuk untuk upload gambar QRIS dari galeri', style: TextStyle(color: Colors.white38, fontSize: 11)),
+                                const Text('Ketuk untuk upload gambar QRIS dari galeri', style: TextStyle(color: Colors.black54, fontSize: 11)),
                                 const SizedBox(height: 4),
-                                const Text('JPG / PNG • Maks 5MB', style: TextStyle(color: Colors.white24, fontSize: 10)),
+                                const Text('JPG / PNG • Maks 5MB', style: TextStyle(color: Colors.black38, fontSize: 10)),
                               ]),
                   ),
                 ),
@@ -1243,20 +1251,20 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600)),
+        Text(label, style: const TextStyle(color: Colors.black54, fontSize: 11, fontWeight: FontWeight.w600)),
         const SizedBox(height: 6),
         TextField(
           controller: ctrl,
           keyboardType: keyboardType,
-          style: const TextStyle(color: Colors.white, fontSize: 12),
+          style: const TextStyle(color: Colors.black87, fontSize: 12),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Colors.white24, fontSize: 11),
+            hintStyle: const TextStyle(color: Colors.black38, fontSize: 11),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.02),
+            fillColor: const Color(0xFFF9FAFC),
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: gold),
@@ -1269,7 +1277,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
 
   Widget _buildBusinessSummaryCards() {
     final isPositive = _isGrowthPositive(_stats!['totals']['growth']);
-    final growthColor = isPositive ? Colors.greenAccent : Colors.redAccent;
+    final growthColor = isPositive ? Colors.green : Colors.redAccent;
 
     return SizedBox(
       height: 76,
@@ -1309,7 +1317,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
             'PRODUK AKTIF',
             _stats!['totals']['activeProducts'].toString(),
             Icons.store_outlined,
-            Colors.greenAccent,
+            Colors.green,
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const SellerProductsScreen(showAppBar: true)),
@@ -1320,7 +1328,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
             'MENUNGGU DP',
             _stats!['totals']['unpaidDP'].toString(),
             Icons.pending_actions,
-            Colors.orangeAccent,
+            Colors.orange,
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const OrdersScreen(showBackButton: true)),
@@ -1345,11 +1353,13 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         width: isPrimary ? 160 : 110,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white.withOpacity(0.03),
+          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white,
           border: Border.all(
-            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.white.withOpacity(0.06),
+            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.black.withOpacity(0.06),
             width: 0.8,
           ),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1360,7 +1370,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
               children: [
                 Icon(icon, color: accentColor.withOpacity(0.7), size: 13),
                 if (onTap != null)
-                  const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
+                  const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 7),
               ],
             ),
             Column(
@@ -1369,7 +1379,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                 Text(
                   label,
                   style: GoogleFonts.montserrat(
-                    color: Colors.white38,
+                    color: Colors.black45,
                     fontSize: 7,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
@@ -1381,7 +1391,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                 Text(
                   value,
                   style: GoogleFonts.montserrat(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontSize: isPrimary ? 11 : 13,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1417,7 +1427,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
             children: [
               Text(
                 userName.toString().toUpperCase(),
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold),
               ),
               Text(
                 Globals.formatRupiah(order['dpAmount']),
@@ -1428,7 +1438,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
           const SizedBox(height: 4),
           Text(
             productName,
-            style: const TextStyle(color: Colors.white54, fontSize: 10),
+            style: const TextStyle(color: Colors.black54, fontSize: 10),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -1439,7 +1449,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                 child: ElevatedButton(
                   onPressed: () => _verifyOrder(order['id']),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4AF37),
+                    backgroundColor: const Color(0xFFA67C1E),
                     foregroundColor: Colors.black,
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                     padding: EdgeInsets.zero,
@@ -1479,8 +1489,10 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Row(
         children: [
@@ -1492,18 +1504,18 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
                   children: [
                     Text('ORD-${order['id']}', style: GoogleFonts.montserrat(color: gold, fontSize: 9, fontWeight: FontWeight.bold)),
                     const SizedBox(width: 8),
-                    Text(formattedDate, style: const TextStyle(color: Colors.white24, fontSize: 9)),
+                    Text(formattedDate, style: const TextStyle(color: Colors.black38, fontSize: 9)),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Text(
                   order['pelanggan'].toString().toUpperCase(),
-                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                  style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   order['produk'] ?? '-',
-                  style: const TextStyle(color: Colors.white54, fontSize: 10),
+                  style: const TextStyle(color: Colors.black54, fontSize: 10),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1513,7 +1525,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(Globals.formatRupiah(order['total']), style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600)),
+              Text(Globals.formatRupiah(order['total']), style: const TextStyle(color: Colors.black54, fontSize: 11, fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -1537,7 +1549,7 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
         children: [
           const Icon(Icons.cloud_off, color: Colors.redAccent, size: 50),
           const SizedBox(height: 16),
-          const Text('Koneksi Server Terputus', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          const Text('Koneksi Server Terputus', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
           const SizedBox(height: 24),
           TextButton(onPressed: _fetchStats, child: const Text('COBA LAGI', style: TextStyle(color: gold))),
         ],
@@ -1549,15 +1561,15 @@ class _SellerStudioTabState extends State<SellerStudioTab> {
     switch (status) {
       case 'PENDING': return Colors.orange;
       case 'DP_PAID': return Colors.amber;
-      case 'VERIFIED': return Colors.lightBlueAccent;
-      case 'PROCESSED': return Colors.blueAccent;
-      case 'FULL_PAY_PAID': return Colors.purpleAccent;
+      case 'VERIFIED': return Colors.lightBlue;
+      case 'PROCESSED': return Colors.blue;
+      case 'FULL_PAY_PAID': return Colors.purple;
       case 'PAID': return Colors.blue;
-      case 'SHIPPED': return Colors.tealAccent;
-      case 'DELIVERED': return Colors.greenAccent;
+      case 'SHIPPED': return Colors.teal;
+      case 'DELIVERED': return Colors.green;
       case 'COMPLETED': return Colors.green;
       case 'CANCELLED': return Colors.redAccent;
-      default: return Colors.white38;
+      default: return Colors.black45;
     }
   }
 
@@ -1669,33 +1681,39 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
                 children: [
                   Align(
                     alignment: Alignment.topRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 28),
-                      onPressed: () => Navigator.pop(context),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 18,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.black87, size: 20),
+                        onPressed: () => Navigator.pop(context),
+                        padding: EdgeInsets.zero,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Container(
+                    constraints: const BoxConstraints(maxWidth: 500),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF130B22),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3)),
+                      border: Border.all(color: const Color(0xFFA67C1E).withOpacity(0.15)),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           title,
                           style: GoogleFonts.montserrat(
-                            color: const Color(0xFFD4AF37),
+                            color: Colors.black87,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                             letterSpacing: 2,
@@ -1704,17 +1722,17 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
                         const SizedBox(height: 4),
                         const Text(
                           'Cubit/Pinch untuk memperbesar gambar',
-                          style: TextStyle(color: Colors.white54, fontSize: 11),
+                          style: TextStyle(color: Colors.black54, fontSize: 11),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Container(
-                            color: const Color(0xFF0F0B1E),
-                            padding: const EdgeInsets.all(12),
+                            color: const Color(0xFFF9FAFC),
+                            width: double.infinity,
                             constraints: BoxConstraints(
-                              maxHeight: MediaQuery.of(context).size.height * 0.6,
+                              maxHeight: MediaQuery.of(context).size.height * 0.75,
                             ),
                             child: InteractiveViewer(
                               panEnabled: true,
@@ -1726,7 +1744,7 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
                                 fadeInDuration: const Duration(milliseconds: 250),
                                 placeholder: (context, url) => const Center(
                                   child: CircularProgressIndicator(
-                                    color: Color(0xFFD4AF37),
+                                    color: Color(0xFFA67C1E),
                                     strokeWidth: 1.5,
                                   ),
                                 ),
@@ -1736,7 +1754,7 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
                                     children: [
                                       Icon(Icons.error_outline, color: Colors.redAccent, size: 40),
                                       SizedBox(height: 12),
-                                      Text('Gagal memuat gambar', style: TextStyle(color: Colors.white38, fontSize: 12)),
+                                      Text('Gagal memuat gambar', style: TextStyle(color: Colors.black38, fontSize: 12)),
                                     ],
                                   ),
                                 ),
@@ -1772,8 +1790,9 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return const Center(child: CircularProgressIndicator(color: Color(0xFFD4AF37)));
-    if (_orders.isEmpty) return const Center(child: Text('TIADA TUGASAN VERIFIKASI', style: TextStyle(color: Colors.white10, fontSize: 10, letterSpacing: 2)));
+    const gold = Color(0xFFA67C1E);
+    if (_isLoading) return const Center(child: CircularProgressIndicator(color: gold));
+    if (_orders.isEmpty) return const Center(child: Text('TIADA TUGASAN VERIFIKASI', style: TextStyle(color: Colors.black38, fontSize: 10, letterSpacing: 2)));
 
     return ListView.builder(
       padding: const EdgeInsets.all(20),
@@ -1784,14 +1803,21 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.02), border: Border.all(color: Colors.amber.withOpacity(0.1))),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.black.withOpacity(0.06)),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('ORD-${order['id']}', style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold)),
+                  Text('ORD-${order['id']}', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     color: isFull ? Colors.blue.withOpacity(0.1) : Colors.amber.withOpacity(0.1),
@@ -1800,79 +1826,45 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
                 ],
               ),
               const SizedBox(height: 12),
-              Text(order['user']['name'].toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text(order['user']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold)),
               _buildBuyerAddress(order),
               if (order['paymentProofUrl'] != null && order['paymentProofUrl'].toString().isNotEmpty) ...[
-                const SizedBox(height: 16),
-                const Text('BUKTI PEMBAYARAN:', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                const SizedBox(height: 8),
-                GestureDetector(
+                const SizedBox(height: 12),
+                InkWell(
                   onTap: () {
                     final url = ApiService.getFormattedImageUrl(order['paymentProofUrl']);
                     _showImagePreviewDialog(context, url, 'BUKTI TRANSFER');
                   },
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Tooltip(
-                      message: 'Klik untuk memperbesar bukti pembayaran',
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: ApiService.getFormattedImageUrl(order['paymentProofUrl']),
-                              height: 140,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              fadeInDuration: const Duration(milliseconds: 350),
-                              placeholder: (context, url) => Container(
-                                height: 140,
-                                color: const Color(0xFF1C1C1C),
-                                child: Container(
-                                  decoration: const BoxDecoration(color: Color(0xFF232323)),
-                                )
-                                    .animate(onPlay: (c) => c.repeat())
-                                    .shimmer(
-                                      duration: const Duration(milliseconds: 1200),
-                                      color: const Color(0xFF3A3A3A),
-                                      angle: 0.3,
-                                    ),
-                              ),
-                              errorWidget: (context, url, error) => const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.error_outline, color: Colors.white24, size: 14),
-                                      SizedBox(width: 8),
-                                      Text('Gagal memuat bukti transfer', style: TextStyle(color: Colors.white24, fontSize: 10)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              color: Colors.black.withOpacity(0.6),
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.zoom_in, color: Colors.white, size: 12),
-                                  SizedBox(width: 4),
-                                  Text('PERBESAR BUKTI', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                          ],
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: gold.withOpacity(0.06),
+                      border: Border.all(color: gold.withOpacity(0.2), width: 0.8),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.receipt_long_rounded, color: Colors.black54, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          'LIHAT BUKTI TRANSFER',
+                          style: GoogleFonts.montserrat(
+                            color: Colors.black87,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        Icon(Icons.open_in_new_rounded, color: Colors.black38, size: 11),
+                      ],
                     ),
                   ),
                 ),
               ],
-              const Divider(height: 32, color: Colors.white10),
+              const Divider(height: 32, color: Colors.black12),
               Row(
                 children: [
                   Expanded(
@@ -1912,10 +1904,10 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
       return Padding(
         padding: const EdgeInsets.only(top: 6),
         child: Row(
-          children: [
-            const Icon(Icons.location_off, color: Colors.white24, size: 12),
-            const SizedBox(width: 4),
-            const Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.white24, fontSize: 10, fontStyle: FontStyle.italic)),
+          children: const [
+            Icon(Icons.location_off, color: Colors.black26, size: 12),
+            SizedBox(width: 4),
+            Text('Belum ada alamat pengiriman', style: TextStyle(color: Colors.black38, fontSize: 10, fontStyle: FontStyle.italic)),
           ],
         ),
       );
@@ -1925,27 +1917,27 @@ class _InternalOrderVerificationViewState extends State<InternalOrderVerificatio
       margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFD4AF37).withOpacity(0.05),
-        border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.15)),
+        color: const Color(0xFFA67C1E).withOpacity(0.05),
+        border: Border.all(color: const Color(0xFFA67C1E).withOpacity(0.15)),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.location_on, color: Color(0xFFD4AF37), size: 14),
+          const Icon(Icons.location_on, color: Color(0xFFA67C1E), size: 14),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${addr['name']} • ${addr['phone']}', style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
+                Text('${addr['name']} • ${addr['phone']}', style: const TextStyle(color: Colors.black87, fontSize: 10, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 2),
                 Text(
                   '${addr['streetAddress']}, ${addr['district']}, ${addr['city']}, ${addr['province']} ${addr['postalCode']}',
-                  style: const TextStyle(color: Colors.white38, fontSize: 9),
+                  style: const TextStyle(color: Colors.black54, fontSize: 9),
                 ),
                 if (addr['detailAddress'] != null && addr['detailAddress'].toString().isNotEmpty)
-                  Text('(${addr['detailAddress']})', style: const TextStyle(color: Colors.white24, fontSize: 9)),
+                  Text('(${addr['detailAddress']})', style: const TextStyle(color: Colors.black38, fontSize: 9)),
               ],
             ),
           ),
@@ -2462,7 +2454,7 @@ class DonutChartPainter extends CustomPainter {
 
     // Background track
     final bgPaint = Paint()
-      ..color = Colors.white.withOpacity(0.04)
+      ..color = Colors.black.withOpacity(0.04)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
     canvas.drawCircle(center, radius, bgPaint);
@@ -2537,7 +2529,7 @@ class RevenueChartPainter extends CustomPainter {
 
     // Draw background grids (Horizontal Y-gridlines and Vertical X-gridlines)
     final gridPaint = Paint()
-      ..color = Colors.white.withOpacity(0.06)
+      ..color = Colors.black.withOpacity(0.04)
       ..strokeWidth = 0.8;
 
     // Horizontal lines
@@ -2554,7 +2546,7 @@ class RevenueChartPainter extends CustomPainter {
 
     // Draw main solid axes lines for structure
     final axisPaint = Paint()
-      ..color = Colors.white.withOpacity(0.15)
+      ..color = Colors.black.withOpacity(0.08)
       ..strokeWidth = 1.2;
     // Y-Axis line
     canvas.drawLine(Offset(paddingX, paddingY), Offset(paddingX, paddingY + chartHeight), axisPaint);
@@ -2642,7 +2634,7 @@ class RevenueChartPainter extends CustomPainter {
       textPainter.text = TextSpan(
         text: text,
         style: GoogleFonts.montserrat(
-          color: Colors.white24,
+          color: Colors.black45,
           fontSize: 7,
           fontWeight: FontWeight.bold,
         ),

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class ApiService {
   // CONFIGURATION: Ganti '10.0.2.2' (emulator) dengan IP komputer Anda jika menggunakan HP fisik
-  static const String serverIp = '172.16.70.126'; // IP komputer lokal
+  static const String serverIp = '192.168.1.10'; // IP komputer lokal
   static const int port = 3000;
 
   static String get baseUrl {

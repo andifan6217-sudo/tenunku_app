@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'api_service.dart';
 import 'login_screen.dart';
@@ -57,7 +56,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const goldPrimary = Color(0xFFD4AF37);
     const goldSoft = Color(0xFFF9E79F);
 
     return Scaffold(
@@ -66,43 +64,13 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.blur_on_rounded, color: goldPrimary, size: 80)
+              // Premium Luxury Logo
+              Image.asset('assets/images/logo.png', height: 120)
                   .animate(onPlay: (controller) => controller.repeat())
-                  .shimmer(duration: 2000.ms, color: goldSoft),
-              
-              const SizedBox(height: 24),
-              
-              Text(
-                'TENUN GEZA',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                  color: goldPrimary,
-                  letterSpacing: 8,
-                  shadows: [
-                    Shadow(color: Colors.black.withOpacity(0.5), offset: const Offset(0, 4), blurRadius: 10),
-                  ],
-                ),
-              ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.3),
-              
-              Container(
-                width: 60,
-                height: 2,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                color: goldPrimary,
-              ).animate().scaleX(delay: 400.ms),
-              
-              Text(
-                'EXCLUSIVELY HANDCRAFTED',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.montserrat(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.white.withOpacity(0.6),
-                  letterSpacing: 6,
-                ),
-              ).animate().fadeIn(delay: 600.ms),
+                  .shimmer(duration: 2500.ms, color: goldSoft)
+                  .animate()
+                  .fadeIn(duration: 800.ms)
+                  .scale(begin: const Offset(0.8, 0.8)),
             ],
           ),
         ),

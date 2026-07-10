@@ -15,7 +15,7 @@ class TenunBackground extends StatelessWidget {
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Container(
-                color: const Color(0xFF0F0918),
+                color: const Color(0xFFF9FAFC),
               );
             },
           ),
@@ -29,9 +29,9 @@ class TenunBackground extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF1A0B2E).withOpacity(0.8),
-                  const Color(0xFF1A0B2E).withOpacity(0.4),
-                  const Color(0xFF000000).withOpacity(0.9),
+                  Colors.white.withOpacity(0.90),
+                  Colors.white.withOpacity(0.80),
+                  Colors.white.withOpacity(0.95),
                 ],
               ),
             ),

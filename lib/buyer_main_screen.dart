@@ -5,6 +5,8 @@ import 'customer_dashboard.dart';
 import 'home_screen.dart';
 import 'my_reviews_screen.dart';
 import 'orders_screen.dart';
+import 'package:provider/provider.dart';
+import 'language_provider.dart';
 
 class BuyerMainScreen extends StatefulWidget {
   const BuyerMainScreen({super.key});
@@ -26,35 +28,36 @@ class _BuyerMainScreenState extends State<BuyerMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const darkBg = Color(0xFF0F0918);
-    const goldColor = Color(0xFFD4AF37);
+    final lang = Provider.of<LanguageProvider>(context);
+    const lightBg = Color(0xFFF9FAFC);
+    const goldColor = Color(0xFFA67C1E); // Deeper gold for light theme contrast
 
     return Scaffold(
-      backgroundColor: darkBg,
+      backgroundColor: lightBg,
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF130B22),
-          border: Border(top: BorderSide(color: goldColor.withOpacity(0.1), width: 0.5)),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Colors.black12, width: 0.5)),
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
-          backgroundColor: const Color(0xFF130B22),
+          backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: goldColor,
-          unselectedItemColor: Colors.white24,
+          unselectedItemColor: Colors.black38,
           selectedLabelStyle: GoogleFonts.montserrat(fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
           unselectedLabelStyle: GoogleFonts.montserrat(fontSize: 8, letterSpacing: 1),
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.grid_view_outlined), activeIcon: Icon(Icons.grid_view_rounded), label: 'BERANDA'),
-            BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), activeIcon: Icon(Icons.inventory_2), label: 'KATALOG'),
-            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: 'PESANAN'),
-            BottomNavigationBarItem(icon: Icon(Icons.star_border_rounded), activeIcon: Icon(Icons.star), label: 'ULASAN'),
-            BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'AKUN'),
+          items: [
+            BottomNavigationBarItem(icon: const Icon(Icons.grid_view_outlined), activeIcon: const Icon(Icons.grid_view_rounded), label: lang.translate('home')),
+            BottomNavigationBarItem(icon: const Icon(Icons.inventory_2_outlined), activeIcon: const Icon(Icons.inventory_2), label: lang.translate('catalog')),
+            BottomNavigationBarItem(icon: const Icon(Icons.shopping_cart_outlined), activeIcon: const Icon(Icons.shopping_cart), label: lang.translate('orders')),
+            BottomNavigationBarItem(icon: const Icon(Icons.star_border_rounded), activeIcon: const Icon(Icons.star), label: lang.translate('reviews_buyer')),
+            BottomNavigationBarItem(icon: const Icon(Icons.person_outline), activeIcon: const Icon(Icons.person), label: lang.translate('account')),
           ],
         ),
       ),

@@ -41,14 +41,15 @@ class _AddressListScreenState extends State<AddressListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkArt = Color(0xFF0F0918);
+    const gold = Color(0xFFA67C1E);
+    const lightBg = Color(0xFFF9FAFC);
 
     return Scaffold(
-      backgroundColor: darkArt,
+      backgroundColor: lightBg,
       appBar: AppBar(
-        backgroundColor: darkArt,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         leading: IconButton(icon: const Icon(Icons.arrow_back, color: gold), onPressed: () => Navigator.pop(context)),
         title: Text('ALAMAT SAYA', style: GoogleFonts.montserrat(color: gold, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 4)),
         centerTitle: true,
@@ -59,7 +60,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
               onRefresh: _fetchAddresses,
               color: gold,
               child: _addresses.isEmpty
-                  ? Center(child: Text('BELUM ADA ALAMAT', style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 10, letterSpacing: 2)))
+                  ? Center(child: Text('BELUM ADA ALAMAT', style: GoogleFonts.montserrat(color: Colors.black38, fontSize: 10, letterSpacing: 2)))
                   : ListView.builder(
                       padding: const EdgeInsets.all(24),
                       itemCount: _addresses.length,
@@ -71,6 +72,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
             ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(24),
+        color: Colors.white,
         child: ElevatedButton.icon(
           onPressed: () async {
             final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => const AddressEditScreen()));
@@ -80,10 +82,10 @@ class _AddressListScreenState extends State<AddressListScreen> {
           label: Text('TAMBAH ALAMAT BARU', style: GoogleFonts.montserrat(fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
-            foregroundColor: const Color(0xFFEE4D2D), // Shopee-like orange as in screenshot
-            side: const BorderSide(color: Color(0xFFEE4D2D)),
+            foregroundColor: const Color(0xFFEE4D2D), // Shopee-like orange
+            side: const BorderSide(color: Color(0xFFEE4D2D), width: 1.2),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
           ),
         ),
@@ -104,29 +106,36 @@ class _AddressListScreenState extends State<AddressListScreen> {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.02),
-          border: Border.all(color: isMain ? const Color(0xFFEE4D2D) : Colors.white10),
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+          border: Border.all(color: isMain ? const Color(0xFFEE4D2D) : Colors.black.withOpacity(0.06)),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text(addr['name'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                Text(addr['name'], style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14)),
                 const SizedBox(width: 8),
-                Text('|', style: TextStyle(color: Colors.white.withOpacity(0.1))),
+                Text('|', style: TextStyle(color: Colors.black.withOpacity(0.12))),
                 const SizedBox(width: 8),
-                Text(addr['phone'], style: const TextStyle(color: Colors.white38, fontSize: 13)),
+                Text(addr['phone'], style: const TextStyle(color: Colors.black54, fontSize: 13)),
               ],
             ),
             const SizedBox(height: 8),
             Text(
               '${addr['streetAddress']}, ${addr['district']}, ${addr['city']}, ${addr['province']}, ${addr['postalCode']}',
-              style: const TextStyle(color: Colors.white60, fontSize: 12, height: 1.5),
+              style: const TextStyle(color: Colors.black87, fontSize: 12, height: 1.5),
             ),
             if (addr['detailAddress'] != null && addr['detailAddress'].isNotEmpty)
-              Text('(${addr['detailAddress']})', style: const TextStyle(color: Colors.white24, fontSize: 11)),
+              Text('(${addr['detailAddress']})', style: const TextStyle(color: Colors.black45, fontSize: 11)),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -139,8 +148,8 @@ class _AddressListScreenState extends State<AddressListScreen> {
                 if (isMain) const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(border: Border.all(color: Colors.white24), borderRadius: BorderRadius.circular(2)),
-                  child: Text(label == 'RUMAH' ? 'Rumah' : 'Kantor', style: const TextStyle(color: Colors.white38, fontSize: 10)),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.black12), borderRadius: BorderRadius.circular(2)),
+                  child: Text(label == 'RUMAH' ? 'Rumah' : 'Kantor', style: const TextStyle(color: Colors.black54, fontSize: 10)),
                 ),
               ],
             ),
@@ -250,11 +259,11 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF130B22),
-        title: const Text('Hapus Alamat?', style: TextStyle(color: Colors.white, fontSize: 16)),
-        content: const Text('Tindakan ini tidak dapat dibatalkan.', style: TextStyle(color: Colors.white54, fontSize: 13)),
+        backgroundColor: Colors.white,
+        title: const Text('Hapus Alamat?', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
+        content: const Text('Tindakan ini tidak dapat dibatalkan.', style: TextStyle(color: Colors.black54, fontSize: 13)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
           TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('HAPUS', style: TextStyle(color: Colors.redAccent))),
         ],
       ),
@@ -276,15 +285,16 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkArt = Color(0xFF0F0918);
+    const gold = Color(0xFFA67C1E);
+    const lightBg = Color(0xFFF9FAFC);
     const orangeShopee = Color(0xFFEE4D2D);
 
     return Scaffold(
-      backgroundColor: darkArt,
+      backgroundColor: lightBg,
       appBar: AppBar(
-        backgroundColor: darkArt,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         leading: IconButton(icon: const Icon(Icons.arrow_back, color: gold), onPressed: () => Navigator.pop(context)),
         title: Text(widget.address == null ? 'TAMBAH ALAMAT' : 'UBAH ALAMAT', style: GoogleFonts.montserrat(color: gold, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 4)),
         centerTitle: true,
@@ -298,7 +308,7 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('ALAMAT', style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4)),
+                    Text('ALAMAT', style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4)),
                     const SizedBox(height: 24),
                     _buildTextField(_nameCtrl, 'Nama Lengkap', 'Masukkan nama penerima'),
                     const SizedBox(height: 16),
@@ -317,11 +327,11 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
                     _buildTextField(_detailCtrl, 'Detail Lainnya (Cth: Blok / Unit No., Patokan)', 'Contoh: Kedai kayu 2 tingkat', maxLines: 2, isRequired: false),
                     
                     const SizedBox(height: 32),
-                    Text('LOKASI PETA', style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4)),
+                    Text('LOKASI PETA', style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 4)),
                     const SizedBox(height: 16),
                     Container(
                       height: 200,
-                      decoration: BoxDecoration(border: Border.all(color: Colors.white10), borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(border: Border.all(color: Colors.black.withOpacity(0.08)), borderRadius: BorderRadius.circular(8)),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: FlutterMap(
@@ -360,17 +370,17 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Atur sebagai Alamat Utama', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                        const Text('Atur sebagai Alamat Utama', style: TextStyle(color: Colors.black87, fontSize: 14)),
                         Switch(
                           value: _isMain,
                           onChanged: (v) => setState(() => _isMain = v),
                           activeThumbColor: orangeShopee,
-                          inactiveTrackColor: Colors.white10,
+                          inactiveTrackColor: Colors.black.withOpacity(0.06),
                         ),
                       ],
                     ),
                     const SizedBox(height: 24),
-                    const Text('Tandai Sebagai:', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                    const Text('Tandai Sebagai:', style: TextStyle(color: Colors.black87, fontSize: 14)),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -388,9 +398,9 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
                           onPressed: _delete,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.redAccent,
-                            side: const BorderSide(color: Colors.redAccent),
+                            side: const BorderSide(color: Colors.redAccent, width: 1.2),
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                           child: const Text('HAPUS ALAMAT', style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
@@ -404,7 +414,7 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
                           backgroundColor: orangeShopee,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 0,
                         ),
                         child: const Text('SIMPAN', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -422,17 +432,17 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 11)),
+        Text(label, style: const TextStyle(color: Colors.black54, fontSize: 11)),
         TextFormField(
           controller: ctrl,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: const TextStyle(color: Colors.black87, fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Colors.white10, fontSize: 14),
-            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+            hintStyle: const TextStyle(color: Colors.black26, fontSize: 14),
+            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
             contentPadding: const EdgeInsets.symmetric(vertical: 8),
           ),
           validator: isRequired ? (v) => v == null || v.isEmpty ? 'Wajib diisi' : null : null,
@@ -449,10 +459,10 @@ class _AddressEditScreenState extends State<AddressEditScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
         decoration: BoxDecoration(
           color: selected ? const Color(0xFFEE4D2D).withOpacity(0.1) : Colors.transparent,
-          border: Border.all(color: selected ? const Color(0xFFEE4D2D) : Colors.white10),
-          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: selected ? const Color(0xFFEE4D2D) : Colors.black.withOpacity(0.08)),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(label, style: TextStyle(color: selected ? const Color(0xFFEE4D2D) : Colors.white38, fontSize: 13, fontWeight: selected ? FontWeight.bold : FontWeight.normal)),
+        child: Text(label, style: TextStyle(color: selected ? const Color(0xFFEE4D2D) : Colors.black54, fontSize: 13, fontWeight: selected ? FontWeight.bold : FontWeight.normal)),
       ),
     );
   }

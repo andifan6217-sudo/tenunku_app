@@ -52,20 +52,21 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkPurple = Color(0xFF130B22);
+    const gold = Color(0xFFA67C1E);
+    const lightBg = Color(0xFFF9FAFC);
 
     return Scaffold(
-      backgroundColor: darkPurple,
+      backgroundColor: lightBg,
       appBar: AppBar(
-        backgroundColor: darkPurple,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
         title: Text('PETI KOLEKSI', style: GoogleFonts.montserrat(color: gold, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 4)),
         centerTitle: true,
         iconTheme: const IconThemeData(color: gold),
       ),
       body: Globals.cart.isEmpty
-          ? Center(child: Text('TIADA KOLEKSI DALAM PETI', style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 10, letterSpacing: 4)))
+          ? Center(child: Text('TIADA KOLEKSI DALAM PETI', style: GoogleFonts.montserrat(color: Colors.black38, fontSize: 10, letterSpacing: 4)))
           : Column(
               children: [
                 Expanded(
@@ -78,7 +79,15 @@ class _CartScreenState extends State<CartScreen> {
                         margin: const EdgeInsets.only(bottom: 20),
                         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white10),
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black.withOpacity(0.06)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.02),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Row(
                           children: [
@@ -88,7 +97,7 @@ class _CartScreenState extends State<CartScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(item['name'].toString().toUpperCase(), style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, letterSpacing: 1, fontWeight: FontWeight.bold)),
+                                  Text(item['name'].toString().toUpperCase(), style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 12, letterSpacing: 1, fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 6),
                                   Row(
                                     children: [
@@ -100,7 +109,7 @@ class _CartScreenState extends State<CartScreen> {
                                   if (item['notes'] != null && item['notes'].toString().isNotEmpty)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8),
-                                      child: Text('Note: ${item['notes']}', style: TextStyle(color: Colors.white38, fontSize: 10, fontStyle: FontStyle.italic)),
+                                      child: Text('Note: ${item['notes']}', style: const TextStyle(color: Colors.black45, fontSize: 10, fontStyle: FontStyle.italic)),
                                     ),
                                 ],
                               ),
@@ -108,7 +117,7 @@ class _CartScreenState extends State<CartScreen> {
                             Text(Globals.formatRupiah(item['price'] * item['quantity']), style: GoogleFonts.playfairDisplay(color: gold, fontWeight: FontWeight.bold)),
                             const SizedBox(width: 16),
                             IconButton(
-                              icon: const Icon(Icons.close, color: Colors.white24, size: 18),
+                              icon: const Icon(Icons.close, color: Colors.black38, size: 18),
                               onPressed: () => setState(() => Globals.cart.removeAt(index)),
                             )
                           ],
@@ -117,22 +126,29 @@ class _CartScreenState extends State<CartScreen> {
                     },
                   ),
                 ),
-                Container(
+                 Container(
                   padding: const EdgeInsets.all(40.0),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF0F0918),
-                    border: Border(top: BorderSide(color: Colors.white10)),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(top: BorderSide(color: Colors.black.withOpacity(0.06))),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.02),
+                        blurRadius: 10,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     children: [
-                      _summaryRow('SUBTOTAL', Globals.formatRupiah(_totalPrice), Colors.white38, gold),
+                      _summaryRow('SUBTOTAL', Globals.formatRupiah(_totalPrice), Colors.black54, gold),
                       const SizedBox(height: 12),
-                      _summaryRow('DP (TANDA JADI)', Globals.formatRupiah(_totalDP), gold.withOpacity(0.8), gold),
-                      const Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Divider(color: Colors.white10)),
+                      _summaryRow('DP (TANDA JADI)', Globals.formatRupiah(_totalDP), Colors.black54, gold),
+                      const Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Divider(color: Colors.black12)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('TOTAL PESANAN', style: GoogleFonts.montserrat(color: Colors.white, fontSize: 12, letterSpacing: 3, fontWeight: FontWeight.bold)),
+                          Text('TOTAL PESANAN', style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 12, letterSpacing: 3, fontWeight: FontWeight.bold)),
                           Text(Globals.formatRupiah(_totalPrice), style: GoogleFonts.playfairDisplay(color: gold, fontSize: 24, fontWeight: FontWeight.bold)),
                         ],
                       ),
@@ -145,8 +161,8 @@ class _CartScreenState extends State<CartScreen> {
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: gold,
-                                  foregroundColor: darkPurple,
-                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
                                 onPressed: _checkout,
                                 child: Text('SAHKAN PESANAN', style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, letterSpacing: 4, fontSize: 12)),

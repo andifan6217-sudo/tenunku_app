@@ -32,8 +32,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkSuite = Color(0xFF0F0B1E);
+    const gold = Color(0xFFA67C1E);
 
     return Scaffold(
       body: IndexedStack(
@@ -42,22 +41,23 @@ class _AdminDashboardState extends State<AdminDashboard> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: gold.withOpacity(0.1), width: 0.5)),
+          color: Colors.white,
+          border: const Border(top: BorderSide(color: Color(0xFFE0E0E0), width: 0.8)),
         ),
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: (index) => setState(() => _selectedIndex = index),
-          backgroundColor: darkSuite,
+          backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: gold,
-          unselectedItemColor: Colors.white24,
+          unselectedItemColor: Colors.black38,
           selectedLabelStyle: GoogleFonts.montserrat(fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1),
           unselectedLabelStyle: GoogleFonts.montserrat(fontSize: 8, letterSpacing: 1),
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), activeIcon: Icon(Icons.dashboard), label: 'DASHBOARD'),
             BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), activeIcon: Icon(Icons.inventory_2), label: 'PRODUK'),
             BottomNavigationBarItem(icon: Icon(Icons.people_outline), activeIcon: Icon(Icons.people), label: 'USER'),
-            BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), activeIcon: Icon(Icons.shopping_bag), label: 'PESANAN'),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: 'PESANAN'),
             BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'AKUN'),
           ],
         ),
@@ -88,8 +88,8 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
   final TextEditingController _bankAccountCtrl = TextEditingController();
   final TextEditingController _accountNameCtrl = TextEditingController();
 
-  static const gold = Color(0xFFD4AF37);
-  static const darkSuite = Color(0xFF0F0B1E);
+  static const gold = Color(0xFFA67C1E);
+  static const darkSuite = Color(0xFFF9FAFC);
 
   @override
   void initState() {
@@ -173,8 +173,12 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.02),
-          border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+          color: Colors.white,
+          border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+          ],
         ),
         child: Row(
           children: [
@@ -194,7 +198,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                   Text(
                     label,
                     style: GoogleFonts.montserrat(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 8.5,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.5,
@@ -204,7 +208,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                   Text(
                     subtitle,
                     style: const TextStyle(
-                      color: Colors.white38,
+                      color: Colors.black54,
                       fontSize: 7.5,
                     ),
                     maxLines: 1,
@@ -242,7 +246,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
         builder: (ctx, setSheetState) => Container(
           padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(ctx).viewInsets.bottom + 32),
           decoration: const BoxDecoration(
-            color: Color(0xFF130B22),
+            color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: SingleChildScrollView(
@@ -250,15 +254,15 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)))),
+                Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(2)))),
                 const SizedBox(height: 24),
                 Center(
                   child: Text('PENGATURAN REKENING & QRIS',
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                      style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
                 ),
                 const SizedBox(height: 4),
                 const Center(child: Text('Info ini akan ditampilkan kepada pembeli saat melakukan transfer manual.',
-                    textAlign: TextAlign.center, style: TextStyle(color: Colors.white38, fontSize: 10))),
+                    textAlign: TextAlign.center, style: TextStyle(color: Colors.black54, fontSize: 10))),
                 const SizedBox(height: 28),
 
                 _buildSettingField(_bankNameCtrl, 'Nama Bank', 'Contoh: BCA, Mandiri, BRI, BNI', gold),
@@ -268,7 +272,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                 _buildSettingField(_accountNameCtrl, 'Nama Pemilik Rekening', 'Contoh: TENUN GEZA OFFICIAL', gold),
                 const SizedBox(height: 24),
 
-                const Text('Gambar QRIS', style: TextStyle(color: Colors.white54, fontSize: 12, fontWeight: FontWeight.bold)),
+                const Text('Gambar QRIS', style: TextStyle(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 InkWell(
                   onTap: isUploadingQris ? null : () async {
@@ -294,16 +298,16 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                     decoration: BoxDecoration(
                       color: (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
                           ? gold.withOpacity(0.05)
-                          : Colors.white.withOpacity(0.03),
+                          : Colors.black.withOpacity(0.02),
                       border: Border.all(
                         color: (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
                             ? gold.withOpacity(0.4)
-                            : Colors.white12,
+                            : Colors.black12,
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: isUploadingQris
-                        ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Color(0xFFD4AF37), strokeWidth: 2)))
+                        ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Color(0xFFA67C1E), strokeWidth: 2)))
                         : (qrisImageUrl != null && qrisImageUrl!.isNotEmpty)
                             ? Column(children: [
                                 ClipRRect(
@@ -311,18 +315,18 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                                   child: Image.network(
                                     ApiService.getFormattedImageUrl(qrisImageUrl),
                                     height: 160, fit: BoxFit.contain,
-                                    errorBuilder: (_, _, _) => const Icon(Icons.broken_image, color: Colors.white24, size: 40),
+                                    errorBuilder: (_, _, _) => const Icon(Icons.broken_image, color: Colors.black26, size: 40),
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text('Ketuk untuk ganti gambar QRIS', style: TextStyle(color: gold.withOpacity(0.7), fontSize: 10)),
                               ])
                             : Column(children: [
-                                const Icon(Icons.qr_code_2, color: Colors.white24, size: 40),
+                                const Icon(Icons.qr_code_2, color: Colors.black38, size: 40),
                                 const SizedBox(height: 8),
-                                const Text('Ketuk untuk upload gambar QRIS dari galeri', style: TextStyle(color: Colors.white38, fontSize: 11)),
+                                const Text('Ketuk untuk upload gambar QRIS dari galeri', style: TextStyle(color: Colors.black54, fontSize: 11)),
                                 const SizedBox(height: 4),
-                                const Text('JPG / PNG • Maks 5MB', style: TextStyle(color: Colors.white24, fontSize: 10)),
+                                const Text('JPG / PNG • Maks 5MB', style: TextStyle(color: Colors.black38, fontSize: 10)),
                               ]),
                   ),
                 ),
@@ -378,23 +382,25 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600)),
+        Text(label, style: const TextStyle(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.w600)),
         const SizedBox(height: 6),
         TextField(
           controller: ctrl,
           keyboardType: keyboardType,
-          style: const TextStyle(color: Colors.white, fontSize: 12),
+          style: const TextStyle(color: Colors.black87, fontSize: 12),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Colors.white24, fontSize: 11),
+            hintStyle: const TextStyle(color: Colors.black38, fontSize: 11),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.02),
+            fillColor: const Color(0xFFF5F5F5),
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+              borderSide: BorderSide(color: Colors.black.withOpacity(0.1)),
+              borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: gold),
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
         ),
@@ -459,11 +465,15 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
         width: 120,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: isPrimary ? accentColor.withOpacity(0.06) : Colors.white.withOpacity(0.03),
+          color: Colors.white,
           border: Border.all(
-            color: isPrimary ? accentColor.withOpacity(0.3) : Colors.white.withOpacity(0.06),
+            color: Colors.black.withOpacity(0.06),
             width: 0.8,
           ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,9 +482,9 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, color: accentColor.withOpacity(0.7), size: 13),
+                Icon(icon, color: accentColor, size: 13),
                 if (onTap != null)
-                  const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 7),
+                  const Icon(Icons.arrow_forward_ios, color: Colors.black26, size: 7),
               ],
             ),
             Column(
@@ -483,7 +493,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                 Text(
                   label,
                   style: GoogleFonts.montserrat(
-                    color: Colors.white38,
+                    color: Colors.black54,
                     fontSize: 7,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
@@ -495,7 +505,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                 Text(
                   value,
                   style: GoogleFonts.montserrat(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
@@ -530,8 +540,12 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -561,7 +575,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                         Text(
                           total.toString(),
                           style: GoogleFonts.montserrat(
-                            color: Colors.white,
+                            color: Colors.black87,
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
@@ -569,7 +583,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                         Text(
                           'PESANAN',
                           style: GoogleFonts.montserrat(
-                            color: Colors.white30,
+                            color: Colors.black45,
                             fontSize: 6.5,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
@@ -607,7 +621,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                         child: Text(
                           s.label,
                           style: GoogleFonts.montserrat(
-                            color: Colors.white54,
+                            color: Colors.black54,
                             fontSize: 8,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,
@@ -617,7 +631,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                       Text(
                         '${s.count} ($percentage%)',
                         style: GoogleFonts.montserrat(
-                          color: Colors.white70,
+                          color: Colors.black87,
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
                         ),
@@ -640,8 +654,9 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: AppBar(
-          backgroundColor: darkSuite,
+          backgroundColor: Colors.white,
           elevation: 0,
+          shape: Border(bottom: BorderSide(color: Colors.black.withOpacity(0.05), width: 0.8)),
           titleSpacing: 0,
           title: Container(
             margin: const EdgeInsets.only(left: 20, top: 12),
@@ -659,7 +674,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                 const CircleAvatar(
                   backgroundColor: gold,
                   radius: 15,
-                  child: Icon(Icons.admin_panel_settings_rounded, color: Colors.black, size: 15),
+                  child: Icon(Icons.admin_panel_settings_rounded, color: Colors.white, size: 15),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -674,7 +689,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                       const SizedBox(height: 2),
                       Text(
                         'ADMIN EXECUTIVE',
-                        style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                        style: GoogleFonts.playfairDisplay(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                       ),
                     ],
                   ),
@@ -761,7 +776,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                       const Center(
                         child: Padding(
                           padding: EdgeInsets.all(20),
-                          child: Text('Belum ada pesanan', style: TextStyle(color: Colors.white24)),
+                          child: Text('Belum ada pesanan', style: TextStyle(color: Colors.black38)),
                         ),
                       )
                     else
@@ -784,7 +799,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
         const SizedBox(width: 10),
         Text(
           title,
-          style: GoogleFonts.montserrat(color: color.withOpacity(0.85), fontSize: 10, letterSpacing: 3, fontWeight: FontWeight.w600),
+          style: GoogleFonts.montserrat(color: color, fontSize: 10, letterSpacing: 3, fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -805,13 +820,14 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: color.withOpacity(0.07),
-          border: Border.all(color: color.withOpacity(0.4), width: 1),
+          border: Border.all(color: color.withOpacity(0.3), width: 1),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: color.withOpacity(0.15), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: color.withOpacity(0.12), shape: BoxShape.circle),
               child: Icon(icon, color: color, size: 22),
             ),
             const SizedBox(width: 16),
@@ -823,13 +839,13 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                   const SizedBox(height: 4),
                   Text(
                     value,
-                    style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.playfairDisplay(color: Colors.black87, fontSize: 28, fontWeight: FontWeight.bold),
                   ),
-                  Text(description, style: TextStyle(color: Colors.white54, fontSize: 10)),
+                  Text(description, style: const TextStyle(color: Colors.black54, fontSize: 10)),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: color.withOpacity(0.5), size: 14),
+            Icon(Icons.arrow_forward_ios, color: color, size: 14),
           ],
         ),
       ),
@@ -845,8 +861,12 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+        ],
       ),
       child: Row(
         children: [
@@ -871,12 +891,12 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
               children: [
                 Text(
                   order['user']['name'].toString().toUpperCase(),
-                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   'Total: ${Globals.formatRupiah(order['totalPrice'])}',
-                  style: const TextStyle(color: Colors.white54, fontSize: 10),
+                  style: const TextStyle(color: Colors.black54, fontSize: 10),
                 ),
               ],
             ),
@@ -885,8 +905,8 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
-              border: Border.all(color: statusColor.withOpacity(0.3), width: 0.5),
+              color: statusColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               statusLabel,
@@ -1045,7 +1065,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF130B22),
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1060,12 +1080,12 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)))),
+                  Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(2)))),
                   const SizedBox(height: 16),
                   Text(
                     'PILIH BULAN GRAFIK',
                     style: GoogleFonts.montserrat(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.5,
@@ -1076,7 +1096,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                     leading: const Icon(Icons.history, color: gold),
                     title: Text(
                       '7 / 30 Hari Terakhir (Default)',
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 12),
+                      style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 12),
                     ),
                     onTap: () {
                       Navigator.pop(ctx);
@@ -1085,7 +1105,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                       });
                     },
                   ),
-                  const Divider(color: Colors.white10),
+                  const Divider(color: Colors.black12),
                   ...months.map((m) {
                     final isSelected = _showCustomMonth && _chartMonth.year == m.year && _chartMonth.month == m.month;
                     return ListTile(
@@ -1097,7 +1117,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                       title: Text(
                         monthFmt.format(m).toUpperCase(),
                         style: GoogleFonts.montserrat(
-                          color: isSelected ? gold : Colors.white70,
+                          color: isSelected ? gold : Colors.black87,
                           fontSize: 12,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
@@ -1127,7 +1147,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
         decoration: BoxDecoration(
           color: isSelected ? gold.withOpacity(0.12) : Colors.transparent,
           border: Border.all(
-            color: isSelected ? gold.withOpacity(0.4) : Colors.white.withOpacity(0.08),
+            color: isSelected ? gold.withOpacity(0.4) : Colors.black.withOpacity(0.1),
             width: 0.8,
           ),
           borderRadius: BorderRadius.circular(4),
@@ -1135,7 +1155,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
         child: Text(
           label,
           style: GoogleFonts.montserrat(
-            color: isSelected ? gold : Colors.white38,
+            color: isSelected ? gold : Colors.black54,
             fontSize: 8,
             fontWeight: FontWeight.bold,
           ),
@@ -1161,8 +1181,12 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
-        border: Border.all(color: Colors.white.withOpacity(0.06), width: 0.8),
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.06), width: 0.8),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1177,7 +1201,7 @@ class _AdminDashboardTabState extends State<AdminDashboardTab> {
                     Text(
                       title,
                       style: GoogleFonts.montserrat(
-                        color: Colors.white54,
+                        color: Colors.black54,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -1295,7 +1319,7 @@ class AdminDonutChartPainter extends CustomPainter {
 
     // Background track
     final bgPaint = Paint()
-      ..color = Colors.white.withOpacity(0.04)
+      ..color = Colors.black.withOpacity(0.06)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
     canvas.drawCircle(center, radius, bgPaint);
@@ -1370,7 +1394,7 @@ class RevenueChartPainter extends CustomPainter {
 
     // Draw background grids (Horizontal Y-gridlines and Vertical X-gridlines)
     final gridPaint = Paint()
-      ..color = Colors.white.withOpacity(0.06)
+      ..color = Colors.black.withOpacity(0.05)
       ..strokeWidth = 0.8;
 
     // Horizontal lines
@@ -1387,7 +1411,7 @@ class RevenueChartPainter extends CustomPainter {
 
     // Draw main solid axes lines for structure
     final axisPaint = Paint()
-      ..color = Colors.white.withOpacity(0.15)
+      ..color = Colors.black.withOpacity(0.12)
       ..strokeWidth = 1.2;
     // Y-Axis line
     canvas.drawLine(Offset(paddingX, paddingY), Offset(paddingX, paddingY + chartHeight), axisPaint);
@@ -1475,7 +1499,7 @@ class RevenueChartPainter extends CustomPainter {
       textPainter.text = TextSpan(
         text: text,
         style: GoogleFonts.montserrat(
-          color: Colors.white24,
+          color: Colors.black45,
           fontSize: 7,
           fontWeight: FontWeight.bold,
         ),

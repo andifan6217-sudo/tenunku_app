@@ -50,6 +50,10 @@ class LanguageProvider extends ChangeNotifier {
     'order_monitoring': 'PEMANTAUAN PESANAN',
     'language': 'BAHASA',
     'select_language': 'PILIH BAHASA',
+    'home': 'BERANDA',
+    'catalog': 'KATALOG',
+    'reviews_buyer': 'ULASAN',
+    'account': 'AKUN',
   };
 
   static const Map<String, String> _en = {
@@ -69,5 +73,9 @@ class LanguageProvider extends ChangeNotifier {
     'order_monitoring': 'ORDER MONITORING',
     'language': 'LANGUAGE',
     'select_language': 'SELECT LANGUAGE',
+    'home': 'HOME',
+    'catalog': 'CATALOG',
+    'reviews_buyer': 'REVIEWS',
+    'account': 'ACCOUNT',
   };
 }

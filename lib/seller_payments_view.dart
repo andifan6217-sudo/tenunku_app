@@ -235,15 +235,16 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFD4AF37);
-    const darkBg = Color(0xFF0F0B1E);
-    const cardBg = Color(0xFF161226);
+    const gold = Color(0xFFA67C1E);
+    const lightBg = Color(0xFFF9FAFC);
+    const cardBg = Colors.white;
 
     return Scaffold(
-      backgroundColor: darkBg,
+      backgroundColor: lightBg,
       appBar: AppBar(
-        backgroundColor: darkBg,
+        backgroundColor: Colors.white,
         elevation: 0,
+        shape: const Border(bottom: BorderSide(color: Color(0x0D000000), width: 0.8)),
         title: Text(
           'PEMBAYARAN TOKO',
           style: GoogleFonts.montserrat(color: gold, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 4),
@@ -268,7 +269,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                     children: [
                       Text(
                         'ANALISIS KEUANGAN',
-                        style: GoogleFonts.montserrat(color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 4, fontWeight: FontWeight.bold),
+                        style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, letterSpacing: 4, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
                       
@@ -281,10 +282,10 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                         mainAxisSpacing: 14,
                         childAspectRatio: 1.4,
                         children: [
-                          _buildKpiCard('TOTAL DITERIMA', Globals.formatRupiah(_totalReceived), Icons.check_circle_outline, Colors.greenAccent, cardBg),
-                          _buildKpiCard('PENDING VERIFIKASI', Globals.formatRupiah(_pendingPayments), Icons.hourglass_empty, Colors.orangeAccent, cardBg),
+                          _buildKpiCard('TOTAL DITERIMA', Globals.formatRupiah(_totalReceived), Icons.check_circle_outline, Colors.green, cardBg),
+                          _buildKpiCard('PENDING VERIFIKASI', Globals.formatRupiah(_pendingPayments), Icons.hourglass_empty, Colors.orange, cardBg),
                           _buildKpiCard('TOTAL DP MASUK', Globals.formatRupiah(_totalDpReceived), Icons.payments_outlined, gold, cardBg),
-                          _buildKpiCard('PERTUMBUHAN', _growth, _isGrowthPositive ? Icons.trending_up : Icons.trending_down, _isGrowthPositive ? Colors.greenAccent : Colors.redAccent, cardBg),
+                          _buildKpiCard('PERTUMBUHAN', _growth, _isGrowthPositive ? Icons.trending_up : Icons.trending_down, _isGrowthPositive ? Colors.green : Colors.redAccent, cardBg),
                         ],
                       ),
                       const SizedBox(height: 24),
@@ -292,9 +293,9 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                       // Status Summary Counters
                       Row(
                         children: [
-                          Expanded(child: _buildCounterTile('Berhasil', _countSuccess, Colors.greenAccent, cardBg)),
+                          Expanded(child: _buildCounterTile('Berhasil', _countSuccess, Colors.green, cardBg)),
                           const SizedBox(width: 10),
-                          Expanded(child: _buildCounterTile('Pending', _countPending, Colors.orangeAccent, cardBg)),
+                          Expanded(child: _buildCounterTile('Pending', _countPending, Colors.orange, cardBg)),
                           const SizedBox(width: 10),
                           Expanded(child: _buildCounterTile('Gagal', _countFailed, Colors.redAccent, cardBg)),
                         ],
@@ -307,11 +308,11 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                         children: [
                           Text(
                             'RIWAYAT TRANSAKSI',
-                            style: GoogleFonts.montserrat(color: gold.withOpacity(0.6), fontSize: 10, letterSpacing: 4, fontWeight: FontWeight.bold),
+                            style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, letterSpacing: 4, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             '${_filteredTransactions.length} Transaksi',
-                            style: GoogleFonts.montserrat(color: Colors.white24, fontSize: 10),
+                            style: GoogleFonts.montserrat(color: Colors.black38, fontSize: 10),
                           ),
                         ],
                       ),
@@ -328,7 +329,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                           alignment: Alignment.center,
                           child: Text(
                             'Tidak ada transaksi ditemukan',
-                            style: TextStyle(color: Colors.white24, fontSize: 12, fontStyle: FontStyle.italic),
+                            style: TextStyle(color: Colors.black38, fontSize: 12, fontStyle: FontStyle.italic),
                           ),
                         )
                       else
@@ -353,7 +354,14 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.03)),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,18 +372,18 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
             children: [
               Text(
                 title,
-                style: GoogleFonts.montserrat(color: Colors.white38, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 1),
+                style: GoogleFonts.montserrat(color: Colors.black45, fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 1),
               ),
               Icon(icon, color: color.withOpacity(0.8), size: 16),
             ],
           ),
           Text(
             value,
-            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+            style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
           ),
           Text(
             'Bulan ini',
-            style: TextStyle(color: Colors.white12, fontSize: 9),
+            style: TextStyle(color: Colors.black38, fontSize: 9),
           ),
         ],
       ),
@@ -388,7 +396,14 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white.withOpacity(0.03)),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -399,7 +414,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
           const SizedBox(height: 2),
           Text(
             label,
-            style: TextStyle(color: Colors.white38, fontSize: 9),
+            style: TextStyle(color: Colors.black45, fontSize: 9),
           ),
         ],
       ),
@@ -415,7 +430,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.black.withOpacity(0.06)),
           ),
           child: TextField(
             onChanged: (val) {
@@ -424,11 +439,11 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                 _applyFilters();
               });
             },
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+            style: const TextStyle(color: Colors.black87, fontSize: 12),
             decoration: InputDecoration(
               hintText: 'Cari transaksi, order, pelanggan...',
-              hintStyle: const TextStyle(color: Colors.white24, fontSize: 12),
-              prefixIcon: const Icon(Icons.search, color: Colors.white30, size: 16),
+              hintStyle: const TextStyle(color: Colors.black38, fontSize: 12),
+              prefixIcon: const Icon(Icons.search, color: Colors.black45, size: 16),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(vertical: 10),
             ),
@@ -443,7 +458,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
             return Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: ChoiceChip(
-                label: Text(label, style: TextStyle(color: isSelected ? Colors.black : Colors.white70, fontSize: 10)),
+                label: Text(label, style: TextStyle(color: isSelected ? Colors.white : Colors.black54, fontSize: 10)),
                 selected: isSelected,
                 selectedColor: gold,
                 backgroundColor: bg,
@@ -469,10 +484,10 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
     final isSuccess = tx['status'] == 'completed';
     final isFailed = tx['status'] == 'failed';
 
-    Color statusColor = Colors.orangeAccent;
+    Color statusColor = Colors.orange;
     String statusLabel = 'PENDING';
     if (isSuccess) {
-      statusColor = Colors.greenAccent;
+      statusColor = Colors.green;
       statusLabel = 'BERHASIL';
     } else if (isFailed) {
       statusColor = Colors.redAccent;
@@ -484,8 +499,15 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withOpacity(0.02)),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -498,7 +520,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
             ),
             child: Icon(
               isDp ? Icons.payment : Icons.done_all,
-              color: isDp ? Colors.blueAccent : Colors.greenAccent,
+              color: isDp ? Colors.blue : Colors.green,
               size: 16,
             ),
           ),
@@ -512,7 +534,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                   children: [
                     Text(
                       tx['id'],
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 6),
                     Container(
@@ -531,7 +553,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
                 const SizedBox(height: 4),
                 Text(
                   'Order #${tx['orderId']} • ${tx['customerName']}',
-                  style: const TextStyle(color: Colors.white38, fontSize: 9),
+                  style: const TextStyle(color: Colors.black45, fontSize: 9),
                 ),
               ],
             ),
@@ -542,7 +564,7 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
             children: [
               Text(
                 Globals.formatRupiah(tx['amount']),
-                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 11, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               Container(
@@ -575,12 +597,12 @@ class _SellerPaymentsViewState extends State<SellerPaymentsView> {
             const SizedBox(height: 12),
             Text(
               'Gagal memuat pembayaran',
-              style: GoogleFonts.montserrat(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.montserrat(color: Colors.black87, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               _error ?? '',
-              style: const TextStyle(color: Colors.white38, fontSize: 11),
+              style: const TextStyle(color: Colors.black45, fontSize: 11),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),

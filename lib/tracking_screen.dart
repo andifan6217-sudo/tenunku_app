@@ -12,9 +12,9 @@ class TrackingScreen extends StatefulWidget {
 }
 
 class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStateMixin {
-  static const _gold = Color(0xFFD4AF37);
-  static const _dark = Color(0xFF0F0918);
-  static const _darkCard = Color(0xFF1A1030);
+  static const _gold = Color(0xFFA67C1E);
+  static const _dark = Color(0xFFF9FAFC);
+  static const _darkCard = Colors.white;
 
   Map<String, dynamic>? _order;
   bool _isLoading = true;
@@ -108,12 +108,12 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: _darkCard,
-        shape: RoundedRectangleBorder(side: const BorderSide(color: Colors.greenAccent, width: 0.5), borderRadius: BorderRadius.circular(12)),
-        title: const Text('Konfirmasi Sampai', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-        content: const Text('Apakah Anda yakin pesanan ini telah sampai ke tujuan?', style: TextStyle(color: Colors.white70, fontSize: 13)),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(side: BorderSide(color: Colors.black.withOpacity(0.08), width: 0.5), borderRadius: BorderRadius.circular(12)),
+        title: const Text('Konfirmasi Sampai', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
+        content: const Text('Apakah Anda yakin pesanan ini telah sampai ke tujuan?', style: TextStyle(color: Colors.black54, fontSize: 13)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true), 
             child: const Text('YA, SAMPAI', style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold))
@@ -160,41 +160,45 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          backgroundColor: const Color(0xFF130B22),
-          title: Text('BERI ULASAN', style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)),
+          backgroundColor: Colors.white,
+          title: Text('BERI ULASAN', style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (productList.length > 1) ...[
-                const Text('PILIH PRODUK:', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                const Text('PILIH PRODUK:', style: TextStyle(color: Colors.black45, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 1)),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.02),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.black12),
+                  ),
                   child: DropdownButton<int>(
                     value: selectedProductId,
-                    dropdownColor: const Color(0xFF130B22),
+                    dropdownColor: Colors.white,
                     isExpanded: true,
                     underline: const SizedBox(),
                     items: productList.map<DropdownMenuItem<int>>((i) => DropdownMenuItem<int>(
                       value: i['productId'],
-                      child: Text(i['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white, fontSize: 11)),
+                      child: Text(i['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 11)),
                     )).toList(),
                     onChanged: (val) => setDialogState(() => selectedProductId = val),
                   ),
                 ),
                 const SizedBox(height: 20),
               ] else if (productList.isNotEmpty) ...[
-                Text(productList[0]['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text(productList[0]['product']['name'].toString().toUpperCase(), style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 12),
               ],
               
-              const Center(child: Text('RATING ANDA', style: TextStyle(color: Colors.white38, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 2))),
+              const Center(child: Text('RATING ANDA', style: TextStyle(color: Colors.black45, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 2))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(5, (i) => IconButton(
-                  icon: Icon(Icons.star, color: i < rating ? const Color(0xFFD4AF37) : Colors.white10),
+                  icon: Icon(Icons.star, color: i < rating ? const Color(0xFFA67C1E) : Colors.black12),
                   onPressed: () => setDialogState(() => rating = i + 1),
                 )),
               ),
@@ -202,18 +206,18 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
               TextField(
                 controller: commentCtrl,
                 maxLines: 3,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
+                style: const TextStyle(color: Colors.black87, fontSize: 12),
                 decoration: const InputDecoration(
                   hintText: 'Tuliskan ulasan anda...',
-                  hintStyle: TextStyle(color: Colors.white10),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD4AF37))),
+                  hintStyle: TextStyle(color: Colors.black38),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFA67C1E))),
                 ),
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.white24))),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('BATAL', style: TextStyle(color: Colors.black38))),
             TextButton(
               onPressed: () async {
                 try {
@@ -230,7 +234,7 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
                   }
                 }
               }, 
-              child: const Text('KIRIM', style: TextStyle(color: Color(0xFFD4AF37)))
+              child: const Text('KIRIM', style: TextStyle(color: Color(0xFFA67C1E)))
             ),
           ],
         ),
@@ -276,13 +280,17 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
           children: [
             const Icon(Icons.error_outline, color: Colors.redAccent, size: 56),
             const SizedBox(height: 20),
-            Text('Gagal Memuat Data', style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('Gagal Memuat Data', style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Text(_error ?? '', style: const TextStyle(color: Colors.white38, fontSize: 12), textAlign: TextAlign.center),
+            Text(_error ?? '', style: const TextStyle(color: Colors.black45, fontSize: 12), textAlign: TextAlign.center),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () { setState(() => _isLoading = true); _fetchOrderData(); },
-              style: ElevatedButton.styleFrom(backgroundColor: _gold, foregroundColor: Colors.black),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _gold,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
               child: const Text('COBA LAGI'),
             ),
           ],
@@ -338,7 +346,7 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
             if (productNames.isNotEmpty)
               Text(
                 productNames,
-                style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
+                style: const TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w600),
                 maxLines: 2, overflow: TextOverflow.ellipsis,
               ),
 
@@ -354,8 +362,14 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
               decoration: BoxDecoration(
                 color: _darkCard,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _gold.withOpacity(0.2)),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 10)],
+                border: Border.all(color: Colors.black.withOpacity(0.06)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.02),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,34 +402,41 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border: Border.all(color: Colors.black.withOpacity(0.06)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'UPDATE RESI / STATUS PENGIRIMAN',
-                      style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1),
+                      style: GoogleFonts.montserrat(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1),
                     ),
                     const SizedBox(height: 16),
                     TextField(
                       controller: _courierController,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      style: const TextStyle(color: Colors.black87, fontSize: 13),
                       decoration: _inputDeco('Nama Kurir (JNE, J&T, dll)'),
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: _awbController,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      style: const TextStyle(color: Colors.black87, fontSize: 13),
                       decoration: _inputDeco('Nomor Resi / AWB'),
                     ),
                     const SizedBox(height: 12),
                     TextField(
                       controller: _statusController,
                       maxLines: 2,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      style: const TextStyle(color: Colors.black87, fontSize: 13),
                       decoration: _inputDeco('Status / Posisi Paket Saat Ini'),
                     ),
                     const SizedBox(height: 16),
@@ -426,7 +447,7 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
                           child: ElevatedButton.icon(
                             onPressed: _isUpdating ? null : _handleUpdateTracking,
                             icon: _isUpdating 
-                              ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                              ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                               : const Icon(Icons.cloud_upload, size: 18),
                             label: Text(
                               _isUpdating ? '...' : 'UPDATE PROGRES',
@@ -434,9 +455,9 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: _gold,
-                              foregroundColor: Colors.black,
+                              foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                           ),
                         ),
@@ -452,10 +473,10 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
                                 style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 10),
                               ),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.greenAccent,
-                                side: const BorderSide(color: Colors.greenAccent, width: 0.8),
+                                foregroundColor: Colors.green,
+                                side: const BorderSide(color: Colors.green, width: 1.2),
                                 padding: const EdgeInsets.symmetric(vertical: 14),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
                             ),
                           ),
@@ -515,9 +536,9 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white54, fontSize: 11)),
+        Text(label, style: const TextStyle(color: Colors.black54, fontSize: 11)),
         const SizedBox(height: 4),
-        Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+        Text(value, style: const TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.w500)),
       ],
     );
   }
@@ -525,13 +546,13 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
   InputDecoration _inputDeco(String hint) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.white38),
+      hintStyle: const TextStyle(color: Colors.black38),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1)), borderRadius: BorderRadius.circular(8)),
+      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)), borderRadius: BorderRadius.circular(8)),
       focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: _gold), borderRadius: BorderRadius.circular(8)),
       filled: true,
-      fillColor: Colors.black12,
+      fillColor: const Color(0xFFF1F3F5),
     );
   }
 
@@ -551,7 +572,7 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
           return Expanded(
             child: Container(
               height: 2,
-              color: isActive ? _gold : Colors.white10,
+              color: isActive ? _gold : Colors.black12,
             ),
           );
         }
@@ -565,20 +586,20 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
               width: 32, height: 32,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isActive ? _gold.withOpacity(0.15) : Colors.white.withOpacity(0.05),
+                color: isActive ? _gold.withOpacity(0.15) : Colors.black.withOpacity(0.04),
                 border: Border.all(
-                  color: isCurrent ? _gold : isActive ? _gold.withOpacity(0.5) : Colors.white10,
+                  color: isCurrent ? _gold : isActive ? _gold.withOpacity(0.5) : Colors.black12,
                   width: isCurrent ? 2 : 1,
                 ),
-                boxShadow: isCurrent ? [BoxShadow(color: _gold.withOpacity(0.3), blurRadius: 8)] : null,
+                boxShadow: isCurrent ? [BoxShadow(color: _gold.withOpacity(0.15), blurRadius: 8)] : null,
               ),
-              child: Icon(step.icon, color: isActive ? _gold : Colors.white38, size: 16),
+              child: Icon(step.icon, color: isActive ? _gold : Colors.black26, size: 16),
             ),
             const SizedBox(height: 8),
             Text(
               step.label,
               style: TextStyle(
-                color: isActive ? Colors.white : Colors.white38,
+                color: isActive ? Colors.black87 : Colors.black38,
                 fontSize: 10,
                 fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
               ),
@@ -604,11 +625,11 @@ class _TrackingScreenState extends State<TrackingScreen> with TickerProviderStat
     switch (status) {
       case 'PENDING': return _StatusInfo('Menunggu Pembayaran', Colors.orange);
       case 'DP_PAID': return _StatusInfo('DP Dibayar (Tunggu Verifikasi)', Colors.blue);
-      case 'VERIFIED': return _StatusInfo('Pembayaran Diverifikasi', Colors.greenAccent);
-      case 'PROCESSED': return _StatusInfo('Diproses / Ditenun', Colors.purpleAccent);
+      case 'VERIFIED': return _StatusInfo('Pembayaran Diverifikasi', Colors.green);
+      case 'PROCESSED': return _StatusInfo('Diproses / Ditenun', Colors.purple);
       case 'FULL_PAY_PAID': return _StatusInfo('Lunas (Tunggu Verifikasi)', Colors.blue);
       case 'PAID': return _StatusInfo('Lunas', Colors.green);
-      case 'SHIPPED': return _StatusInfo('Dikirim', Colors.lightBlueAccent);
+      case 'SHIPPED': return _StatusInfo('Dikirim', Colors.blue);
       case 'DELIVERED': return _StatusInfo('Sampai Tujuan', Colors.green);
       case 'COMPLETED': return _StatusInfo('Selesai', Colors.teal);
       case 'CANCELLED': return _StatusInfo('Dibatalkan', Colors.red);
